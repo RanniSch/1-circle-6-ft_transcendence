@@ -81,7 +81,7 @@ DATABASES = {
         'USER': 'tstrassb',
         'PASSWORD': '_motheR22',
         'HOST': 'localhost',
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
