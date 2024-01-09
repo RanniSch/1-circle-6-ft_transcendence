@@ -1,0 +1,96 @@
+body {
+    background-image: url("/static/imgs/foreground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font: white;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        background-image: url("/static/imgs/foreground.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-color: black;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font: white;
+    }
+}
+
+#menu {
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 2rem;
+    padding: 2rem;
+    color: black;
+    font-weight: 900;
+    font-family: 'Press Start 2P', cursive;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 1rem;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#menu.menu-open {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0;
+    padding: 0;
+    box-shadow: 4 4px 6px #bfbfbf;
+    margin: 1rem;
+    border-radius: 15px;
+}
+
+#menu.menu-open ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#menu.menu-open li {
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+#menu.menu-open li:last-child {
+    border-bottom: none;
+}
+
+#menu.menu-open li:hover {
+    background-color: rebeccapurple;
+    color: white;
+}
+
+#menu:hover {
+    color: rebeccapurple;
+}
+
+#login {
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 2rem;
+    padding: 2rem;
+    color: black;
+    font-weight: 900;
+    font-family: 'Press Start 2P', cursive;
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#login:hover {
+    color: rebeccapurple;
+}
+

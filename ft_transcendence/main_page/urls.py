@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework import routers
 
 from . import views
@@ -13,4 +14,5 @@ router.register(r'tournamentgames', TournamentGameViewSet)
 urlpatterns = [
     path('', views.main_page, name="main_page"),
     path('api/', include(router.urls)),
+    path('register/', views.register, name='register'),
 ]

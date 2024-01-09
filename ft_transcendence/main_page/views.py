@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Player, Game, Tournament, TournamentGame
 from .serializers import PlayerSerializer, GameSerializer, TournamentSerializer, TournamentGameSerializer
+from .forms import CustomUserCreationForm
 
 # Create your views here.
 
@@ -41,3 +43,14 @@ class TournamentViewSet(viewsets.ModelViewSet):
 class TournamentGameViewSet(viewsets.ModelViewSet):
     queryset = TournamentGame.objects.all()
     serializer_class = TournamentGameSerializer
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('registration/login.html')
+    else:
+        form = CustomUserCreationForm()
+        return render(request, 'registration/register.html', {'form': form})
