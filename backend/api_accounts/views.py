@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
 from .models import Player, ExpiredTokens
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -201,14 +201,11 @@ class OAuthAuthorize(APIView):
         }
         return HttpResponseRedirect(f"{auth_url}?{urllib.parse.urlencode(parameters)}")
     
-@api_view(['PATCH'])
+@api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def update_avatar(request):
-    if 'avatarPicture' not in request.FILES:
-        return Response({'error': 'No file found!'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    user = request.user
-    user.profile_avatar = request.FILES['avatarPicture']
-    user.save()
-
-    return Response({'success': 'Avatar updated successfully!'}, status=status.HTTP_200_OK)
+    serializer = AvatarUpdateSerializer(request.user, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response({'Success': 'Avatar updated!'}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

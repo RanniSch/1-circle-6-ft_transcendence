@@ -30,3 +30,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModelUser
         fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar')
+
+class AvatarUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ModelUser
+        fields = ('profile_avatar',)
+    
+    def update(self, instance, validated_data):
+        instance.profile_avatar = validated_data['profile_avatar']
+        instance.save()
+        return instance

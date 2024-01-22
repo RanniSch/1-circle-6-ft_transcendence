@@ -93,11 +93,11 @@ function displayUsersList(users) {
 
 window.displayUserProfile = displayUserProfile;
 
-document.getElementById('avatar').addEventListener('submit', function(event) {
+document.getElementById('avatarForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const accessToken = localStorage.getItem('access');
-    const fileInput = document.getElementById('avatarPicture');
+    const fileInput = document.getElementById('avatar');
 
     if (!fileInput.files[0]) {
         console.log('No file selected');
@@ -108,11 +108,10 @@ document.getElementById('avatar').addEventListener('submit', function(event) {
     formData.append('profile_avatar', fileInput.files[0]);
 
     fetch('http://localhost:8000/api/update-avatar/', {
-        method: 'PATCH',
+        method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
         },
-        body: formData
     })
     .then(response => {
         if (!response.ok) {
@@ -122,6 +121,9 @@ document.getElementById('avatar').addEventListener('submit', function(event) {
     })
     .then(data => {
         console.log('Success: Avatar was updated!');
+        const profileAvatar = document.getElementById('profileAvatar');
+        profileAvatar.src = URL.createObjectURL(fileInput.files[0]);
+        profileAvatar.style.display = 'block';
     })
     .catch(error => {
         console.error('Error:', error);
