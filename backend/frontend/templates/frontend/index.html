@@ -11,43 +11,53 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <form id="registrationForm">
-        {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" id="email_reg" required><br><br>
+    <div style="display:flex;">
+        <h1 style="position: absolute; font-size: 8rem; z-index: 1000; top:4rem;">PING PONG TRASCENDECE</h1>
+    </div>
+    <div style="background-color:grey; padding:2rem; border-radius: 15px;">
+        {% block index %}
+        <script type='module' src="{% static 'js/index.js' %}"></script>
+        {% endblock %}
+        <form id="registrationForm" class="registration_style">
+            {% csrf_token %}
+            <label for="email">Email:</label>
+            <input type="email" id="email_reg" required><br><br>
 
-        <label for="username">Username:</label>
-        <input type="text" id="username_reg" pattern="^[a-zA-Z0-9_-]*$" required><br><br>
+            <label for="username">Username:</label>
+            <input type="text" id="username_reg" pattern="^[a-zA-Z0-9_-]*$" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password_reg" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password_reg" required><br><br>
 
-        <button type="submit">Register</button><br><br>
-    </form>
-    {% block register %}
-    <script type='module' src="{% static 'js/register.js' %}"></script>
-    {% endblock %}
+            <button type="submit">Register</button><br><br>
+        </form>
+        {% block register %}
+        <script type='module' src="{% static 'js/register.js' %}"></script>
+        {% endblock %}
 
-    <form id="loginForm">
-        {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" id="email_login" required><br><br>
+        <form id="loginForm">
+            {% csrf_token %}
+            <label for="email">Email:</label>
+            <input type="email" id="email_login" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password_login" required><br><br>
-        <input type="checkbox" id="togglePasswordLogin"> Show Password<br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password_login" required><br><br>
+            <input type="checkbox" id="togglePasswordLogin"> Show Password<br><br>
 
-        <button type="submit">Login</button>
-    </form>
-    <button id="login42Button">Login with 42 credentials</button>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <div style="display: flex;">
+        <button id="login42Button">Login with 42 credentials</button>
+        <button id="playPongButton">PLAY PONG</button>
+    </div>
     {% block login %}
     <script type='module' src="{% static 'js/login.js' %}"></script>
     {% endblock %}
-
     {% block login42 %}
     <script type='module' src="{% static 'js/login42.js' %}"></script>
     {% endblock %}
-
+    
     <div id="profileSection" style="display: none;">
         <h1>User Profile</h1>
         <img id="profileAvatar" src="" alt="Profile Avatar" style="width:100px; height:100px;"/>
@@ -82,11 +92,8 @@
         <div class="paddle_2  paddle"></div> 
         <h1 class="player_1_score">0</h1> 
         <h1 class="player_2_score">0</h1> 
-        <h1 class="message"> 
-            Press Enter to PLAY
-        </h1> 
+        <h1 class="message">Press Enter to PLAY</h1> 
     </div>
-    <button id="playPongButton">Play Pong</button>
     {% block pong %}
     <script type='module' src="{% static 'js/pong.js' %}"></script>
     {% endblock %}
