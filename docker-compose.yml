@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    env_file:
+      - ./.env
+    build:
+      context: .
+      dockerfile: ./docker/backend/backend.Dockerfile
+    image: ft_transcendence_be
+    volumes:
+      - ${PWD}:/workdir/
+    ports:
+      - 8000:8000
+    entrypoint: /workdir/docker/backend/entrypoint_be.sh
+    restart: unless-stopped
+    depends_on:
+      - postgres
+  
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ft_transcendence_users
+      POSTGRES_USER: ft_transcendence_user
+      POSTGRES_PASSWORD: ft_transcendence_password
+    ports:
+      - "5432:5432"
+
+  # for development
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: tstrassb@student.42wolfsburg.de
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 5050:80
+    depends_on:
+      - postgres
+    restart: unless-stopped

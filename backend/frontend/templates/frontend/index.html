@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0"> 
+    <title>TRASCENDENCE PONG GAME</title> 
+    <link rel="stylesheet" href="{% static 'css/pong.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form id="registrationForm">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" id="email_reg" required><br><br>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username_reg" pattern="^[a-zA-Z0-9_-]*$" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password_reg" required><br><br>
+
+        <button type="submit">Register</button><br><br>
+    </form>
+    {% block register %}
+    <script type='module' src="{% static 'js/register.js' %}"></script>
+    {% endblock %}
+
+    <form id="loginForm">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" id="email_login" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password_login" required><br><br>
+        <input type="checkbox" id="togglePasswordLogin"> Show Password<br><br>
+
+        <button type="submit">Login</button>
+    </form>
+    <button id="login42Button">Login with 42 credentials</button>
+    {% block login %}
+    <script type='module' src="{% static 'js/login.js' %}"></script>
+    {% endblock %}
+
+    {% block login42 %}
+    <script type='module' src="{% static 'js/login42.js' %}"></script>
+    {% endblock %}
+
+    <div id="profileSection" style="display: none;">
+        <h1>User Profile</h1>
+        <img id="profileAvatar" src="" alt="Profile Avatar" style="width:100px; height:100px;"/>
+        <form id = "avatarForm" enctype="multipart/form-data">
+            <label for="avatar">Change Avatar:</label>
+            <input type="file" id="avatar" name="avatarPicture" accept="image/png, image/jpeg">
+            <button type="submit">Submit</button>
+        </form>
+        <p><b>Email:</b> <span id="userEmail"></span></p>
+        <p><b>Username:</b> <span id="userName"></span></p>
+        <p><b>Games Played:</b> <span id="gamesPlayed"></span></p>
+        <p><b>Games Won:</b> <span id="gamesWon"></span></p>
+        <p><b>Games Lost:</b> <span id="gamesLost"></span></p>
+        <p><b>Games Tied:</b> <span id="gamesTied"></span></p>
+        <button id="viewUsersButton">View all Users</button>
+            <div id="usersList" style="display:none;"></div>
+        <button id="logoutButton">Logout</button>
+    </div>
+    {% block profile %}
+    <script type='module' src="{% static 'js/profile.js' %}"></script>
+    {% endblock %}
+
+    {% block logout %}
+    <script type='module' src="{% static 'js/logout.js' %}"></script>
+    {% endblock %}
+
+    <div class="board" id="pong_board" style="display: none;">
+        <div class='ball'> 
+            <div class="ball_effect"></div> 
+        </div> 
+        <div class="paddle_1 paddle"></div> 
+        <div class="paddle_2  paddle"></div> 
+        <h1 class="player_1_score">0</h1> 
+        <h1 class="player_2_score">0</h1> 
+        <h1 class="message"> 
+            Press Enter to PLAY
+        </h1> 
+    </div>
+    <button id="playPongButton">Play Pong</button>
+    {% block pong %}
+    <script type='module' src="{% static 'js/pong.js' %}"></script>
+    {% endblock %}
+</body>
+</html>
