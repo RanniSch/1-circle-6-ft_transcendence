@@ -30,3 +30,18 @@ postgres_re:
 
 fclean:
 		docker system prune -af
+
+help:
+		@echo "Usage: make [target]"
+		@echo ""
+		@echo "Targets:"
+		@echo "  all            - build and run containers"
+		@echo "  log            - show logs"
+		@echo "  down           - stop and remove containers"
+		@echo "  up             - run containers"
+		@echo "  backend_exe    - enter backend container"
+		@echo "  postgres_exe   - enter postgres container"
+		@echo "  backend_re     - rebuild backend container"
+		@echo "  postgres_re    - rebuild postgres container"
+		@echo "  fclean         - remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes."
+		@echo "  help         	- show this help message and exit"
