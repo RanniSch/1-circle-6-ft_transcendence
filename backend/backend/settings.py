@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*',]
 
 # only for development
 if DEBUG == True:
-    REDIRECT_URI = 'https://localhost:8000'
+    REDIRECT_URI = 'http://localhost:8000'
 
 # Application definition
 
@@ -72,9 +72,9 @@ RUNSERVER_PLUS = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost:8000",
-    "https://127.0.0.1:8000",
-    "https://:8000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://:8000",
 ]
 
 REST_FRAMEWORK = {
