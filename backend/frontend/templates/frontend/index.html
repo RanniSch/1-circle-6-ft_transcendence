@@ -5,16 +5,16 @@
     <meta charset="UTF-8"> 
     <meta name="viewport" content= "width=device-width, initial-scale=1.0"> 
     <title>TRASCENDENCE PONG GAME</title> 
-    <!-- <link rel="stylesheet" href="{% static 'css/pong.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/pong.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <div style="display:flex;">
-        <h1 style="position: absolute; font-size: 8rem; z-index: 1000; top:4rem;">PING PONG TRASCENDECE</h1>
+        <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 1000; top:4rem; opacity: 0.5;">PING PONG TRASCENDECE</h1>
     </div>
-    <div style="background-color:grey; padding:2rem; border-radius: 15px;">
+    <div id="reg" style="background-color:grey; padding:2rem; border-radius: 15px;">
         {% block index %}
         <script type='module' src="{% static 'js/index.js' %}"></script>
         {% endblock %}
@@ -49,7 +49,7 @@
     </div>
     <div style="display: flex;">
         <button id="login42Button">Login with 42 credentials</button>
-        <button id="playPongButton">PLAY PONG</button>
+        <button id="playPongButton" style="display: none;">PLAY PONG</button>
     </div>
     {% block login %}
     <script type='module' src="{% static 'js/login.js' %}"></script>
@@ -58,23 +58,27 @@
     <script type='module' src="{% static 'js/login42.js' %}"></script>
     {% endblock %}
     
-    <div id="profileSection" style="display: none;">
-        <h1>User Profile</h1>
-        <img id="profileAvatar" src="" alt="Profile Avatar" style="width:100px; height:100px;"/>
+    <div id="profileSection" style="display: none; padding: 1rem;">
         <form id = "avatarForm" enctype="multipart/form-data">
+            <h1 style="padding: 1rem;">User Profile</h1>
+            <img id="profileAvatar" src="" alt="Profile Avatar" style="background-color: rebeccapurple; width:150px; height:150px; border-radius: 15px; padding: 1rem;"/>    
             <label for="avatar">Change Avatar:</label>
             <input type="file" id="avatar" name="profile_avatar" accept="image/png, image/jpeg">
-            <button id="uploadAvatarButton" type="submit">Submit</button>
+            <button style="font-size: 1rem; padding: 1rem;" id="uploadAvatarButton" type="submit">Submit</button>
         </form>
-        <p><b>Email:</b> <span id="userEmail"></span></p>
-        <p><b>Username:</b> <span id="userName"></span></p>
-        <p><b>Games Played:</b> <span id="gamesPlayed"></span></p>
-        <p><b>Games Won:</b> <span id="gamesWon"></span></p>
-        <p><b>Games Lost:</b> <span id="gamesLost"></span></p>
-        <p><b>Games Tied:</b> <span id="gamesTied"></span></p>
-        <button id="viewUsersButton">View all Users</button>
-            <div id="usersList" style="display:none;"></div>
-        <button id="logoutButton">Logout</button>
+        <div >
+            <div style="background-color: grey; padding: 1rem; border-radius: 15px;">
+                <p style="color:white; padding-top: 1rem;">Email: <span id="userEmail"></span></p>
+                <p style="color:white; padding-top: 1rem;"><b>Username:</b> <span id="userName"></span></p>
+                <p style="color:white; padding-top: 1rem;"><b>Games Played:</b> <span id="gamesPlayed"></span></p>
+                <p style="color:white; padding-top: 1rem;"><b>Games Won:</b> <span id="gamesWon"></span></p>
+                <p style="color:white; padding-top: 1rem;"><b>Games Lost:</b> <span id="gamesLost"></span></p>
+                <p style="color:white; padding-top: 1rem;"><b>Games Tied:</b> <span id="gamesTied"></span></p>
+            </div>
+            <button id="viewUsersButton">View all Users</button>
+                <div id="usersList" style="display:none;"></div>
+            <button id="logoutButton">Logout</button>
+        </div>
     </div>
     {% block profile %}
     <script type='module' src="{% static 'js/profile.js' %}"></script>

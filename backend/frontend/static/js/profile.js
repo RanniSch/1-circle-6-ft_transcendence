@@ -53,6 +53,7 @@ function displayUserProfile(data) {
     document.getElementById('profileSection').style.display = 'block';
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('registrationForm').style.display = 'none';
+    document.getElementById('reg').style.opacity = 0;
     document.getElementById('login42Button').style.display = 'none';
 }
 
