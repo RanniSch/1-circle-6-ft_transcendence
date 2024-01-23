@@ -29,11 +29,11 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*',]
 
 # only for development
 if DEBUG == True:
-    REDIRECT_URI = 'http://localhost:8000'
+    REDIRECT_URI = 'https://localhost'
 
 # Application definition
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework', # Django REST Framework
     'rest_framework_simplejwt', # JWT
     'corsheaders', # CORS - Cross-Origin Resource Sharing
+    'django_extensions', # Django Extensions
     'api_accounts.apps.ApiAccountsConfig', # Accounts API
     'api_buddy', # Buddy API
     'frontend', # Frontend
@@ -65,9 +66,22 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+RUNSERVER_PLUS = {
+    'CERT_FILE': '../ssl/certs/tstrassb.crt',
+    'KEY_FILE': '../ssl/private/tstrassb.key',
+}
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://:8000",
+    "https://localhost",
+    "https://10.0.0.0",
+]
+
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'contentType',
 ]
 
 REST_FRAMEWORK = {

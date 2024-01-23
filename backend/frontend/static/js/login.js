@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         password: password
     };
 
-    fetch('http://localhost:8000/api/login/', {
+    fetch('https://localhost/api/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -48,13 +48,14 @@ document.getElementById('togglePasswordLogin').addEventListener('change', functi
 
 function loadProfile() {
     const access = localStorage.getItem('access');
-    fetch('http://localhost:8000/api/profile/', {
+    fetch('https://localhost//api/profile/', {
         headers: {
             'Authorization': 'Bearer ' + access 
         }
     })
     .then(response => {
         if (!response.ok) {
+            document.getElementById('loginForm').reset();
             throw new Error('Not authorized');
         }
         return response.json();

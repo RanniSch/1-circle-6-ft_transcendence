@@ -18,7 +18,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     };
 
     // send data to backend
-    fetch('http://localhost:8000/api/register/', {
+    fetch('https://localhost/api/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -40,6 +40,6 @@ function validateEmail(email) {
 }
 
 function validateUsername(username) {
-    var re = /^[a-zA-Z0-9_-]*$/;
+    var re = /^[a-zA-Z0-9_-]+$/;
     return re.test(String(username));
 }

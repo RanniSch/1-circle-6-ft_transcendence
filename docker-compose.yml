@@ -11,8 +11,10 @@ services:
     image: ft_transcendence_be
     volumes:
       - ${PWD}:/workdir/
+    networks:
+      - network
     ports:
-      - 8000:8000
+      - "8000:8000"
     entrypoint: /workdir/docker/backend/entrypoint_be.sh
     restart: unless-stopped
     depends_on:
@@ -25,8 +27,28 @@ services:
       POSTGRES_DB: ft_transcendence_users
       POSTGRES_USER: ft_transcendence_user
       POSTGRES_PASSWORD: ft_transcendence_password
+    networks:
+      - network
     ports:
       - "5432:5432"
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/nginx.Dockerfile
+    entrypoint: /workdir/docker/nginx/nginx.sh
+    volumes:
+      - ${PWD}:/workdir/
+    image: ft_transcendence_nginx
+    networks:
+      - network
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: unless-stopped
 
   # for development
   pgadmin:
@@ -35,8 +57,14 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: tstrassb@student.42wolfsburg.de
       PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - network
     ports:
       - 5050:80
     depends_on:
       - postgres
     restart: unless-stopped
+
+networks:
+  network:
+    driver: bridge

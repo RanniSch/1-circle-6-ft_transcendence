@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch('http://localhost:8000/api/profile', {
+    fetch('https://localhost/api/profile', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -64,7 +64,7 @@ document.getElementById('viewUsersButton').addEventListener('click', function() 
 function fetchUsersList() {
     const accessToken = localStorage.getItem('access');
 
-    fetch('http://localhost:8000/api/users', {
+    fetch('https://localhost/api/users', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -98,21 +98,22 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     event.preventDefault();
 
     const accessToken = localStorage.getItem('access');
-    const fileInput = document.getElementById('avatar');
+    const fileInput = document.getElementById('avatarInput');
 
     if (!fileInput.files[0]) {
-        console.log('No file selected');
+        console.log('No file input found!');
         return;
     }
 
     let formData = new FormData();
     formData.append('profile_avatar', fileInput.files[0]);
 
-    fetch('http://localhost:8000/api/update-avatar/', {
+    fetch('https://localhost/api/update-avatar/', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
         },
+        body: formData
     })
     .then(response => {
         if (!response.ok) {
@@ -123,8 +124,10 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     .then(data => {
         console.log('Success: Avatar was updated!');
         const profileAvatar = document.getElementById('profileAvatar');
-        profileAvatar.src = URL.createObjectURL(fileInput.files[0]);
+        profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';
+        document.getElementById('avatarForm').reset();
+        window.location.reload();
     })
     .catch(error => {
         console.error('Error:', error);

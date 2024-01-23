@@ -1,6 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
-from django.core.exceptions import ValidationError
 
 from .models import Player, PlayerManager
 
@@ -23,7 +23,7 @@ class LoginSerializer(serializers.Serializer):
     def validate_user(self, validated_data):
         user = authenticate(username=validated_data['email'], password=validated_data['password'])
         if not user:
-            raise ValidationError('Invalid credentials - User not found!')
+            raise AuthenticationFailed('Invalid credentials - User not found!')
         return user
     
 class UserSerializer(serializers.ModelSerializer):
