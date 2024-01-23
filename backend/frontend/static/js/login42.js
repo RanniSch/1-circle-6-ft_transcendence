@@ -1,11 +1,11 @@
 document.getElementById('login42Button').addEventListener('click', function() {
-    const oauthUrl = `http://localhost:8000/api/oauth/authorize`;
+    const oauthUrl = `https://localhost/api/oauth/authorize`;
     window.location.href = oauthUrl;
 });
 
 function loadProfile() {
     const access = localStorage.getItem('access');
-    fetch('http://localhost:8000/api/profile/', {
+    fetch('https://localhost/api/profile/', {
         headers: {
             'Authorization': 'Bearer ' + access 
         }

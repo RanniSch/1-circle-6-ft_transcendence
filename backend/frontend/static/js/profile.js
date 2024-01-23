@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch('http://localhost:8000/api/profile', {
+    fetch('https://localhost/api/profile', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -63,7 +63,7 @@ document.getElementById('viewUsersButton').addEventListener('click', function() 
 function fetchUsersList() {
     const accessToken = localStorage.getItem('access');
 
-    fetch('http://localhost:8000/api/users', {
+    fetch('https://localhost/api/users', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -107,7 +107,7 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     let formData = new FormData();
     formData.append('profile_avatar', fileInput.files[0]);
 
-    fetch('http://localhost:8000/api/update-avatar/', {
+    fetch('https://localhost/api/update-avatar/', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
