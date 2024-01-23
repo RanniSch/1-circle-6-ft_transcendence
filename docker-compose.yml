@@ -11,8 +11,6 @@ services:
     image: ft_transcendence_be
     volumes:
       - ${PWD}:/workdir/
-    ports:
-      - 8000:8000
     entrypoint: /workdir/docker/backend/entrypoint_be.sh
     restart: unless-stopped
     depends_on:
@@ -27,6 +25,18 @@ services:
       POSTGRES_PASSWORD: ft_transcendence_password
     ports:
       - "5432:5432"
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/nginx.Dockerfile
+    ports:
+      - "80:80"
+      #- "443:443"
+    depends_on:
+      - backend
+    restart: unless-stopped
 
   # for development
   pgadmin:
