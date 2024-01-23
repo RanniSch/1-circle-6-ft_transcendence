@@ -12,7 +12,7 @@
 </head>
 <body>
     <div style="display:flex;">
-        <h1 style="position: absolute; font-size: 8rem; z-index: 1000; top:4rem;">PING PONG TRASCENDECE</h1>
+        <!-- <h1 style="position: absolute; font-size: 8rem; z-index: 1000; top:4rem;">PING PONG TRASCENDECE</h1> -->
     </div>
     <div style="background-color:grey; padding:2rem; border-radius: 15px;">
         {% block index %}
@@ -24,7 +24,7 @@
             <input type="email" id="email_reg" required><br><br>
 
             <label for="username">Username:</label>
-            <input type="text" id="username_reg" pattern="^[a-zA-Z0-9_-]*$" required><br><br>
+            <input type="text" id="username_reg" pattern='^[a-zA-Z0-9_-]+$' required><br><br>
 
             <label for="password">Password:</label>
             <input type="password" id="password_reg" required><br><br>
@@ -61,10 +61,11 @@
     <div id="profileSection" style="display: none;">
         <h1>User Profile</h1>
         <img id="profileAvatar" src="" alt="Profile Avatar" style="width:100px; height:100px;"/>
-        <form id = "avatarForm" enctype="multipart/form-data">
+        <form id="avatarForm" enctype="multipart/form-data" method="POST" action="/backend/avatars/">
+            {% csrf_token %}
             <label for="avatar">Change Avatar:</label>
-            <input type="file" id="avatar" name="profile_avatar" accept="image/png, image/jpeg">
-            <button id="uploadAvatarButton" type="submit">Submit</button>
+            <input type="file" id="avatarInput" name="profile_avatar" accept="image/png, image/jpeg">
+            <button type="submit">Upload</button>
         </form>
         <p><b>Email:</b> <span id="userEmail"></span></p>
         <p><b>Username:</b> <span id="userName"></span></p>

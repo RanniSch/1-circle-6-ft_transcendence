@@ -40,6 +40,6 @@ function validateEmail(email) {
 }
 
 function validateUsername(username) {
-    var re = /^[a-zA-Z0-9_-]*$/;
+    var re = /^[a-zA-Z0-9_-]+$/;
     return re.test(String(username));
 }

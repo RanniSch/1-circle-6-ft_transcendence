@@ -55,6 +55,7 @@ function loadProfile() {
     })
     .then(response => {
         if (!response.ok) {
+            document.getElementById('loginForm').reset();
             throw new Error('Not authorized');
         }
         return response.json();

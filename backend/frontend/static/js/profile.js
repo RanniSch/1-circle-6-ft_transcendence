@@ -97,10 +97,10 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     event.preventDefault();
 
     const accessToken = localStorage.getItem('access');
-    const fileInput = document.getElementById('avatar');
+    const fileInput = document.getElementById('avatarInput');
 
     if (!fileInput.files[0]) {
-        console.log('No file selected');
+        console.log('No file input found!');
         return;
     }
 
@@ -112,6 +112,7 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
         headers: {
             'Authorization': 'Bearer ' + accessToken,
         },
+        body: formData
     })
     .then(response => {
         if (!response.ok) {
@@ -122,8 +123,10 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     .then(data => {
         console.log('Success: Avatar was updated!');
         const profileAvatar = document.getElementById('profileAvatar');
-        profileAvatar.src = URL.createObjectURL(fileInput.files[0]);
+        profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';
+        document.getElementById('avatarForm').reset();
+        window.location.reload();
     })
     .catch(error => {
         console.error('Error:', error);

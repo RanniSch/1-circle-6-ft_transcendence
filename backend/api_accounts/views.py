@@ -162,8 +162,6 @@ class OAuthCallback(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
 
-            # frontend_url = f'http://localhost:8000/api/login?access={access_token}'
-            # return redirect(frontend_url)
             html = f"""
             <!DOCTYPE html>
             <html>
@@ -204,8 +202,9 @@ class OAuthAuthorize(APIView):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def update_avatar(request):
-    serializer = AvatarUpdateSerializer(request.user, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save()
-        return Response({'Success': 'Avatar updated!'}, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    user = request.user
+    file = request.FILES.get('profile_avatar')
+    if not file:
+        return Response({'error': 'No file provided!'}, status=status.HTTP_400_BAD_REQUEST)
+    user.profile_avatar.save(f"{user.username}_profile_avatar.jpg", file, save=True)
+    return Response({'success': 'Avatar updated successfully!'}, status=status.HTTP_200_OK)
