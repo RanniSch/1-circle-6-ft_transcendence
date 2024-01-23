@@ -14,4 +14,4 @@ migrate() {
 migrate
 
 echo "Django Server is running on port 8000"
-python /workdir/backend/manage.py runserver 0.0.0.0:8000
+python /workdir/backend/manage.py runserver_plus --cert ../ssl/certs 0.0.0.0:8000

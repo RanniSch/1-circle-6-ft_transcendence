@@ -14,7 +14,7 @@ function logoutUser() {
         console.log('No access token found');
         return;
     }
-    fetch('http://localhost:8000/api/logout/', {
+    fetch('https://localhost:8000/api/logout/', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
