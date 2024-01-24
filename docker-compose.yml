@@ -37,10 +37,10 @@ services:
     build:
       context: .
       dockerfile: docker/nginx/nginx.Dockerfile
+    image: ft_transcendence_nginx
     entrypoint: /workdir/docker/nginx/nginx.sh
     volumes:
       - ${PWD}:/workdir/
-    image: ft_transcendence_nginx
     networks:
       - network
     ports:

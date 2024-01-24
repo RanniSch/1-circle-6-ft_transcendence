@@ -18,6 +18,9 @@ backend_exe:
 postgres_exe:
 		docker exec -it postgres_db bash
 
+nginx_exe:
+		docker exec -it nginx bash
+
 backend_re:
 		docker compose -f ./docker-compose.yml stop backend
 		docker rmi -f ft_transcendence_be
@@ -27,6 +30,11 @@ postgres_re:
 		docker compose -f ./docker-compose.yml stop postgres
 		docker rmi -f postgres:16
 		docker compose -f ./docker-compose.yml up --build -d postgres
+
+nginx_re:
+		docker compose -f ./docker-compose.yml stop nginx
+		docker rmi -f ft_transcendence_nginx
+		docker compose -f ./docker-compose.yml up --build -d nginx
 
 fclean:
 		docker system prune -af

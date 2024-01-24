@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Avatars
+*_profile_*.jpg
+*_profile_*.png
+
 # MACOSX
 .DS_Store
 
