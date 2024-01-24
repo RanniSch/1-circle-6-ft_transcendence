@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         password: password
     };
 
-    fetch('https://localhost/api/login/', {
+    fetch('https://10.12.14.3/api/login/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ document.getElementById('togglePasswordLogin').addEventListener('change', functi
 
 function loadProfile() {
     const access = localStorage.getItem('access');
-    fetch('https://localhost//api/profile/', {
+    fetch('https://10.12.14.3/api/profile/', {
         headers: {
             'Authorization': 'Bearer ' + access 
         }

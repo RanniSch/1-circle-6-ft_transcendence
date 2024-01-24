@@ -29,11 +29,10 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '10.12.14.3', '*',]
 
 # only for development
-if DEBUG == True:
-    REDIRECT_URI = 'https://localhost'
+REDIRECT_URI = 'https://10.12.14.3'
 
 # Application definition
 
@@ -76,7 +75,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://:8000",
     "https://localhost",
-    "https://10.0.0.0",
+    "https://10.12.14.3",
 ]
 
 CORS_ALLOW_HEADERS = [

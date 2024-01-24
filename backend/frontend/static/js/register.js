@@ -18,7 +18,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     };
 
     // send data to backend
-    fetch('https://localhost/api/register/', {
+    fetch('https://10.12.14.3/api/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

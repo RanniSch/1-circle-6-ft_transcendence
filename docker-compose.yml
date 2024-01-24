@@ -14,7 +14,7 @@ services:
     networks:
       - network
     ports:
-      - "8000:8000"
+      - "8000"
     entrypoint: /workdir/docker/backend/entrypoint_be.sh
     restart: unless-stopped
     depends_on:

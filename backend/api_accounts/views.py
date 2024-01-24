@@ -169,7 +169,7 @@ class OAuthCallback(APIView):
             <script>
             function setTokenAndRedirect(token) {{
                 localStorage.setItem('access', token);
-                window.location.href = "https://localhost";
+                window.location.href = "https://10.12.14.3";
             }}
             // Check if window.opener is not null
             if (window.opener) {{

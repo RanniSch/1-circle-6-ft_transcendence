@@ -1,6 +1,6 @@
 FROM debian:bookworm
 
-RUN apt update && apt install -y nginx openssl && \
+RUN apt update && apt install -y nginx openssl nano && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workdir
