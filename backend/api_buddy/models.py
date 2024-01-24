@@ -29,5 +29,5 @@ class Buddy(models.Model):
         return Buddy.objects.filter(user=user).count()
     
     def __str__(self):
-        return str(self)
+        return f"{self.user.id} is buddies with {self.is_buddy_with.id}"
     

@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from rest_framework import permissions, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.decorators import api_view, permission_classes
 
 from api_accounts.models import Player
 from .models import Buddy
@@ -10,21 +11,28 @@ from .serializers import BuddySerializer
 
 # Create your views here.
 
-@login_required
+@api_view(['POST', 'DELETE'])
+@permission_classes([permissions.IsAuthenticated])
 def add_buddy(request, pk):
-    authentication_classes = [JWTAuthentication]
-    user = get_object_or_404(Player, pk=pk)
-    already_buddies = Buddy.objects.filter(user=user, is_buddy_with=request.user).first()
-    if not already_buddies:
-        new_buddy = Buddy(user=user, is_buddy_with=request.user)
-        new_buddy.save()
-        buddy_count = Buddy.objects.filter(user=request.user).count()
-        return JsonResponse({'buddy message': 'Buddy added!', 'buddy count': buddy_count})
+    if request.method == 'POST':
+        user = get_object_or_404(Player, pk=pk)
+        if not Buddy.objects.filter(user=user, is_buddy_with=request.user).exists():
+            Buddy.objects.create(user=user, is_buddy_with=request.user)
+            return JsonResponse({'message': 'Buddy added successfully!'}, status=201)
+        else:
+            return JsonResponse({'message': 'You are already buddies!'}, status=400)
+    
+    elif request.method == 'DELETE':
+        user = get_object_or_404(Player, pk=pk)
+        buddy_relation = Buddy.objects.filter(user=user, is_buddy_with=request.user).first()
+        if buddy_relation:
+            buddy_relation.delete()
+            return JsonResponse({'message': 'Buddy removed successfully!'}, status=200)
+        else:
+            return JsonResponse({'message': 'You are not buddies!'}, status=400)
+    
     else:
-        already_buddies.delete()
-        buddy_count = Buddy.objects.filter(user=user).count()
-        return JsonResponse({'buddy message': 'Buddy removed!', 'buddy count': buddy_count})
-    return redirect('/')
+        return HttpResponseNotAllowed(['POST', 'DELETE'])
 
 class Buddied(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]

@@ -84,12 +84,58 @@ function displayUsersList(users) {
     const usersListDiv = document.getElementById('usersList');
     usersListDiv.innerHTML = '';
 
+    console.log(users);
+
     users.forEach(user => {
         const userItem = document.createElement('li');
         userItem.textContent = `Username: ${user.username}`;
+
+        const buddyButton = document.createElement('button');
+        if (user.is_buddy) {
+            buddyButton.textContent = 'Unbuddy';
+            buddyButton.onclick = function() {
+                handleBuddyClick(user.id, true);
+            }
+        } else {
+            buddyButton.textContent = 'Buddy';
+            buddyButton.onclick = function() {
+                handleBuddyClick(user.id, false);
+            }
+        }
+
+        userItem.appendChild(buddyButton);
         usersListDiv.appendChild(userItem);
     });
     usersListDiv.style.display = 'block';
+}
+
+function handleBuddyClick(userId, isBuddy) {
+    const accessToken = localStorage.getItem('access');
+    const method = isBuddy ? 'DELETE' : 'POST';
+    const url = `https://10.12.14.3/api/add-buddy/${userId}/`;
+
+    console.log(method, url);
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        }
+    })
+    .then(response => {
+        console.log(response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        console.log(data.message);
+        fetchUsersList();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 function toggleDisplayUsersList() {
