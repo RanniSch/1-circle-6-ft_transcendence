@@ -12,9 +12,9 @@
 </head>
 <body>
     <div style="display:flex;">
-        <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 1000; top:4rem; opacity: 0.5;">PING PONG TRASCENDECE</h1>
+        <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDECE</h1>
     </div>
-    <div id="reg" style="background-color:grey; padding:2rem; border-radius: 15px;">
+    <div id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
         {% block index %}
         <script type='module' src="{% static 'js/index.js' %}"></script>
         {% endblock %}
