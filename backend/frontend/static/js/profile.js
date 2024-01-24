@@ -91,7 +91,7 @@ function displayUsersList(users) {
         userItem.textContent = `Username: ${user.username}`;
 
         const buddyButton = document.createElement('button');
-        if (user.is_buddy) {
+        if (user.isbuddy) {
             buddyButton.textContent = 'Unbuddy';
             buddyButton.onclick = function() {
                 handleBuddyClick(user.id, true);
