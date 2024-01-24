@@ -28,6 +28,8 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     .then(response => response.json())
     .then(data => {
         console.log('Success!');
+        alert('Registration successful!');
+        document.getElementById('registrationForm').reset();
     })
     .catch((error) => {
         console.error('Error:', error);

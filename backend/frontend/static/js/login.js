@@ -23,7 +23,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         return response.json();
     })
     .then(data => {
-        console.log('Success:', data);
+        console.log('Success!');
+        document.getElementById('loginForm').reset();
         localStorage.setItem('access', data.access);
 
         document.getElementById('loginForm').style.display = 'none';
@@ -61,7 +62,6 @@ function loadProfile() {
         return response.json();
     })
     .then(profileData => {
-        console.log(profileData);
         displayUserProfile(profileData);
     })
     .catch((error) => {

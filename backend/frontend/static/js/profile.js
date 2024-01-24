@@ -58,7 +58,7 @@ function displayUserProfile(data) {
 }
 
 document.getElementById('viewUsersButton').addEventListener('click', function() {
-    fetchUsersList();
+    toggleDisplayUsersList();
 });
 
 function fetchUsersList() {
@@ -90,6 +90,16 @@ function displayUsersList(users) {
         usersListDiv.appendChild(userItem);
     });
     usersListDiv.style.display = 'block';
+}
+
+function toggleDisplayUsersList() {
+    const usersListDiv = document.getElementById('usersList');
+    if (usersListDiv.style.display === 'none' || usersListDiv.style.display === '') {
+        fetchUsersList();
+        usersListDiv.style.display = 'block';
+    } else {
+        usersListDiv.style.display = 'none';
+    }
 }
 
 window.displayUserProfile = displayUserProfile;

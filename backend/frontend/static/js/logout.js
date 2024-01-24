@@ -31,6 +31,7 @@ function logoutUser() {
         console.log('Logout successful!', data);
         alert('Logout successful!');
         localStorage.removeItem('access');
+        window.location.reload();
     })
     .catch(error => {
         console.log('Error during Logout:', error);
