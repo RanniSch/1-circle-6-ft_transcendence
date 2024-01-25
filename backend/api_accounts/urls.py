@@ -13,4 +13,6 @@ urlpatterns = [
     path('authentication/', views.authenticated, name='authentication'),
     path('oauth/authorize/', views.OAuthAuthorize.as_view(), name='oauth_authorize'),
     path('oauth/callback/', views.OAuthCallback.as_view(), name='oauth_callback'),
+    path('notifications/', views.UnreadNotifications.as_view(), name='unread_notifications'),
+    path('mark-notifications-read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notifications_read'),
 ]

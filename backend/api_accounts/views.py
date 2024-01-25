@@ -16,8 +16,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from .models import Player, ExpiredTokens
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer
+from .models import Player, ExpiredTokens, Notification
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -99,7 +99,7 @@ class UserView(viewsets.ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = Player.objects.exclude(id=request.user.id)
-        serializer = UserSerializer(queryset, many=True)
+        serializer = UserSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
 def authenticated(request):
@@ -208,3 +208,22 @@ def update_avatar(request):
         return Response({'error': 'No file provided!'}, status=status.HTTP_400_BAD_REQUEST)
     user.profile_avatar.save(f"{user.username}_profile_avatar.jpg", file, save=True)
     return Response({'success': 'Avatar updated successfully!'}, status=status.HTTP_200_OK)
+
+class UnreadNotifications(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        notifications = Notification.objects.filter(receiver=request.user, is_read=False)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def mark_notification_as_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id, receiver=request.user)
+        notification.is_read = True
+        notification.save()
+        return Response({'success': 'Notification marked as read!'}, status=status.HTTP_200_OK)
+    except Notification.DoesNotExist:
+        return Response({'error': 'Notification not found!'}, status=status.HTTP_404_NOT_FOUND)

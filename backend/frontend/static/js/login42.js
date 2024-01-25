@@ -24,6 +24,8 @@ function loadProfile() {
     }); 
 }
 
+window.loadProfile = loadProfile;
+
 function checkAuthentication() {
     const accessToken = localStorage.getItem('access');
     if (accessToken) {

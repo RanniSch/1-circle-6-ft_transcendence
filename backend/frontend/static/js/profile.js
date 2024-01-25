@@ -26,9 +26,76 @@ document.addEventListener('DOMContentLoaded', function() {
         displayUserProfile(data);
     })
     .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
+        console.error('Error Profile:', error);
     });
+    fetchNotifications();
 });
+
+function fetchNotifications() {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log('No access token found. You are not logged in!');
+        return;
+    }
+
+    fetch('https://10.12.14.3/api/notifications', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Notifications could not be fetched!');
+        }
+        return response.json();
+    })
+    .then(notifications => {
+        displayNotifications(notifications);
+    })
+    .catch(error => {
+        console.error('Error Notification:', error);
+    });
+}
+
+function displayNotifications(notifications) {
+    notifications.forEach(notification => {
+        alert(notification.message);
+        markNotificationsAsRead(notification.id);
+    });
+}
+
+function markNotificationsAsRead(notificationId) {
+    const accessToken = localStorage.getItem('access');
+    const url = `https://10.12.14.3/api/mark-notifications-read/${notificationId}/`;
+    if (!accessToken) {
+        console.log('No access token found. You are not logged in!');
+        return;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            //'X-CSRFToken': csrftoken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Notifications could not be marked as read!');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Notification marked as read!');
+    })
+    .catch(error => {
+        console.error('Error MarkNotification:', error);
+    
+    });
+}
 
 function displayUserProfile(data) {
     if (data.profile_avatar) {
@@ -76,15 +143,13 @@ function fetchUsersList() {
         displayUsersList(users);
     })
     .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
+        console.error('Error FetchUsers:', error);
     });
 }
 
 function displayUsersList(users) {
     const usersListDiv = document.getElementById('usersList');
     usersListDiv.innerHTML = '';
-
-    console.log(users);
 
     users.forEach(user => {
         const userItem = document.createElement('li');
@@ -109,12 +174,10 @@ function displayUsersList(users) {
     usersListDiv.style.display = 'block';
 }
 
-function handleBuddyClick(userId, isBuddy) {
+function handleBuddyClick(userId, isbuddy) {
     const accessToken = localStorage.getItem('access');
-    const method = isBuddy ? 'DELETE' : 'POST';
+    const method = isbuddy ? 'DELETE' : 'POST';
     const url = `https://10.12.14.3/api/add-buddy/${userId}/`;
-
-    console.log(method, url);
 
     fetch(url, {
         method: method,
@@ -129,12 +192,10 @@ function handleBuddyClick(userId, isBuddy) {
         return response.json();
     })
     .then(data => {
-        console.log(data);
-        console.log(data.message);
         fetchUsersList();
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error HandleBuddy:', error);
     });
 }
 
@@ -186,6 +247,6 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
         window.location.reload();
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error Avatar:', error);
     });
 });

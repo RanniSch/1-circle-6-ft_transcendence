@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
+from django.db.models import Q
 
-from .models import Player, PlayerManager
+from .models import Notification
+from api_buddy.models import Buddy
 
 ModelUser = get_user_model()
 
@@ -27,9 +29,20 @@ class LoginSerializer(serializers.Serializer):
         return user
     
 class UserSerializer(serializers.ModelSerializer):
+    isbuddy = serializers.SerializerMethodField()
+
     class Meta:
         model = ModelUser
-        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar')
+        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy')
+
+    def get_isbuddy(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            return Buddy.objects.filter(
+                Q(user=request.user, is_buddy_with=obj) |
+                Q(user=obj, is_buddy_with=request.user)
+            ).exists()
+        return False
 
 class AvatarUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +53,8 @@ class AvatarUpdateSerializer(serializers.ModelSerializer):
         instance.profile_avatar = validated_data['profile_avatar']
         instance.save()
         return instance
+    
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'sender', 'receiver', 'message', 'timestamp', 'is_read']

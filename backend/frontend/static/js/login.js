@@ -30,6 +30,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registrationForm').style.display = 'none';
         loadProfile();
+        window.location.reload();
 
     })
     .catch((error) => {
