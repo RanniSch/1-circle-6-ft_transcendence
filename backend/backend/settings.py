@@ -70,15 +70,16 @@ RUNSERVER_PLUS = {
     'KEY_FILE': '../ssl/private/tstrassb.key',
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8000",
-#     "http://127.0.0.1:8000",
-#     "http://:8000",
-#     "https://localhost",
-#     "https://10.12.14.3",
-# ]
+if DEBUG == True:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+     CORS_ALLOWED_ORIGINS = [
+         "http://localhost:8000",
+         "http://127.0.0.1:8000",
+         "http://:8000",
+         "https://localhost",
+         "https://10.12.14.3",
+     ]
 
 CORS_ALLOW_HEADERS = [
     'Authorization',

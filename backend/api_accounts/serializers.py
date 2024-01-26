@@ -58,3 +58,11 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'sender', 'receiver', 'message', 'timestamp', 'is_read']
+
+class DeleteAccountSerializer(serializers.Serializer):
+    confirm = serializers.CharField(max_length=10)
+
+    def validate_confirm(self, value):
+        if value != 'DELETE':
+            raise serializers.ValidationError('Confirmation word is incorrect!')
+        return value

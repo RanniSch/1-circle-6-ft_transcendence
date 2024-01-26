@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         password: password
     };
 
-    fetch('https://10.12.14.3/api/login/', {
+    fetch(`https://${host}/api/login/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -30,8 +30,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registrationForm').style.display = 'none';
         loadProfile();
-        window.location.reload();
-
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -50,7 +48,7 @@ document.getElementById('togglePasswordLogin').addEventListener('change', functi
 
 function loadProfile() {
     const access = localStorage.getItem('access');
-    fetch('https://10.12.14.3/api/profile/', {
+    fetch(`https://${host}/api/profile/`, {
         headers: {
             'Authorization': 'Bearer ' + access 
         }

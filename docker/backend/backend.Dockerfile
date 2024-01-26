@@ -4,6 +4,7 @@ WORKDIR /workdir
 
 RUN apt update && apt install -y \
     nano \
+    iputils-ping \
     python3 \
     python3-pip \
     python3.11-venv && \

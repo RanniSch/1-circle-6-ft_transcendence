@@ -6,7 +6,6 @@ from django.conf import settings
 
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
-from pkg_resources import require
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.views import APIView
@@ -17,7 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
 from .models import Player, ExpiredTokens, Notification
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -227,3 +226,18 @@ def mark_notification_as_read(request, notification_id):
         return Response({'success': 'Notification marked as read!'}, status=status.HTTP_200_OK)
     except Notification.DoesNotExist:
         return Response({'error': 'Notification not found!'}, status=status.HTTP_404_NOT_FOUND)
+
+User = get_user_model()
+
+class DeleteAccountView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, format=None):
+        serializer = DeleteAccountSerializer(data=request.data)
+        if serializer.is_valid():
+            if serializer.validated_data['confirm'] == 'DELETE':
+                request.user.delete()
+                return Response({'success': 'Account deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'error': 'Invalid input!'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

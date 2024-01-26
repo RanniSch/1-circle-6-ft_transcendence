@@ -10,6 +10,8 @@ openssl x509 -outform pem -in /etc/ssl/localhost.pem -out /etc/ssl/localhost.crt
 
 cd /etc/nginx/sites-enabled
 
+rm -rf default
+
 if [ ! -e ./backend ]; then
     ln -s ../sites-available/backend .
 fi

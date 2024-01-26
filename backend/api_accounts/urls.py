@@ -15,4 +15,5 @@ urlpatterns = [
     path('oauth/callback/', views.OAuthCallback.as_view(), name='oauth_callback'),
     path('notifications/', views.UnreadNotifications.as_view(), name='unread_notifications'),
     path('mark-notifications-read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notifications_read'),
+    path('delete-account/', views.DeleteAccountView.as_view(), name='delete_account'),
 ]

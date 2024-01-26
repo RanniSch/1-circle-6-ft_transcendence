@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch('https://10.12.14.3/api/profile', {
+    fetch(`https://${host}/api/profile`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => {
         console.error('Error Profile:', error);
     });
-    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
 });
 
 function fetchNotifications() {
@@ -38,7 +38,7 @@ function fetchNotifications() {
         return;
     }
 
-    fetch('https://10.12.14.3/api/notifications', {
+    fetch(`https://${host}/api/notifications`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -68,7 +68,7 @@ function displayNotifications(notifications) {
 
 function markNotificationsAsRead(notificationId) {
     const accessToken = localStorage.getItem('access');
-    const url = `https://10.12.14.3/api/mark-notifications-read/${notificationId}/`;
+    const url = `https://${host}/api/mark-notifications-read/${notificationId}/`;
     if (!accessToken) {
         console.log('No access token found. You are not logged in!');
         return;
@@ -131,7 +131,7 @@ document.getElementById('viewUsersButton').addEventListener('click', function() 
 function fetchUsersList() {
     const accessToken = localStorage.getItem('access');
 
-    fetch('https://10.12.14.3/api/users', {
+    fetch(`https://${host}/api/users`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -177,7 +177,7 @@ function displayUsersList(users) {
 function handleBuddyClick(userId, isbuddy) {
     const accessToken = localStorage.getItem('access');
     const method = isbuddy ? 'DELETE' : 'POST';
-    const url = `https://10.12.14.3/api/add-buddy/${userId}/`;
+    const url = `https://${host}/api/add-buddy/${userId}/`;
 
     fetch(url, {
         method: method,
@@ -225,7 +225,7 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     let formData = new FormData();
     formData.append('profile_avatar', fileInput.files[0]);
 
-    fetch('https://10.12.14.3/api/update-avatar/', {
+    fetch(`https://${host}/api/update-avatar/`, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -250,3 +250,50 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
         console.error('Error Avatar:', error);
     });
 });
+
+document.getElementById('deleteAccountButton').addEventListener('click', function() {
+    deleteAccount();
+});
+
+function deleteAccount() {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log('No access token found. You are not logged in!');
+        return;
+    }
+    
+    //Confirm delete
+    if (!confirm('Are you sure you want to delete your account?\nThis cannot be reversed and all your data will be lost!')) {
+        return;
+    }
+
+    //Prompt for confirmation
+    const confirmation = prompt('Please type DELETE to confirm account deletion:');
+    if (confirmation != 'DELETE') {
+        alert('Account deletion cancelled!');
+        return;
+    }
+
+    fetch(`https://${host}/api/delete-account/`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ confirm: 'DELETE'})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Account could not be deleted!');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Account deleted!');
+        localStorage.removeItem('access');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error DeleteAccount:', error);
+    });
+}
