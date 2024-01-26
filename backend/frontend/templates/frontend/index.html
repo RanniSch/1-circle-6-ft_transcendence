@@ -86,6 +86,14 @@
 
             <button type="submit">Login</button>
         </form>
+        <div id="twoFactorModal" style="display: none;">
+            <div id="twoFactorModalContent">
+                <span class="close">&times;</span>
+                <p>Please enter the 6 digit code from your authenticator app:</p>
+                <input type="text" id="twoFactorCode" required><br>
+                <button id="submit2FACode">Submit</button>
+            </div>
+        </div>
     </div>
     <div style="display: flex;">
         <button id="login42Button">Login with 42 credentials</button>

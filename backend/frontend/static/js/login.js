@@ -1,12 +1,15 @@
+let currentEmail = '';
+let currentPassword = '';
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    var email = document.getElementById('email_login').value;
-    var password = document.getElementById('password_login').value;
+    currentEmail = document.getElementById('email_login').value;
+    currentPassword = document.getElementById('password_login').value;
 
     var data = {
-        email: email,
-        password: password
+        email: currentEmail,
+        password: currentPassword
     };
 
     fetch(`https://${host}/api/login/`, {
@@ -24,8 +27,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     })
     .then(data => {
         console.log('Initial Login Successful...');
-        if (data.requires_2fa) {
-            promptForTwoFactorCode(email, password);
+        if (data.require_2fa) {
+            showTwoFactorModal();
         } else {
             completeLoginProcess(data);
         }
@@ -35,32 +38,83 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     });
 });
 
-function promptForTwoFactorCode(email, password) {
-    const twoFactorCode = prompt('Enter your two-factor authentication code:');
-    if (twoFactorCode) {
-        var data = {
-            email: email,
-            password: password,
-            '2fa_token': twoFactorCode
-        };
-        fetch('https://${host}/api/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Invalid two-factor authentication code!');
-            }
-            return response.json();
-        })
-        .then(completeLoginProcess)
-        .catch((error) => {
-            console.log('Error Prompt2FA:', error);
-        });
+// function promptForTwoFactorCode(email, password) {
+//     const twoFactorCode = prompt('Enter your two-factor authentication code:');
+//     if (twoFactorCode) {
+//         var data = {
+//             email: email,
+//             password: password,
+//             '2fa_token': twoFactorCode
+//         };
+//         fetch('https://${host}/api/login/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(data),
+//         })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Invalid two-factor authentication code!');
+//             }
+//             return response.json();
+//         })
+//         .then(completeLoginProcess)
+//         .catch((error) => {
+//             console.log('Error Prompt2FA:', error);
+//         });
+//     }
+// }
+
+function showTwoFactorModal() {
+    var modal = document.getElementById('twoFactorModal');
+    var span = document.getElementsByClassName('close')[0];
+
+    modal.style.display = 'block';
+
+    span.onclick = function() {
+        modal.style.display = 'none';
     }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+    }
+
+    document.getElementById('submit2FACode').onclick = function() {
+        const twoFactorCode = document.getElementById('twoFactorCode').value;
+        if (twoFactorCode) {
+            submitTwoFactorCode(twoFactorCode);
+            modal.style.display = 'none';
+        }
+    }
+}
+
+function submitTwoFactorCode(twoFactorCode) {
+    var data = {
+        email: currentEmail,
+        password: currentPassword,
+        '2fa_token': twoFactorCode
+    };
+    fetch(`https://${host}/api/login/`, {
+        method: 'POST',
+        headers: {
+            //'Authorization': 'Bearer ' + localStorage.getItem('access'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Invalid two-factor authentication code!');
+        }
+        return response.json();
+    })
+    .then(completeLoginProcess)
+    .catch((error) => {
+        console.log('Error Prompt2FA:', error);
+    });
 }
 
 function completeLoginProcess(data) {
