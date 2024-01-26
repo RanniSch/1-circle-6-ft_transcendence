@@ -16,4 +16,6 @@ urlpatterns = [
     path('notifications/', views.UnreadNotifications.as_view(), name='unread_notifications'),
     path('mark-notifications-read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notifications_read'),
     path('delete-account/', views.DeleteAccountView.as_view(), name='delete_account'),
+    path('enable-2fa/', views.EnableTwoFactorAPIView.as_view(), name='enable_2fa'),
+    path('verify-2fa/', views.VerifyTwoFactorAPIView.as_view(), name='verify_2fa'),
 ]

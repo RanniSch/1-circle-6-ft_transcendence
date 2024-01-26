@@ -296,3 +296,83 @@ function deleteAccount() {
         console.error('Error DeleteAccount:', error);
     });
 }
+
+document.getElementById('enable2faButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    enableTwoFactorAuthentication();
+});
+
+function enableTwoFactorAuthentication() {
+    fetch(`https://${host}/api/enable-2fa/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('access'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Error enabling 2FA');
+        }
+        return response.json();
+    })
+    .then(data => {
+        display2FASetup(data.otp_uri);
+    })
+    .catch((error) => {
+        console.log('Error Enable2FA:', error);
+    });
+}
+
+function display2FASetup(otpUri) {
+    const setupContainer = document.getElementById('twoFactorSetupContainer');
+    setupContainer.innerHTML = '';
+
+    if (otpUri.startsWith('otpauth://')) {
+        const qrCodeImage = document.createElement('canvas');
+        setupContainer.appendChild(qrCodeImage);
+
+        QRCode.toCanvas(qrCodeImage, otpUri, function(error) {
+            if (error) console.error(error);
+            console.log('QRCode generated!');
+        });
+    } else {
+        const secretKeyElement = document.createElement('p');
+        secretKeyElement.textContent = `Your 2FA secret key: ${otpUri}`;
+        setupContainer.appendChild(secretKeyElement);
+    }
+
+    const instructions = document.createElement('p');
+    instructions.textContent = 'Scan the QR Code or enter the secret key in your 2FA app. Enter the generated code to verify setup.';
+    setupContainer.appendChild(instructions);
+
+    const verificationCodeInput = document.createElement('input');
+    verificationCodeInput.type = 'text';
+    verificationCodeInput.placeholder = 'Enter 2FA code';
+    setupContainer.appendChild(verificationCodeInput);
+
+    const verifyButton = document.createElement('button');
+    verifyButton.textContent = 'Verify Code';
+    verifyButton.addEventListener('click', () => verifyTwoFactorCode(verificationCodeInput.value));
+    setupContainer.appendChild(verifyButton);
+}
+
+function verifyTwoFactorCode(code) {
+    fetch(`https://${host}/api/verify-2fa/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('access'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ '2fa_code': code })
+    })
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('2FA verification failed');
+        }
+        alert('Two-Factor authentication setup complete!');
+    })
+    .catch((error) => {
+        console.log('Error Verify2FA:', error);
+    });
+}

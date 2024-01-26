@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="{% static 'css/pong.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"rel="stylesheet">
 </head>
 <body>
     <script type="text/javascript">
@@ -52,7 +52,7 @@
         var host = '{{ host }}';
     </script>
     <div style="display:flex;">
-        <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDECE</h1>
+        <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
     </div>
     <div id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
         {% block index %}
@@ -117,8 +117,10 @@
             </div>
             <button id="viewUsersButton">View all Users</button>
                 <div id="usersList" style="display:none;"></div>
-            <button id="logoutButton">Logout</button><br><br>
-            <button id="deleteAccountButton">Delete your Account</button>
+            <button id="logoutButton">Logout</button><br>
+            <button id="deleteAccountButton">Delete your Account</button><br>
+            <button id="enable2faButton">Enable Two-Factor Authentication</button>
+            <div id="twoFactorSetupContainer"></div>
         </div>
     </div>
     {% block profile %}
@@ -235,5 +237,6 @@
             content.style.display = content.style.display == "none" ? "block" : "none";
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.0/build/qrcode.min.js"></script>
 </body>
 </html>

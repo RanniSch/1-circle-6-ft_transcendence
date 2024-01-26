@@ -16,7 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
 from .models import Player, ExpiredTokens, Notification
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -24,7 +24,7 @@ import os
 import urllib.parse
 from urllib.parse import urlencode
 import requests
-import secrets
+import pyotp
 
 # Create your views here.
 
@@ -55,11 +55,21 @@ class UserLogin(APIView):
         serializer = LoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.validate_user(data)
+            two_factor_code = data.get('2fa_token', None)
+
+            if user.is_two_factor_enabled and not two_factor_code:
+                return Response({'require_2fa': True}, status=status.HTTP_200_OK)
+
+            if user.is_two_factor_enabled:
+                if not user.verify_totp(two_factor_code):
+                    return Response({'error': 'Invalid 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
+
             login(request, user)
             token = RefreshToken.for_user(user)
             return Response({
                 'access': str(token.access_token),
             }, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserLogout(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -241,3 +251,28 @@ class DeleteAccountView(APIView):
             else:
                 return Response({'error': 'Invalid input!'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class EnableTwoFactorAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        serializer = TwoFactorSetupSerializer(instance=user, data={'enable_2fa': True})
+        if serializer.is_valid():
+            user = serializer.save()
+            totp_uri = pyotp.TOTP(user.totp_secret).provisioning_uri(user.email, issuer_name='PingPongTranscendence')
+            return Response({'otp_uri': totp_uri}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class VerifyTwoFactorAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        two_factor_code = request.data.get('2fa_code')
+
+        if not two_factor_code or not user.verify_totp(two_factor_code):
+            return Response({'error': 'Invalid 2FA code'}, status=status.HTTP_400_BAD_REQUEST)
+        user.is_two_factor_enabled = True
+        user.save()
+        return Response({'message': '2FA verification successful'}, status=status.HTTP_200_OK)

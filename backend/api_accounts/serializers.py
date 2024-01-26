@@ -1,3 +1,5 @@
+from gc import enable
+import pyotp
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
@@ -30,10 +32,11 @@ class LoginSerializer(serializers.Serializer):
     
 class UserSerializer(serializers.ModelSerializer):
     isbuddy = serializers.SerializerMethodField()
+    is_two_factor_enabled = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ModelUser
-        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy')
+        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled')
 
     def get_isbuddy(self, obj):
         request = self.context.get('request')
@@ -66,3 +69,13 @@ class DeleteAccountSerializer(serializers.Serializer):
         if value != 'DELETE':
             raise serializers.ValidationError('Confirmation word is incorrect!')
         return value
+    
+class TwoFactorSetupSerializer(serializers.Serializer):
+    enable_2fa = serializers.BooleanField()
+
+    def update(self, instance, validated_data):
+        instance.is_two_factor_enabled = validated_data.get('enable_2fa', instance.is_two_factor_enabled)
+        if validated_data.get('enable_2fa') and not instance.totp_secret:
+            instance.totp_secret = pyotp.random_base32()
+        instance.save()
+        return instance

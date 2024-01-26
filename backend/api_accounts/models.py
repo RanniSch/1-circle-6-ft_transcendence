@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from django.contrib.auth.base_user import BaseUserManager
 
+import pyotp
+
 # Create your models here.
 
 class PlayerManager(BaseUserManager):
@@ -43,6 +45,12 @@ class Player(AbstractBaseUser, PermissionsMixin):
     games_tied = models.PositiveIntegerField(default=0)
     date_joined = models.DateTimeField(auto_now_add=True)
     custom_title = models.CharField(max_length=75, null=True, blank=True)
+    totp_secret = models.CharField(max_length=100, default=pyotp.random_base32())
+    is_two_factor_enabled = models.BooleanField(default=False)
+
+    def verify_totp(self, token):
+        totp = pyotp.TOTP(self.totp_secret)
+        return totp.verify(token)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
