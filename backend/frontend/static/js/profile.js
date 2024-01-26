@@ -289,9 +289,8 @@ function deleteAccount() {
         return response.json();
     })
     .then(data => {
-        console.log('Account deleted!');
         localStorage.removeItem('access');
-        window.location.reload();
+        console.log('Account deleted!');
     })
     .catch(error => {
         console.error('Error DeleteAccount:', error);

@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'api_accounts.apps.ApiAccountsConfig', # Accounts API
     'api_buddy', # Buddy API
     'frontend', # Frontend
+    'django_otp', # 2FA
+    'django_otp.plugins.otp_totp', # 2FA
+    'django_otp.plugins.otp_static', # 2FA
 ]
 
 MIDDLEWARE = [

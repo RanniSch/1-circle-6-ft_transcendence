@@ -17,7 +17,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         password: password
     };
 
-    const agreement = confirm('By clicking OK you agree to the Terms and Conditions and Privacy Policy.');
+    const agreement = confirm('By clicking OK you agree to the Terms of Use.');
     if (!agreement) {
         alert('Regsitration canceled!')
         return;
