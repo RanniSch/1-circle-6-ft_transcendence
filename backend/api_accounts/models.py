@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
 from django.contrib.auth.base_user import BaseUserManager
@@ -90,3 +91,35 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification from {self.sender.username} to {self.receiver.username}"
+
+class GameSession(models.Model):
+    # 2-Player Game
+    player1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='game_sessions_as_player1')
+    player2 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='game_sessions_as_player2')
+
+    # game details
+    game_data = models.JSONField(default=dict)
+
+    # timestamps
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(null=True, blank=True)
+
+    # game status
+    STATUS_CHOICES = [
+        ('ongoing', 'Ongoing'),
+        ('finished', 'Finished'),
+        ('aborted', 'Aborted'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ongoing')
+
+    def end_game(self, final_game_data):
+        """
+        Call this method to mark the game as finished and record the final state.
+        """
+        self.status = 'finished'
+        self.end_time = timezone.now()
+        self.game_data.update(final_game_data)
+        self.save()
+
+    def __str__(self):
+        return f"GameSession: {self.player1.username} vs {self.player2.username} - Status: {self.status}"

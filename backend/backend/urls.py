@@ -25,3 +25,6 @@ urlpatterns = [
     path('api/', include('api_accounts.urls')),
     path('api/', include('api_buddy.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

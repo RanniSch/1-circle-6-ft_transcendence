@@ -1,44 +1,66 @@
 let gameState = 'start'; 
-let paddle_1 = document.querySelector('.paddle_1'); 
-let paddle_2 = document.querySelector('.paddle_2'); 
-let board = document.querySelector('.board'); 
-let initial_ball = document.querySelector('.ball'); 
-let ball = document.querySelector('.ball'); 
-let score_1 = document.querySelector('.player_1_score'); 
-let score_2 = document.querySelector('.player_2_score'); 
-let message = document.querySelector('.message'); 
-let paddle_1_coord = paddle_1.getBoundingClientRect(); 
-let paddle_2_coord = paddle_2.getBoundingClientRect(); 
-let initial_ball_coord = ball.getBoundingClientRect(); 
-let ball_coord = initial_ball_coord; 
-let board_coord = board.getBoundingClientRect(); 
-let paddle_common = document.querySelector('.paddle').getBoundingClientRect(); 
+let paddle_1 = document.querySelector('.paddle_1');
+let paddle_2 = document.querySelector('.paddle_2');
+let board = document.querySelector('.board');
+let initial_ball = document.querySelector('.ball');
+let ball = document.querySelector('.ball');
+let score_1 = document.querySelector('.player_1_score');
+let score_2 = document.querySelector('.player_2_score');
+let message = document.querySelector('.message');
+let paddle_1_coord = paddle_1.getBoundingClientRect();
+let paddle_2_coord = paddle_2.getBoundingClientRect();
+let initial_ball_coord = ball.getBoundingClientRect();
+let ball_coord = initial_ball_coord;
+let board_coord = board.getBoundingClientRect();
+let paddle_common = document.querySelector('.paddle').getBoundingClientRect();
   
-let dx = Math.floor(Math.random() * 4) + 3; 
-let dy = Math.floor(Math.random() * 4) + 3; 
-let dxd = Math.floor(Math.random() * 2); 
-let dyd = Math.floor(Math.random() * 2); 
+let dx = Math.floor(Math.random() * 4) + 3;
+let dy = Math.floor(Math.random() * 4) + 3;
+let dxd = Math.floor(Math.random() * 2);
+let dyd = Math.floor(Math.random() * 2);
+
+function resetBall() {
+    let centerX = board_coord.left + board_coord.width / 2;
+    let centerY = board_coord.top + board_coord.height / 2;
+    ball.style.left = centerX + 'px';
+    ball.style.top = centerY + 'px';
+    ball_coord = ball.getBoundingClientRect();
+}
+
+function toggleNonGameElements(hide) {
+    const elementsToToggle = document.querySelectorAll('.non-game-element');
+    elementsToToggle.forEach(element => {
+        element.style.display = hide ? 'none' : 'block';
+    });
+}
 
 document.getElementById('playPongButton').addEventListener('click', function(event) {
     event.preventDefault();
     document.getElementById('pong_board').style.display = 'block';
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('registrationForm').style.display = 'none';
+    resetBall();
+    toggleNonGameElements(true);
 });
 
-document.addEventListener('keydown', (e) => { 
+
+document.addEventListener('keydown', (e) => {
     if (e.key == 'Enter') {
-        gameState = gameState == 'start' ? 'play' : 'start'; 
-        if (gameState == 'play') { 
-            message.innerHTML = 'FIGHT!'; 
-            message.style.left = 42 + 'vw'; 
-            requestAnimationFrame(() => { 
-                dx = Math.floor(Math.random() * 4) + 3; 
-                dy = Math.floor(Math.random() * 4) + 3; 
-                dxd = Math.floor(Math.random() * 2); 
-                dyd = Math.floor(Math.random() * 2); 
-                moveBall(dx, dy, dxd, dyd); 
-            }); 
+        gameState = gameState == 'start' ? 'play' : 'start';
+        if (gameState == 'play') {
+            message.innerHTML = 'FIGHT!';
+            message.style.left = 42 + 'vw';
+            resetBall();
+            requestAnimationFrame(() => {
+                dx = Math.floor(Math.random() * 4) + 3;
+                dy = Math.floor(Math.random() * 4) + 3;
+                dxd = Math.floor(Math.random() * 2);
+                dyd = Math.floor(Math.random() * 2);
+                moveBall(dx, dy, dxd, dyd);
+            });
+            toggleNonGameElements(true);
+        } else {
+            toggleNonGameElements(false);
         }
     } 
     if (gameState == 'play') { 
@@ -97,6 +119,8 @@ function moveBall(dx, dy, dxd, dyd) {
     ball_coord = ball.getBoundingClientRect(); 
     requestAnimationFrame(() => { 
         moveBall(dx, dy, dxd, dyd); 
-    }); 
+    });
+    resetBall();
+    toggleNonGameElements(false);
 }
 

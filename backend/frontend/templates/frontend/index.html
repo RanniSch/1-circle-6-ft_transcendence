@@ -40,7 +40,14 @@
       font-family: Arial !important;
       word-break: break-word !important;
               }
-      </style>
+    </style>
+    <style>
+        canvas {
+            background: #000;
+            display: block;
+            margin: auto;
+        }
+    </style>
     <link rel="stylesheet" href="{% static 'css/pong.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,10 +61,12 @@
     <div style="display:flex;">
         <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
     </div>
-    <div id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
+    <div class="non-game-element" id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
+
         {% block index %}
         <script type='module' src="{% static 'js/index.js' %}"></script>
         {% endblock %}
+
         <form id="registrationForm" class="registration_style">
             {% csrf_token %}
             <label for="email">Email:</label>
@@ -95,18 +104,24 @@
             </div>
         </div>
     </div>
-    <div style="display: flex;">
+    <div class="non-game-element" style="display: flex;">
         <button id="login42Button">Login with 42 credentials</button>
-        <button id="playPongButton" style="display: none;">PLAY PONG</button>
+    </div>
+
+    <div id="playPongDiv" style="display: none; text-align: center;">
+        <input type"text" id="player2NameInput" placeholder="Enter Player 2's name"></input><br>
+        <button id="playPongButton">PLAY PONG</button>
+        <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
     </div>
     {% block login %}
     <script type='module' src="{% static 'js/login.js' %}"></script>
     {% endblock %}
+
     {% block login42 %}
     <script type='module' src="{% static 'js/login42.js' %}"></script>
     {% endblock %}
     
-    <div id="profileSection" style="display: none; padding: 1rem;">
+    <div class="non-game-element" id="profileSection" style="display: none; padding: 1rem;">
         <form id = "avatarForm" enctype="multipart/form-data">
             <h1 style="padding: 1rem;">User Profile</h1>
             <img id="profileAvatar" src="" alt="Profile Avatar" style="background-color: rebeccapurple; width:150px; height:150px; border-radius: 15px; padding: 1rem;"/>    
@@ -139,21 +154,12 @@
     <script type='module' src="{% static 'js/logout.js' %}"></script>
     {% endblock %}
 
-    <div class="board" id="pong_board" style="display: none;">
-        <div class='ball'> 
-            <div class="ball_effect"></div> 
-        </div> 
-        <div class="paddle_1 paddle"></div> 
-        <div class="paddle_2  paddle"></div> 
-        <h1 class="player_1_score">0</h1> 
-        <h1 class="player_2_score">0</h1> 
-        <h1 class="message">Press Enter to PLAY</h1> 
-    </div>
     {% block pong %}
     <script type='module' src="{% static 'js/pong.js' %}"></script>
     {% endblock %}
-    <button id="termsOfUseButton">Terms of Use</button>
-    <div id="termsOfUseContent" style="display: none;">
+
+    <button class="non-game-element" id="termsOfUseButton">Terms of Use</button>
+    <div class="non-gmae-element" id="termsOfUseContent" style="display: none;">
         <div data-custom-class="body">
             <div align="center" style="text-align: left;"><div class="MsoNormal" data-custom-class="title" style="line-height: 1.5;"><bdt class="block-component"><span style="font-size: 19px;"></bdt><bdt class="question"><strong>TERMS OF USE</strong></bdt><bdt class="statement-end-if-in-editor"></bdt></span></div><div class="MsoNormal" style="line-height: 1.5;"><br></div><div class="MsoNormal" data-custom-class="subtitle" style="line-height: 1.5;"><strong>Last updated</strong> <bdt class="question"><strong>January 26, 2024</strong></bdt></div><div class="MsoNormal" style="line-height: 1.1;"><br></div><div class="MsoNormal" style="line-height: 115%;"><br></div><div class="MsoNormal" style="line-height: 115%;"><br></div><div style="line-height: 1.5;"><strong><span data-custom-class="heading_1">AGREEMENT TO OUR LEGAL TERMS</span></strong></div></div><div align="center" style="text-align: left;"><div class="MsoNormal" id="agreement" style="line-height: 1.5;"><a name="_6aa3gkhykvst"></a></div></div><div align="center" style="line-height: 1;"><br></div><div align="center" style="text-align: left;"><div class="MsoNormal" data-custom-class="body_text" style="line-height: 1.5;"><span style="font-size:11.0pt;line-height:115%;font-family:Arial;
       Calibri;color:#595959;mso-themecolor:text1;mso-themetint:166;">We are <bdt class="block-container question question-in-editor" data-id="9d459c4e-c548-e5cb-7729-a118548965d2" data-type="question">Transcendence Ping Pong</bdt><bdt class="block-component"></bdt> (<bdt class="block-component"></bdt>"<strong>Company</strong>," "<strong>we</strong>," "<strong>us</strong>," "<strong>our</strong>"<bdt class="statement-end-if-in-editor"></bdt>)<span style="font-size:11.0pt;line-height:115%;
@@ -235,7 +241,7 @@
             }
           </style>
             </div>
-            <div style="color: #595959;font-size: 14px;font-family: Arial;padding-top:16px;">
+            <div class="non-game-element" style="color: #595959;font-size: 14px;font-family: Arial;padding-top:16px;">
             These terms of use were created using Termly's <a style="color: rgb(48, 48, 241) !important;" href="https://termly.io/products/terms-and-conditions-generator/">Terms and Conditions Generator</a>.
             </div>
     </div>

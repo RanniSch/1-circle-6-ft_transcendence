@@ -1,12 +1,12 @@
-from gc import enable
-import pyotp
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
 from django.db.models import Q
 
-from .models import Notification
+from .models import Notification, Player, GameSession
 from api_buddy.models import Buddy
+
+import pyotp
 
 ModelUser = get_user_model()
 
@@ -29,14 +29,27 @@ class LoginSerializer(serializers.Serializer):
         if not user:
             raise AuthenticationFailed('Invalid credentials - User not found!')
         return user
+
+class GameSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameSession
+        fields = ['id', 'player1', 'player2', 'game_data', 'start_time', 'end_time', 'status']
+
+    player1 = serializers.PrimaryKeyRelatedField(queryset=Player.objects.all())
+    player2 = serializers.PrimaryKeyRelatedField(queryset=Player.objects.all())
+    game_data = serializers.JSONField()
+    start_time = serializers.DateTimeField(read_only=True)
+    end_time = serializers.DateTimeField(read_only=True)
+    status = serializers.ChoiceField(choices=GameSession.STATUS_CHOICES, default='ongoing', read_only=True)
     
 class UserSerializer(serializers.ModelSerializer):
     isbuddy = serializers.SerializerMethodField()
     is_two_factor_enabled = serializers.BooleanField(read_only=True)
+    game_sessions = GameSessionSerializer(many=True, read_only=True, source='game_sessions_as_player1')
 
     class Meta:
         model = ModelUser
-        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled')
+        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled', 'game_sessions')
 
     def get_isbuddy(self, obj):
         request = self.context.get('request')

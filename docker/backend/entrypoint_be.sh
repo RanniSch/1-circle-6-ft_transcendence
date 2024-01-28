@@ -13,5 +13,11 @@ migrate() {
 }
 migrate
 
+if ! command -v uvicorn &> /dev/null
+then
+    echo "uvicorn could not be found"
+    pip install uvicorn
+fi
+
 echo "Django Server is running on port 8000"
-python /workdir/backend/manage.py runserver 0.0.0.0:8000
+uvicorn backend.asgi:application --host 0.0.0.0 --port 8000

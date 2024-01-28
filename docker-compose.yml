@@ -19,6 +19,7 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+      - redis
   
   postgres:
     image: postgres:16
@@ -49,6 +50,14 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+  
+  redis:
+    image: 'redis:alpine'
+    container_name: redis
+    networks:
+      - network
+    ports:
+      - "6380:6379"
 
   # for development
   pgadmin:

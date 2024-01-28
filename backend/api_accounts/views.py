@@ -15,8 +15,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from .models import Player, ExpiredTokens, Notification
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer
+from .models import Player, ExpiredTokens, Notification, GameSession
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, GameSessionSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -276,3 +276,32 @@ class VerifyTwoFactorAPIView(APIView):
         user.is_two_factor_enabled = True
         user.save()
         return Response({'message': '2FA verification successful'}, status=status.HTTP_200_OK)
+    
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def update_stats(request):
+    winner = request.data.get('winner')
+    game_completed = request.data.get('gameCompleted', False)
+    user = request.user
+
+    if not user.is_authenticated:
+        return Response({'error': 'You are not logged in!'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Update stats logic
+    if game_completed:
+        user.games_played += 1
+        if winner == 'left':
+            user.games_won += 1
+        else:
+            user.games_lost += 1
+        user.save()
+    return JsonResponse({'success': 'Stats updated successfully!'}, status=status.HTTP_200_OK)
+
+class GameSessionViewSet(viewsets.ModelViewSet):
+    queryset = GameSession.objects.all()
+    serializer_class = GameSessionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # logic for creating game session
+        serializer.save(player1=self.request.user)

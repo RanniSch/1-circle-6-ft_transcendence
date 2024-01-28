@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!accessToken) {
         console.log('No access token found. You are not logged in!');
-        // Maybe redirect to login page?
         return;
     }
 
@@ -79,7 +78,6 @@ function markNotificationsAsRead(notificationId) {
         headers: {
             'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json',
-            //'X-CSRFToken': csrftoken
         }
     })
     .then(response => {
@@ -103,6 +101,7 @@ function displayUserProfile(data) {
         profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';
     }
+    document.getElementById('playPongDiv').style.display = 'block';
     document.getElementById('userEmail').textContent = data.email || 'No email found';
     document.getElementById('userName').textContent = data.username || 'No Username found';
     const gamesPlayed = data.games_played !== null && data.games_played !== undefined ? data.games_played : 'No games played';
@@ -122,6 +121,15 @@ function displayUserProfile(data) {
     document.getElementById('registrationForm').style.display = 'none';
     document.getElementById('reg').style.opacity = 0;
     document.getElementById('login42Button').style.display = 'none';
+
+    if (data.logged_in_with_42api) {
+        document.getElementById('enable2faButton').style.display = 'none';
+    } else {
+        document.getElementById('enable2faButton').style.display = 'block';
+    }
+
+    // Global variables
+    window.playerOne = data.username || 'Player 1';
 }
 
 document.getElementById('viewUsersButton').addEventListener('click', function() {
