@@ -1,8 +1,9 @@
-from urllib import response
 from django.shortcuts import redirect, HttpResponse
 from django.contrib.auth import login, logout, get_user_model
 from django.core.files.base import ContentFile
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
@@ -15,7 +16,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from .models import Player, ExpiredTokens, Notification, GameSession
+from .models import Player, ExpiredTokens, Notification, GameSession, PlayerQueue
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, GameSessionSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
@@ -305,3 +306,26 @@ class GameSessionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # logic for creating game session
         serializer.save(player1=self.request.user)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def find_match(request):
+    current_user = request.user
+    # Check at least 2 players are in the queue
+    player_in_queue = PlayerQueue.objects.all().order_by('timestamp')
+    if player_in_queue.count() >= 2:
+        # if current user is one of the first two
+        if current_user in [player_in_queue[0].player, player_in_queue[1].player]:
+            opponent = player_in_queue[0].player if player_in_queue[0].player != current_user else player_in_queue[1].player
+
+            # Create game session
+            game_session = GameSession.objects.create(player1=current_user, player2=opponent)
+
+            # Delete players from queue
+            PlayerQueue.objects.filter(player__in=[current_user, opponent]).delete()
+
+            return Response({'status': 'found', 'opponent': opponent.username, 'game_session_id': game_session.id})
+    
+    # if not enough players in queue and current user is not in the first two
+    PlayerQueue.objects.get_or_create(player=current_user) # add current user to queue if not there
+    return Response({'status': 'waiting'})

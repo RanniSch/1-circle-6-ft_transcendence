@@ -21,6 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     })
     .then(response => {
         if (!response.ok) {
+            alert('Invalid username or password');
             throw new Error('Invalid username or password');
         }
         return response.json();
@@ -37,34 +38,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         console.error('Error:', error);
     });
 });
-
-// function promptForTwoFactorCode(email, password) {
-//     const twoFactorCode = prompt('Enter your two-factor authentication code:');
-//     if (twoFactorCode) {
-//         var data = {
-//             email: email,
-//             password: password,
-//             '2fa_token': twoFactorCode
-//         };
-//         fetch('https://${host}/api/login/', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(data),
-//         })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error('Invalid two-factor authentication code!');
-//             }
-//             return response.json();
-//         })
-//         .then(completeLoginProcess)
-//         .catch((error) => {
-//             console.log('Error Prompt2FA:', error);
-//         });
-//     }
-// }
 
 function showTwoFactorModal() {
     var modal = document.getElementById('twoFactorModal');
@@ -100,7 +73,6 @@ function submitTwoFactorCode(twoFactorCode) {
     fetch(`https://${host}/api/login/`, {
         method: 'POST',
         headers: {
-            //'Authorization': 'Bearer ' + localStorage.getItem('access'),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),

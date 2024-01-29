@@ -1,3 +1,4 @@
+from sqlite3 import Timestamp
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
@@ -123,3 +124,10 @@ class GameSession(models.Model):
 
     def __str__(self):
         return f"GameSession: {self.player1.username} vs {self.player2.username} - Status: {self.status}"
+    
+class PlayerQueue(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_queue')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.player.username} queued at {self.timestamp}'

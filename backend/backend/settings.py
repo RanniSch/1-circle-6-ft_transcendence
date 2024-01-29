@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_otp', # 2FA
     'django_otp.plugins.otp_totp', # 2FA
     'django_otp.plugins.otp_static', # 2FA
+    'channels', # Channels
 ]
 
 MIDDLEWARE = [
@@ -68,10 +69,18 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-RUNSERVER_PLUS = {
-    'CERT_FILE': '../ssl/certs/tstrassb.crt',
-    'KEY_FILE': '../ssl/private/tstrassb.key',
+# channels layers as default backend for websockets
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('redis', 6379)],
+        },
+    },
 }
+
+# channels routing
+ASGI_APPLICATION = "api_accounts.routing.application"
 
 if DEBUG == True:
     CORS_ALLOW_ALL_ORIGINS = True

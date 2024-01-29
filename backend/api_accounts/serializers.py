@@ -3,7 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
 from django.db.models import Q
 
-from .models import Notification, Player, GameSession
+from .models import Notification, Player, GameSession, PlayerQueue
 from api_buddy.models import Buddy
 
 import pyotp
@@ -90,5 +90,22 @@ class TwoFactorSetupSerializer(serializers.Serializer):
         instance.is_two_factor_enabled = validated_data.get('enable_2fa', instance.is_two_factor_enabled)
         if validated_data.get('enable_2fa') and not instance.totp_secret:
             instance.totp_secret = pyotp.random_base32()
+        instance.save()
+        return instance
+
+class PlayerQueueSerializer(serializers.ModelSerializer):
+    player = serializers.SlugRelatedField(slug_field='username', queryset=Player.objects.all())
+
+    class Meta:
+        model = PlayerQueue
+        fields = ['id', 'player', 'timestamp']
+    
+    def create(self, validated_data):
+        # Custon logic if needed
+        return PlayerQueue.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        # Custom logic if needed
+        instance.player = validated_data.get('player', instance.player)
         instance.save()
         return instance

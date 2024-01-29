@@ -25,4 +25,5 @@ urlpatterns = [
     path('update-stats/', views.update_stats, name='update_stats'),
     path('game-sessions/', game_session_list, name='game_session_list'),
     path('game-sessions/<int:pk>/', game_session_detail, name='game_session_detail'),
+    path('find-match/', views.find_match, name='find_match'),
 ]

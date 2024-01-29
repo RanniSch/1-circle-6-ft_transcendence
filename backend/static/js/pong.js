@@ -1,5 +1,87 @@
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
+let mode = 'local'; // standard play mode
+let socket;
+let gameShouldStart = false;
+let gameStarted = false;
+
+function setupRemoteGame(game_session_id, startGame = false) {
+    socket = new WebSocket('wss://' + window.location.host + '/ws/pong/' + game_session_id + '/');
+
+    socket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        
+        if (data.action === 'start_game') {
+            document.getElementById('pongCanvas').style.display = 'block';
+            resetGame();
+            return;
+        }
+        
+        // Update opponent's paddle and ball position
+        rightPaddle.y = data.opponentPaddleY;
+        ball.x = data.ballX;
+        ball.y = data.ballY;
+    };
+
+    socket.onclose = function(e) {
+        console.error('Websocket closed unexpectedly');
+        resetGameFlags();
+    };
+
+    mode = 'remote';
+
+    if (startGame) {
+        document.getElementById('pongCanvas').style.display = 'block';
+        resetGame();
+    }
+}
+
+function updateRemoteGame() {
+    // Send local paddle possition
+    let gameState = {
+        paddleY: leftPaddle.y,
+        // other data
+    };
+    socket.send(JSON.stringify(gameState));
+}
+
+function startMatchmaking() {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log('No access token found');
+        return;
+    }
+    function pollMatchmaking() {
+        fetch(`https://${host}/api/find-match/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Matchmaking failed!');
+            }
+            return response.json();
+        
+        })
+        .then(data => {
+            if (data.status === 'waiting') {
+                console.log('Waiting for opponent...');
+                // Optional: show waiting screen
+                setTimeout(pollMatchmaking, 5000);
+            } else if (data.status === 'found') {
+                console.log('Opponent found:', data.opponent);
+                setupRemoteGame(data.game_session_id, true);
+            }
+        })
+        .catch(error => {
+            console.log('Error startMatchmaking:', error);
+        });
+    }
+    // Start initial polling
+    pollMatchmaking();
+}
 
 // Game constants
 const paddleWidth = 10, paddleHeight = 100;
@@ -107,11 +189,13 @@ function checkWinner() {
         winner = 'left';
         updateStats(winner);
         resetGame();
+        resetGameFlags();
     } else if (rightPaddle.score == 5) {
         alert("Right player wins!");
         winner = 'right';
         updateStats(winner);
         resetGame();
+        resetGameFlags();
     }
 }
 
@@ -189,10 +273,25 @@ function drawScore() {
     ctx.fillText(rightPaddle.score, 3 * canvas.width / 4, 70);
 }
 
+function drawInstructions() {
+    ctx.font = "20px 'Press Start 2P'";
+    ctx.fillStyle = "#FFF";
+    ctx.fillText("Press ENTER to start", canvas.width / 2 - 120, canvas.height / 2);
+
+}
+
 // Game loop
 function gameLoop() {
-    if (canvas.style.display !== 'none') {
-        update();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!gameShouldStart) {
+        // Draw instructions wait for enter
+        drawInstructions();
+    } else if (canvas.style.display !== 'none') {
+        if (mode === 'remote') {
+            updateRemoteGame();
+        } else {
+            update();
+        }
         draw();
     }
     requestAnimationFrame(gameLoop);
@@ -202,19 +301,34 @@ function gameLoop() {
 document.addEventListener("keydown", function(event) {
     switch (event.keyCode) {
         case 87: // W key
-            wKeyPressed = true;
+            wKeyPressed = gameShouldStart && true;
             break;
         case 83: // S key
-            sKeyPressed = true;
+            sKeyPressed = gameShouldStart && true;
             break;
         case 38: // Up arrow
-            upArrowPressed = true;
+            upArrowPressed = gameShouldStart && true;
+            event.preventDefault();
             break;
         case 40: // Down arrow
-            downArrowPressed = true;
+            downArrowPressed = gameShouldStart && true;
+            event.preventDefault();
+            break;
+        case 13: // Enter key
+            if (!gameStarted) {
+                gameShouldStart = true;
+                gameStarted = true;
+                document.getElementById('pongCanvas').style.display = 'block';
+                resetGame();
+            }
             break;
     }
 });
+
+function resetGameFlags() {
+    gameShouldStart = false;
+    gameStarted = false;
+}
 
 document.addEventListener("keyup", function(event) {
     switch (event.keyCode) {
@@ -226,19 +340,29 @@ document.addEventListener("keyup", function(event) {
             break;
         case 38: // Up arrow
             upArrowPressed = false;
+            event.preventDefault();
             break;
         case 40: // Down arrow
             downArrowPressed = false;
+            event.preventDefault();
             break;
     }
 });
 
-// Start the game
-gameLoop();
-
-document.getElementById('playPongDiv').addEventListener('click', function() {
+document.getElementById('playPongButtonLocal').addEventListener('click', function() {
+    mode = 'local';
     const enteredName = document.getElementById('player2NameInput').value;
     playerTwoName = enteredName.trim() || 'Player2';
 
+    resetGame();
+    resetGameFlags();
     document.getElementById('pongCanvas').style.display = 'block';
 });
+
+document.getElementById('playPongButtonRemote').addEventListener('click', function () {
+    mode = 'remote';
+    startMatchmaking();
+});
+
+// Start the game
+gameLoop();
