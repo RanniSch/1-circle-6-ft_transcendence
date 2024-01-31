@@ -2,6 +2,7 @@ from django.shortcuts import redirect, HttpResponse
 from django.contrib.auth import login, logout, get_user_model
 from django.core.files.base import ContentFile
 from django.conf import settings
+from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta
 
@@ -26,6 +27,9 @@ import urllib.parse
 from urllib.parse import urlencode
 import requests
 import pyotp
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -311,21 +315,29 @@ class GameSessionViewSet(viewsets.ModelViewSet):
 @permission_classes([permissions.IsAuthenticated])
 def find_match(request):
     current_user = request.user
-    # Check at least 2 players are in the queue
-    player_in_queue = PlayerQueue.objects.all().order_by('timestamp')
-    if player_in_queue.count() >= 2:
-        # if current user is one of the first two
-        if current_user in [player_in_queue[0].player, player_in_queue[1].player]:
-            opponent = player_in_queue[0].player if player_in_queue[0].player != current_user else player_in_queue[1].player
+    with transaction.atomic():
+        player_in_queue = PlayerQueue.objects.select_for_update().order_by('timestamp')
 
-            # Create game session
-            game_session = GameSession.objects.create(player1=current_user, player2=opponent)
+        if player_in_queue.filter(player=current_user).exists():
+            logger.info(f'Waiting in queue: {current_user.username}')
+            return Response({'status': 'waiting'})
+        # Check at least 2 players are in the queue
+        if player_in_queue.count() >= 2:
+            first_player = player_in_queue[0].player
+            second_player = player_in_queue[1].player
 
-            # Delete players from queue
-            PlayerQueue.objects.filter(player__in=[current_user, opponent]).delete()
+            game_session = GameSession.objects.create(player1=first_player, player2=second_player)
 
-            return Response({'status': 'found', 'opponent': opponent.username, 'game_session_id': game_session.id})
-    
+            PlayerQueue.objects.filter(player__in=[first_player, second_player]).delete()
+
+            logger.info(f'Match found: {first_player.username} vs {second_player.username}')
+            return Response({
+                'status': 'found',
+                'opponent': second_player.username if current_user == first_player else first_player.username,
+                'game_session_id': game_session.id
+            })
+        
     # if not enough players in queue and current user is not in the first two
-    PlayerQueue.objects.get_or_create(player=current_user) # add current user to queue if not there
+    PlayerQueue.objects.create(player=current_user) # add current user to queue if not there
+    logger.info(f'Added to queue: {current_user.username}')
     return Response({'status': 'waiting'})
