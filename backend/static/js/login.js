@@ -35,7 +35,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         }
     })
     .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error: Invalid Email and/or Password');
     });
 });
 

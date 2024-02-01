@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.validators import validate_slug
@@ -37,19 +38,28 @@ def custom_validation(data):
     return data
 
 def email_validation(data):
-    email = data['email'].strip()
-    if not email:
-        raise ValidationError('Email is required! Please enter an email address!')
-    return True
+    try:
+        email = data['email'].strip()
+        if not email:
+            raise ValidationError('Email is required! Please enter an email address!')
+        return True
+    except ValidationError as err:
+        return HttpResponseBadRequest(str(err))
 
 def password_validation(data):
-    password = data['password'].strip()
-    if not password:
-        raise ValidationError('Password is required! Please enter a password!')
-    return True
+    try:
+        password = data['password'].strip()
+        if not password:
+            raise ValidationError('Password is required! Please enter a password!')
+        return True
+    except ValidationError as err:
+        return HttpResponseBadRequest(str(err))
 
 def username_validation(data):
-    username = data['username'].strip()
-    if not username:
-        raise ValidationError('Username is required! Please enter a username!')
-    return True
+    try:
+        username = data['username'].strip()
+        if not username:
+            raise ValidationError('Username is required! Please enter a username!')
+        return True
+    except ValidationError as err:
+        return HttpResponseBadRequest(str(err))

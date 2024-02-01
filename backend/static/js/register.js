@@ -7,7 +7,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
 
     // validate data
     if (!validateEmail(email) || !validateUsername(username)) {
-        alert('Invalid email or username');
+        alert('Invalid email --> should be: user1@test.com\nusername --> accepted: a-z, A-Z, 0-9\npassword rules --> at least 6 characters, not same as username, not all numeric, not common');
         return;
     }
 
