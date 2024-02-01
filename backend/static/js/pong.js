@@ -100,7 +100,13 @@ function moveBall() {
         }
         
         // Reset ball if it goes out of bounds
-        if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) {
+        if (ball.x + ball.radius < 0) {
+            rightPaddle.score++;
+            checkWinner();
+            resetBall();
+        } else if (ball.x - ball.radius > canvas.width) {
+            leftPaddle.score++;
+            checkWinner();
             resetBall();
         }
     }
@@ -135,7 +141,7 @@ function drawInstructions() {
 // Game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!gameShouldStart) {
+    if (!gameStarted) {
         // Draw instructions wait for enter
         drawInstructions();
     } else if (canvas.style.display !== 'none') {
@@ -171,11 +177,15 @@ document.addEventListener("keydown", function(event) {
             event.preventDefault();
             break;
         case 13: // Enter key
-            if (mode === 'remote' && !gameStarted) {
-                if (socket && socket.readyState === WebSocket.OPEN) {
-                    socket.send(JSON.stringify({ action: 'ready_for_matchmaking' }));
-                } else {
-                    console.log('Waiting for WebSocket connection...');
+            if (!gameStarted) {
+                gameStarted = true;
+                gameShouldStart = true;
+                if (mode === 'remote') {
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify({ action: 'ready_for_matchmaking' }));
+                    } else {
+                        console.log('Waiting for WebSocket connection...');
+                    }
                 }
             }
             break;
