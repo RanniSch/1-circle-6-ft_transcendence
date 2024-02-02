@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, HttpResponse
 from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth.hashers import check_password
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db import transaction
@@ -341,3 +342,17 @@ def find_match(request):
     PlayerQueue.objects.create(player=current_user) # add current user to queue if not there
     logger.info(f'Added to queue: {current_user.username}')
     return Response({'status': 'waiting'})
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_password = request.data.get('old_password')
+    new_password = request.data.get('new_password')
+
+    if not check_password(old_password, user.password):
+        return Response({'error': 'Invalid old password!'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    user.set_password(new_password)
+    user.save()
+    return Response({'success': 'Password changed successfully!'}, status=status.HTTP_200_OK)

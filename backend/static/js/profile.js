@@ -384,3 +384,69 @@ function verifyTwoFactorCode(code) {
         console.log('Error Verify2FA:', error);
     });
 }
+
+function showChangePasswordContainer() {
+    document.getElementById('changePasswordContainer').style.display = 'block';
+}
+
+function hideChangePasswordContainer() {
+    document.getElementById('changePasswordContainer').style.display = 'none';
+}
+
+function toggleChangePasswordContainer() {
+    const container = document.getElementById('changePasswordContainer');
+    container.style.display = (container.style.display === 'block') ? 'none' : 'block';
+}
+
+document.getElementById('changePasswordButton').addEventListener('click', function() {
+    toggleChangePasswordContainer();
+});
+
+document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    changePassword();
+});
+
+function changePassword() {
+    const oldPassword = document.getElementById('oldPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const accessToken = localStorage.getItem('access');
+
+    if (!newPassword.trim()) {
+        alert('New password cannot be empty!');
+        return;
+    }
+
+    // send request to server
+    fetch(`https://${host}/api/change-password/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            old_password: oldPassword,
+            new_password: newPassword
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Password could not be changed!');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Password changed!');
+        alert('Password changed successfully! Login again.');
+        document.getElementById('changePasswordForm').reset();
+    })
+    .catch(error => {
+        console.error('Error ChangePassword:', error);
+        alert('Password could not be changed!');
+    });
+    toggleChangePasswordContainer();
+}
+
+window.onload = function() {
+    document.getElementById('changePasswordContainer').style.display = 'none';
+};

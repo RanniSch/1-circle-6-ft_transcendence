@@ -26,4 +26,5 @@ urlpatterns = [
     path('game-sessions/', game_session_list, name='game_session_list'),
     path('game-sessions/<int:pk>/', game_session_detail, name='game_session_detail'),
     path('find-match/', views.find_match, name='find_match'),
+    path('change-password/', views.change_password, name='change_password'),
 ]

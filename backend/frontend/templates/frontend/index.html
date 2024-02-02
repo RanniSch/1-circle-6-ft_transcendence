@@ -58,9 +58,9 @@
         var csrftoken = '{{ csrf_token }}';
         var host = '{{ host }}';
     </script>
-    <div style="display:flex;">
+    <!-- <div style="display:flex;">
         <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
-    </div>
+    </div> -->
     <div class="non-game-element" id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
 
         {% block index %}
@@ -155,12 +155,33 @@
                 <p style="color:white; padding-top: 1rem;"><b>Games Lost:</b> <span id="gamesLost"></span></p>
                 <p style="color:white; padding-top: 1rem;"><b>Games Tied:</b> <span id="gamesTied"></span></p>
             </div>
+
+            <button id="changePasswordButton">Change Password</button>
+            <div id="changePasswordContainer" style="display: none;">
+                <form id="changePasswordForm">
+                    <div id="changePasswordAlert"></div>
+    
+                    <label for="oldPassword">Old Password:</label>
+                    <input type="password" id="oldPassword" required><br><br>
+    
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" required
+                        pattern="(?=.*[^\d]).{6,}"
+                        title=" Must contain at least 6 characters, must not be the same as username, must not be all numeric, must not be common"><br><br>
+    
+                    <button type="submit">Confirm?</button>
+                </form>
+            </div>
+
             <button id="viewUsersButton">View all Users</button>
                 <div id="usersList" style="display:none;"></div>
-            <button id="logoutButton">Logout</button><br>
-            <button id="deleteAccountButton">Delete your Account</button><br>
+    
             <button id="enable2faButton">Enable Two-Factor Authentication</button>
-            <div id="twoFactorSetupContainer"></div>
+                <div id="twoFactorSetupContainer"></div>
+                
+            <button id="deleteAccountButton">Delete your Account</button><br>
+
+            <button id="logoutButton">Logout</button><br>
         </div>
     </div>
     {% block profile %}
