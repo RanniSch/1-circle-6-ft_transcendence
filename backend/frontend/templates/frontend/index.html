@@ -6,42 +6,6 @@
     <meta name="viewport" content= "width=device-width, initial-scale=1.0"> 
     <title>TRASCENDENCE PONG GAME</title>
     <style>
-        [data-custom-class='body'], [data-custom-class='body'] * {
-                background: transparent !important;
-              }
-      [data-custom-class='title'], [data-custom-class='title'] * {
-                font-family: Arial !important;
-      font-size: 26px !important;
-      color: #000000 !important;
-              }
-      [data-custom-class='subtitle'], [data-custom-class='subtitle'] * {
-                font-family: Arial !important;
-      color: #595959 !important;
-      font-size: 14px !important;
-              }
-      [data-custom-class='heading_1'], [data-custom-class='heading_1'] * {
-                font-family: Arial !important;
-      font-size: 19px !important;
-      color: #000000 !important;
-              }
-      [data-custom-class='heading_2'], [data-custom-class='heading_2'] * {
-                font-family: Arial !important;
-      font-size: 17px !important;
-      color: #000000 !important;
-              }
-      [data-custom-class='body_text'], [data-custom-class='body_text'] * {
-                color: #595959 !important;
-      font-size: 14px !important;
-      font-family: Arial !important;
-              }
-      [data-custom-class='link'], [data-custom-class='link'] * {
-                color: #3030F1 !important;
-      font-size: 14px !important;
-      font-family: Arial !important;
-      word-break: break-word !important;
-              }
-    </style>
-    <style>
         canvas {
             background: #000;
             display: block;
@@ -49,6 +13,7 @@
         }
     </style>
     <link rel="stylesheet" href="{% static 'css/pong.css' %}">
+    <link rel="stylesheet" href="{% static 'css/termsOfUse.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"rel="stylesheet">
@@ -58,14 +23,10 @@
         var csrftoken = '{{ csrf_token }}';
         var host = '{{ host }}';
     </script>
-    <!-- <div style="display:flex;">
+    <div style="display:flex;">
         <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
-    </div> -->
+    </div>
     <div class="non-game-element" id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
-
-        {% block index %}
-        <script type='module' src="{% static 'js/index.js' %}"></script>
-        {% endblock %}
 
         <form id="registrationForm" class="registration_style" method="post">
             <label for="email">Email:</label>
@@ -127,6 +88,7 @@
     <div id="playPongDiv" style="display: none; text-align: center;">
         <input type"text" id="player2NameInput" placeholder="Enter Player 2's name"></input><br>
         <button id="playPongButtonLocal">PLAY PONG LOCALLY</button>
+        <button id="playPongButtonAI">PLAY PONG AGAINST COMPUTER</button>
         <button id="playPongButtonRemote">PLAY PONG REMOTELY</button>
         <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
     </div>
@@ -159,6 +121,7 @@
             <button id="changePasswordButton">Change Password</button>
             <div id="changePasswordContainer" style="display: none;">
                 <form id="changePasswordForm">
+                    {% csrf_token %}
                     <div id="changePasswordAlert"></div>
     
                     <label for="oldPassword">Old Password:</label>
@@ -193,6 +156,7 @@
     {% endblock %}
 
     {% block pong %}
+    <script type='module' src="{% static 'js/pong_ai.js' %}"></script>
     <script type='module' src="{% static 'js/pong.js' %}"></script>
     {% endblock %}
 

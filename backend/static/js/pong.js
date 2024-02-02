@@ -5,6 +5,11 @@ let socket;
 let gameShouldStart = false;
 let gameStarted = false;
 
+// import AI functions
+import { moveAIPaddle } from './pong_ai.js';
+
+let aiMode = false;
+
 // Game constants
 const paddleWidth = 10, paddleHeight = 100;
 const ballRadius = 10;
@@ -56,59 +61,42 @@ function drawBall(x, y, radius) {
 
 // Game functions
 function movePaddles() {
-    let moved = false;
-    if (wKeyPressed && leftPaddle.y > 0) {
-        leftPaddle.y -= 10;
-        moved = true;
-    } else if (sKeyPressed && (leftPaddle.y < canvas.height - leftPaddle.height)) {
-        leftPaddle.y += 10;
-        moved = true;
-    }
-    
-    if (upArrowPressed && rightPaddle.y > 0) {
-        rightPaddle.y -= 10;
-    } else if (downArrowPressed && (rightPaddle.y < canvas.height - rightPaddle.height)) {
-        rightPaddle.y += 10;
-    }
-
-    // send local paddle position to websocket
-    if (mode === 'remote' && moved) {
-        socket.send(JSON.stringify({ action: 'move_paddle', y: leftPaddle.y }));
-    }
+    if (wKeyPressed && leftPaddle.y > 0) leftPaddle.y -= 10;
+    if (sKeyPressed && (leftPaddle.y < canvas.height - leftPaddle.height)) leftPaddle.y += 10;
+    if (upArrowPressed && rightPaddle.y > 0) rightPaddle.y -= 10;
+    if (downArrowPressed && (rightPaddle.y < canvas.height - rightPaddle.height)) rightPaddle.y += 10;
 }
 
 function moveBall() {
-    if (mode === 'local') {
-        ball.x += ball.dx;
-        ball.y += ball.dy;
+    ball.x += ball.dx;
+    ball.y += ball.dy;
         
-        // Wall collision (top/bottom)
-        if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-            ball.dy *= -1;
-        }
+    // Wall collision (top/bottom)
+    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+        ball.dy *= -1;
+    }
         
-        // Paddle collision
-        if ((ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) ||
-        (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
-            ball.dx *= -1;
+    // Paddle collision
+    if ((ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) ||
+    (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
+        ball.dx *= -1;
             
-            // Increase speed
-            if (Math.abs(ball.dx) < 20) {
-                ball.dx *= 1.05;
-                ball.dy *= 1.05;
-            }
+        // Increase speed
+        if (Math.abs(ball.dx) < 20) {
+            ball.dx *= 1.05;
+            ball.dy *= 1.05;
         }
+    }
         
-        // Reset ball if it goes out of bounds
-        if (ball.x + ball.radius < 0) {
-            rightPaddle.score++;
-            checkWinner();
-            resetBall();
-        } else if (ball.x - ball.radius > canvas.width) {
-            leftPaddle.score++;
-            checkWinner();
-            resetBall();
-        }
+    // Reset ball if it goes out of bounds
+    if (ball.x + ball.radius < 0) {
+        rightPaddle.score++;
+        checkWinner();
+        resetBall();
+    } else if (ball.x - ball.radius > canvas.width) {
+        leftPaddle.score++;
+        checkWinner();
+        resetBall();
     }
 }
 
@@ -135,7 +123,6 @@ function drawInstructions() {
     ctx.font = "20px 'Press Start 2P'";
     ctx.fillStyle = "#FFF";
     ctx.fillText("Press ENTER to start", canvas.width / 2 - 120, canvas.height / 2);
-    
 }
 
 // Game loop
@@ -144,10 +131,15 @@ function gameLoop() {
     if (!gameStarted) {
         // Draw instructions wait for enter
         drawInstructions();
-    } else if (canvas.style.display !== 'none') {
-        movePaddles();
-        moveBall();
-        draw();
+    } else {
+        if (canvas.style.display !== 'none') {
+            movePaddles();
+            if (mode === 'AI') {
+                moveAIPaddle(rightPaddle, ball, canvas.height, paddleWidth);
+            }
+            moveBall();
+            draw();
+        }
     }
     requestAnimationFrame(gameLoop);
 }
@@ -224,6 +216,14 @@ document.getElementById('playPongButtonRemote').addEventListener('click', functi
     mode = 'remote';
     document.getElementById('pongCanvas').style.display = 'block';
     startMatchmaking();
+});
+
+// AI mode button
+document.getElementById('playPongButtonAI').addEventListener('click', function() {
+    mode = 'AI';
+    aiMode = true;
+    resetGame();
+    document.getElementById('pongCanvas').style.display = 'block';
 });
 
 function resetGame() {
