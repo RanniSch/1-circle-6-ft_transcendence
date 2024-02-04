@@ -9,7 +9,7 @@ export let aiDifficultyAdjustmentFactor = 0.1; // AI difficulty adjustment facto
 export function moveAIPaddle(rightPaddle, ball, canvasHeight, paddleWidth) {
     if (aiMode && Date.now() - aiLastUpdateTime > aiReactionTime) {
         aiLastUpdateTime = Date.now();
-        aiAdjustDifficulty();
+        aiAdjustDifficulty(leftPaddle.score, rightPaddle.score);
 
         let aiPredictBallY = aiPredictBallPosition(ball, canvasHeight, paddleWidth);
 
@@ -21,7 +21,7 @@ export function moveAIPaddle(rightPaddle, ball, canvasHeight, paddleWidth) {
 }
 
 export function aiAdjustDifficulty(leftPaddleScore, rightPaddleScore) {
-    let scoreDiff = leftPaddle.score - rightPaddle.score;
+    let scoreDiff = leftPaddleScore - rightPaddleScore;
     if (scoreDiff > 2 || scoreDiff < -2) {
         let adjustment = aiReactionTime * aiDifficultyAdjustmentFactor;
         aiReactionTime += scoreDiff > 2 ? -adjustment : adjustment;
@@ -33,14 +33,14 @@ export function aiAdjustDifficulty(leftPaddleScore, rightPaddleScore) {
     aiMarginError = Math.max(10, Math.min(aiMarginError, 50));
 }
 
-export function aiPredictBallPosition(ball, canvasHeight, paddleWidth) {
+export function aiPredictBallPosition(ball, canvasWidth, paddleWidth) {
     let futureBallX = ball.x;
     let futureBallY = ball.y;
     let futureBallDX = ball.dx;
     let futureBallDY = ball.dy;
 
     // predict until the ball is close to the AI paddle
-    while (futureBallX < canvas.width - paddleWidth) {
+    while (futureBallX < canvasWidth - paddleWidth) {
         futureBallX += futureBallDX;
         futureBallY += futureBallDY;
 
@@ -49,3 +49,5 @@ export function aiPredictBallPosition(ball, canvasHeight, paddleWidth) {
     }
     return futureBallY;
 }
+
+export { moveAIPaddle, aiAdjustDifficulty, aiPredictBallPosition };

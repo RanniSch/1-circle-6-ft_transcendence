@@ -1,14 +1,12 @@
+// import AI functions
+import { aiMode, moveAIPaddle, aiAdjustDifficulty, aiPredictBallPosition } from './pong_ai.js';
+
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 let mode = 'local'; // standard play mode
 let socket;
 let gameShouldStart = false;
 let gameStarted = false;
-
-// import AI functions
-import { moveAIPaddle } from './pong_ai.js';
-
-let aiMode = false;
 
 // Game constants
 const paddleWidth = 10, paddleHeight = 100;
@@ -135,7 +133,7 @@ function gameLoop() {
         if (canvas.style.display !== 'none') {
             movePaddles();
             if (mode === 'AI') {
-                moveAIPaddle(rightPaddle, ball, canvas.height, paddleWidth);
+                moveAIPaddle(rightPaddle, ball, canvas.height, paddle.width);
             }
             moveBall();
             draw();
