@@ -1,9 +1,6 @@
-// import AI functions
-import { aiMode, moveAIPaddle, aiAdjustDifficulty, aiPredictBallPosition } from './pong_ai.js';
-
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
-let mode = 'local'; // standard play mode
+let mode = 'local';
 let socket;
 let gameShouldStart = false;
 let gameStarted = false;
@@ -14,6 +11,13 @@ const ballRadius = 10;
 let upArrowPressed = false, downArrowPressed = false;
 let wKeyPressed = false, sKeyPressed = false;
 let playerTwoName = 'Player2';
+
+// AI mode
+let aiMode = false;
+let aiLastUpdateTime = 0;
+let aiReactionTime = 500; // Adjusted AI reaction time
+let aiMarginError = 10;
+let aiDifficultyAdjustmentFactor = 0.1;
 
 // Objects
 const leftPaddle = {
@@ -59,40 +63,31 @@ function drawBall(x, y, radius) {
 
 // Game functions
 function movePaddles() {
+    // Reduced redundant code
     if (wKeyPressed && leftPaddle.y > 0) leftPaddle.y -= 10;
     if (sKeyPressed && (leftPaddle.y < canvas.height - leftPaddle.height)) leftPaddle.y += 10;
     if (upArrowPressed && rightPaddle.y > 0) rightPaddle.y -= 10;
     if (downArrowPressed && (rightPaddle.y < canvas.height - rightPaddle.height)) rightPaddle.y += 10;
 }
 
-function moveBall() {
+function moveBall() {    
     ball.x += ball.dx;
     ball.y += ball.dy;
-        
+    
     // Wall collision (top/bottom)
-    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-        ball.dy *= -1;
-    }
-        
+    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) ball.dy *= -1;
+    
     // Paddle collision
     if ((ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) ||
     (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
         ball.dx *= -1;
-            
-        // Increase speed
-        if (Math.abs(ball.dx) < 20) {
-            ball.dx *= 1.05;
-            ball.dy *= 1.05;
-        }
+        if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
     }
-        
+    
     // Reset ball if it goes out of bounds
-    if (ball.x + ball.radius < 0) {
-        rightPaddle.score++;
-        checkWinner();
-        resetBall();
-    } else if (ball.x - ball.radius > canvas.width) {
-        leftPaddle.score++;
+    if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) {
+        if (ball.x + ball.radius < 0) rightPaddle.score++;
+        else leftPaddle.score++;
         checkWinner();
         resetBall();
     }
@@ -123,18 +118,94 @@ function drawInstructions() {
     ctx.fillText("Press ENTER to start", canvas.width / 2 - 120, canvas.height / 2);
 }
 
+// AI paddle movement
+function moveAIPaddle() {
+    if (aiMode && Date.now() - aiLastUpdateTime > aiReactionTime) {
+        aiLastUpdateTime = Date.now();
+        aiAdjustDifficulty();
+        let aiPredictBallY = aiPredictBallPosition();
+        
+        let aiPaddleCenter = leftPaddle.y + leftPaddle.height / 2;
+        // let distanceToTarget = Math.abs(aiPredictBallY - aiPaddleCenter);
+        // let moveStep = Math.min(distanceToTarget, 20);
+
+        // if (aiPredictBallY < aiPaddleCenter) {
+        //     leftPaddle.dy = -moveStep;
+        // } else if (aiPredictBallY > aiPaddleCenter) {
+        //     leftPaddle.dy = moveStep;
+        // } else {
+        //     leftPaddle.dy = 0;
+        // }
+
+        // if (leftPaddle.y > 0 && leftPaddle.dy < 0) {
+        //     leftPaddle.y += leftPaddle.dy;
+        // } else if (leftPaddle.y < canvas.height - leftPaddle.height && leftPaddle.dy > 0) {
+        //     leftPaddle.y += leftPaddle.dy;
+        // }
+        let aiTargetY = aiPredictBallY + (Math.random() * 2 - 1) * aiMarginError;
+        
+        if (aiTargetY < aiPaddleCenter) {
+            wKeyPressed = true;  // AI attempts to move up
+            sKeyPressed = false;
+        } else if (aiTargetY > aiPaddleCenter) {
+            sKeyPressed = true;  // AI attempts to move down
+            wKeyPressed = false;
+        } else {
+            wKeyPressed = false;
+            sKeyPressed = false; // AI stays
+        }
+
+        // Apply AI paddle movement based on flags
+        if (wKeyPressed && leftPaddle.y > 0) {
+            leftPaddle.y -= 10;  // Move up by 10 units
+        } else if (sKeyPressed && (leftPaddle.y < canvas.height - leftPaddle.height)) {
+            leftPaddle.y += 10;  // Move down by 10 units
+        }
+    }
+}
+
+function aiAdjustDifficulty() {
+    // Adjustments for AI difficulty
+    let scoreDiff = leftPaddle.score - rightPaddle.score;
+    if (scoreDiff > 2 || scoreDiff < -2) {
+        let adjustment = aiReactionTime * aiDifficultyAdjustmentFactor;
+        aiReactionTime += scoreDiff > 2 ? -adjustment : adjustment;
+        aiMarginError += scoreDiff > 2 ? -adjustment : adjustment;
+    }
+
+    aiReactionTime = Math.max(500, Math.min(aiReactionTime, 1500));
+    aiMarginError = Math.max(10, Math.min(aiMarginError, 50));
+}
+
+function aiPredictBallPosition() {
+    // Optimized AI prediction logic
+    let futureBallX = ball.x;
+    let futureBallY = ball.y;
+    let futureBallDx = ball.dx;
+    let futureBallDy = ball.dy;
+
+    if (futureBallDx <= 0) {
+        return ball.y
+    }
+
+    while (futureBallX < canvas.width - paddleWidth) {
+        futureBallX += futureBallDx;
+        futureBallY += futureBallDy;
+        if (futureBallY - ball.radius < 0 || futureBallY + ball.radius > canvas.height) {
+            futureBallDy *= -1;
+        }
+    }
+    return futureBallY;
+}
+
 // Game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!gameStarted) {
-        // Draw instructions wait for enter
-        drawInstructions();
-    } else {
+    if (!gameStarted) drawInstructions();
+    else {
         if (canvas.style.display !== 'none') {
             movePaddles();
-            if (mode === 'AI') {
-                moveAIPaddle(rightPaddle, ball, canvas.height, paddle.width);
-            }
+            if (mode === 'AI') moveAIPaddle();
             moveBall();
             draw();
         }
