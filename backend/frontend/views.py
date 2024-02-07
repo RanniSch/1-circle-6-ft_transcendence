@@ -5,3 +5,7 @@ from django.shortcuts import render
 def frontend(request):
     host = request.get_host()
     return render(request, 'frontend/index.html', {'host': host})
+
+def legal(request):
+    host = request.get_host()
+    return render(request, 'frontend/termsofuse.html', {'host': host})

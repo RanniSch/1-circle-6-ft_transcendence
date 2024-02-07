@@ -1,3 +1,5 @@
+import appState, { notifyListeners } from "./appstate.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     const accessToken = localStorage.getItem('access');
 
@@ -23,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     .then(data => {
         displayUserProfile(data);
+        appState.isLoggedIn = true;
+        appState.userProfile = data;
+        notifyListeners();
     })
     .catch(error => {
         console.error('Error Profile:', error);

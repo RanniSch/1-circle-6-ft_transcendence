@@ -1,3 +1,5 @@
+import appState, { notifyListeners } from "./appstate.js";
+
 document.getElementById('login42Button').addEventListener('click', function() {
     const oauthUrl = `https://${host}/api/oauth/authorize`;
     window.location.href = oauthUrl;
@@ -17,7 +19,9 @@ function loadProfile() {
         return response.json();
     })
     .then(profileData => {
-        displayUserProfile(profileData);
+        // displayUserProfile(profileData);
+        appState.userProfile = profileData;
+        notifyListeners();
     })
     .catch((error) => {
         console.error('Error:', error);

@@ -1,3 +1,5 @@
+import appState from "./appstate.js";
+
 document.getElementById('registrationForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
@@ -36,6 +38,9 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         console.log('Success!');
         alert('Registration successful!');
         document.getElementById('registrationForm').reset();
+        appState.isLoggedIn = true;
+        appState.userProfile = data;
+        notifyListeners();
     })
     .catch((error) => {
         console.error('Error:', error);

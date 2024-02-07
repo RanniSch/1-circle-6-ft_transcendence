@@ -1,3 +1,5 @@
+import appState from "./appstate.js";
+
 let currentEmail = '';
 let currentPassword = '';
 
@@ -29,6 +31,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     .then(data => {
         console.log('Initial Login Successful...');
         if (data.require_2fa) {
+            appState.isLoggedIn = false;
             showTwoFactorModal();
         } else {
             completeLoginProcess(data);
@@ -94,8 +97,10 @@ function completeLoginProcess(data) {
     document.getElementById('loginForm').reset();
     localStorage.setItem('access', data.access);
 
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registrationForm').style.display = 'none';
+    appState.isLoggedIn = true;
+
+    // document.getElementById('loginForm').style.display = 'none';
+    // document.getElementById('registrationForm').style.display = 'none';
     loadProfile();
 }
 
@@ -124,7 +129,8 @@ function loadProfile() {
         return response.json();
     })
     .then(profileData => {
-        displayUserProfile(profileData);
+        appState.userProfile = profileData;
+        notifyListeners();
     })
     .catch((error) => {
         console.error('Error:', error);

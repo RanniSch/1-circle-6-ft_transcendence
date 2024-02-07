@@ -1,3 +1,5 @@
+import appState, { notifyListeners } from "./appstate.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
@@ -31,6 +33,9 @@ function logoutUser() {
         console.log('Logout successful!', data);
         alert('Logout successful!');
         localStorage.removeItem('access');
+        appState.isLoggedIn = false;
+        appState.userProfile = null;
+        notifyListeners();
         window.location.reload();
     })
     .catch(error => {
