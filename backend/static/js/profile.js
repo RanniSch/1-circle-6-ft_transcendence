@@ -66,7 +66,24 @@ function fetchMatchHistory() {
 
 function displayMatchHistory(matchHistory) {
     const matchHistoryContainer = document.getElementById('matchHistoryContainer');
-    matchHistoryContainer.innerHTML = '<h3>Match History</h3>';
+
+    // clear container and prepare toggle button
+    matchHistoryContainer.innerHTML = '';
+
+    // create toggle button
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Show Match History';
+    matchHistoryContainer.appendChild(toggleButton);
+
+    // create container for match history content
+    const matchHistoryContent = document.createElement('div');
+    matchHistoryContent.style.display = 'none'; // initially hidden
+    matchHistoryContainer.appendChild(matchHistoryContent);
+
+    // fill container with content
+    const contentHeader = document.createElement('h3');
+    contentHeader.textContent = 'Match History';
+    matchHistoryContent.appendChild(contentHeader);
 
     matchHistory.forEach(match => {
         const matchItem = document.createElement('div');
@@ -81,7 +98,18 @@ function displayMatchHistory(matchHistory) {
         matchItem.innerHTML = `<p>Date: ${datePlayedStr}</p>
                                 <p>${match.player1} vs ${match.player2}</p>
                                 <p>Winner: ${match.winner || 'No winner'}</p>`;
-        matchHistoryContainer.appendChild(matchItem);
+        matchHistoryContent.appendChild(matchItem);
+    });
+
+    // toggle button functionality
+    toggleButton.addEventListener('click', function() {
+        if (matchHistoryContent.style.display === 'none') {
+            matchHistoryContent.style.display = 'block';
+            toggleButton.textContent = 'Hide Match History';
+        } else {
+            matchHistoryContent.style.display = 'none';
+            toggleButton.textContent = 'Show Match History';
+        }
     });
 }
 
