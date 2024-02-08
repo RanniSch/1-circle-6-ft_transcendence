@@ -3,7 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
 from django.db.models import Q
 
-from .models import Notification, Player, GameSession, PlayerQueue
+from .models import Notification, Player, GameSession, PlayerQueue, MatchHistory
 from api_buddy.models import Buddy
 
 import pyotp
@@ -109,3 +109,23 @@ class PlayerQueueSerializer(serializers.ModelSerializer):
         instance.player = validated_data.get('player', instance.player)
         instance.save()
         return instance
+    
+class MatchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchHistory
+        fields = ['id', 'player1', 'player2', 'winner', 'date_played', 'details']
+    
+    def validate_player1(self, value):
+        if not ModelUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Player 1 username does not exist!')
+        return value
+
+    def validate_player2(self, value):
+        if not ModelUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Player 2 username does not exist!')
+        return value
+    
+    def validate_winner(self, value):
+        if value and not ModelUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Winner username does not exist!')
+        return value

@@ -388,12 +388,13 @@ function setupRemoteGame(game_session_id, isPlayerOne) {
 // Start the game
 gameLoop();
 
-function updateStats(winner) {
+function updateStats(winner, loser) {
     const accessToken = localStorage.getItem('access');
     const url = `https://${host}/api/update-stats/`;
     
     let data = {
         winner: winner,
+        loser: loser,
         gameCompleted: true
     };
     
@@ -425,17 +426,20 @@ function updateStats(winner) {
 }
 
 function checkWinner() {
-    let winner;
-    if (leftPaddle.score == 5) {
-        alert("Left player wins!");
-        winner = 'left';
-        updateStats(winner);
-        resetGame();
-        resetGameFlags();
-    } else if (rightPaddle.score == 5) {
-        alert("Right player wins!");
-        winner = 'right';
-        updateStats(winner);
+    let winnerName, loserName, score;
+    if (leftPaddle.score == 5 || rightPaddle.score == 5) {
+        if (leftPaddle.score == 5) {
+            winnerName = window.playerOne || 'Player1';
+            loserName = playerTwoName || 'Player2';
+        } else {
+            winnerName = playerTwoName || 'Player2';
+            loserName = window.playerOne || 'Player1';
+        }
+        score = `${leftPaddle.score} - ${rightPaddle.score}`;
+        alert(`${winnerName} wins!`);
+
+        updateStats(winnerName, loserName);
+        submitMatchHistory(winnerName, loserName, score);
         resetGame();
         resetGameFlags();
     }
@@ -444,4 +448,42 @@ function checkWinner() {
 function resetGameFlags() {
     gameShouldStart = false;
     gameStarted = false;
+}
+
+function submitMatchHistory(winner, loser, score) {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log('No access token found');
+        return;
+    }
+
+    const url = `https://${host}/api/match-history/`;
+    let data = {
+        player1: window.playerOne || 'Player1',
+        player2: playerTwoName || 'Player2',
+        winner: winner,
+        loser: loser,
+        score: score,
+    };
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to submit match history!');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Match history submitted!');
+    })
+    .catch(error => {
+        console.log('Error submitMatchHistory:', error);
+    });
 }

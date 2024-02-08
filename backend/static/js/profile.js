@@ -28,12 +28,62 @@ document.addEventListener('DOMContentLoaded', function() {
         appState.isLoggedIn = true;
         appState.userProfile = data;
         notifyListeners();
+        fetchMatchHistory();
     })
     .catch(error => {
         console.error('Error Profile:', error);
     });
     setInterval(fetchNotifications, 10000);
 });
+
+function fetchMatchHistory() {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log('No access token found. You are not logged in!');
+        return;
+    }
+
+    fetch(`https://${host}/api/match-history`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Match history could not be fetched!');
+        }
+        return response.json();
+    })
+    .then(matchHistory => {
+        displayMatchHistory(matchHistory);
+    })
+    .catch(error => {
+        console.error('Error MatchHistory:', error);
+    });
+}
+
+function displayMatchHistory(matchHistory) {
+    const matchHistoryContainer = document.getElementById('matchHistoryContainer');
+    matchHistoryContainer.innerHTML = '<h3>Match History</h3>';
+
+    matchHistory.forEach(match => {
+        const matchItem = document.createElement('div');
+
+        const datePlayed = new Date(match.date_played);
+        const datePlayedStr = datePlayed.toLocaleDateString('de-DE', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit',
+            hour12: false
+        });
+
+        matchItem.innerHTML = `<p>Date: ${datePlayedStr}</p>
+                                <p>${match.player1} vs ${match.player2}</p>
+                                <p>Winner: ${match.winner || 'No winner'}</p>`;
+        matchHistoryContainer.appendChild(matchItem);
+    });
+}
 
 function fetchNotifications() {
     const accessToken = localStorage.getItem('access');
@@ -388,14 +438,6 @@ function verifyTwoFactorCode(code) {
     .catch((error) => {
         console.log('Error Verify2FA:', error);
     });
-}
-
-function showChangePasswordContainer() {
-    document.getElementById('changePasswordContainer').style.display = 'block';
-}
-
-function hideChangePasswordContainer() {
-    document.getElementById('changePasswordContainer').style.display = 'none';
 }
 
 function toggleChangePasswordContainer() {

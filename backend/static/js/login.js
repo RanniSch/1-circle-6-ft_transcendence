@@ -102,6 +102,7 @@ function completeLoginProcess(data) {
     // document.getElementById('loginForm').style.display = 'none';
     // document.getElementById('registrationForm').style.display = 'none';
     loadProfile();
+    window.location.reload();
 }
 
 // checkbox show password

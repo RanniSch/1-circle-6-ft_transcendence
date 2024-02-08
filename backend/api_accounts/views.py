@@ -4,13 +4,14 @@ from django.contrib.auth.hashers import check_password
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status, permissions, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -18,8 +19,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from .models import Player, ExpiredTokens, Notification, GameSession, PlayerQueue
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, AvatarUpdateSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, GameSessionSerializer
+from .models import Player, ExpiredTokens, Notification, GameSession, PlayerQueue, MatchHistory
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, GameSessionSerializer, MatchHistorySerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -287,21 +288,26 @@ class VerifyTwoFactorAPIView(APIView):
 @permission_classes([permissions.IsAuthenticated])
 def update_stats(request):
     winner = request.data.get('winner')
+    loser = request.data.get('loser')
     game_completed = request.data.get('gameCompleted', False)
-    user = request.user
 
-    if not user.is_authenticated:
-        return Response({'error': 'You are not logged in!'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    # Update stats logic
     if game_completed:
-        user.games_played += 1
-        if winner == 'left':
-            user.games_won += 1
-        else:
-            user.games_lost += 1
-        user.save()
-    return JsonResponse({'success': 'Stats updated successfully!'}, status=status.HTTP_200_OK)
+        try:
+            winner = User.objects.get(username=winner)
+            loser = User.objects.get(username=loser)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Update stats logic
+        winner.games_played += 1
+        winner.games_won += 1
+        winner.save()
+
+        loser.games_played += 1
+        loser.games_lost += 1
+        loser.save()
+        return JsonResponse({'success': 'Stats updated successfully!'}, status=status.HTTP_200_OK)
+    return Response({'error': 'Game not completed!'}, status=status.HTTP_400_BAD_REQUEST)
 
 class GameSessionViewSet(viewsets.ModelViewSet):
     queryset = GameSession.objects.all()
@@ -356,3 +362,14 @@ def change_password(request):
     user.set_password(new_password)
     user.save()
     return Response({'success': 'Password changed successfully!'}, status=status.HTTP_200_OK)
+
+class MatchHistoryListCreate(generics.ListCreateAPIView):
+    serializer_class = MatchHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return MatchHistory.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-date_played')
+
+    def perform_create(self, serializer):
+        serializer.save(player1=self.request.user)

@@ -131,3 +131,13 @@ class PlayerQueue(models.Model):
 
     def __str__(self):
         return f'{self.player.username} queued at {self.timestamp}'
+    
+class MatchHistory(models.Model):
+    player1 = models.CharField(max_length=100)
+    player2 = models.CharField(max_length=100)
+    winner = models.CharField(max_length=100, null=True, blank=True)
+    date_played = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.player1} vs {self.player2} on {self.date_played.strftime("%Y-%m-%d %H:%M")}'

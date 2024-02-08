@@ -27,4 +27,5 @@ urlpatterns = [
     path('game-sessions/<int:pk>/', game_session_detail, name='game_session_detail'),
     path('find-match/', views.find_match, name='find_match'),
     path('change-password/', views.change_password, name='change_password'),
+    path('match-history/', views.MatchHistoryListCreate.as_view(), name='match_history'),
 ]
