@@ -284,13 +284,15 @@ function gameLoop() {
 
 function drawPowerup() {
     if (powerup.active == false){
-        let random = Math.round(Math.random() * 2);
+        let random = Math.round(Math.random() * 500);
+        console.log("random : " + random);
         if (random == 1) {
             powerup = new enlargePaddle();
-        } else{
+            powerup.active = true;
+        } else if (random == 2){
             powerup = new speedUpBall();
+            powerup.active = true;
         }
-        powerup.active = true;
     }
     if (powerup.active == true){
         drawBall(powerup.x, powerup.y, powerup.radius, powerup.colour);}
