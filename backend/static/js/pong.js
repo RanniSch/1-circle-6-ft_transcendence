@@ -40,6 +40,41 @@ const rightPaddle = {
     score: 0
 };
 
+class powerUp {
+    constructor(colour) {
+    this.colour = colour;
+    this.active = false;
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 2;
+    this.radius = ballRadius;
+    this.speed = 5;
+    this.dx = 5 * (Math.random() < 0.5 ? -1 : 1);
+    this.dy = 5 * (Math.random() < 0.5 ? -1 : 1);
+    }
+};
+
+let powerup = new powerUp();
+
+class enlargePaddle extends powerUp {
+    constructor(){
+        super("yellow");
+    }
+    power(paddle){
+        paddle.height += 20;
+        this.active = false;
+    }
+};
+
+class speedUpBall extends powerUp {
+    constructor(){
+        super("red");
+    }
+    power(){
+        ball.speed += 5;
+        this.active = false;
+    }
+};
+
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -62,8 +97,8 @@ function drawPaddle(x, y, width, height) {
     ctx.fillRect(x, y, width, height);
 }
 
-function drawBall(x, y, radius) {
-    ctx.fillStyle = colour;
+function drawBall(x, y, radius, ballColour) {
+    ctx.fillStyle = ballColour;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.closePath();
@@ -77,6 +112,22 @@ function movePaddles() {
     if (sKeyPressed && (leftPaddle.y < canvas.height - leftPaddle.height)) leftPaddle.y += 10;
     if (upArrowPressed && rightPaddle.y > 0) rightPaddle.y -= 10;
     if (downArrowPressed && (rightPaddle.y < canvas.height - rightPaddle.height)) rightPaddle.y += 10;
+}
+
+function movePowerup() {
+    if (powerup.active == true){
+        powerup.x += powerup.dx;
+        powerup.y += powerup.dy;
+
+        if (powerup.y - powerup.radius < 0 || powerup.y + powerup.radius > canvas.height) powerup.dy *= -1;
+        if (powerup.x < leftPaddle.x + leftPaddle.width && powerup.y > leftPaddle.y && powerup.y < leftPaddle.y + leftPaddle.height)
+            powerup.power(leftPaddle);
+        else if (powerup.x > rightPaddle.x - rightPaddle.width && powerup.y > rightPaddle.y && powerup.y < rightPaddle.y + rightPaddle.height) {
+            powerup.power(rightPaddle);
+    }
+    if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width)  
+        powerup.active = false;
+    }
 }
 
 function moveBall() {    
@@ -216,16 +267,36 @@ function gameLoop() {
             movePaddles();
             if (mode === 'AI') moveAIPaddle();
             moveBall();
+            movePowerup();
             draw();
         }
     }
     requestAnimationFrame(gameLoop);
 }
 
+function drawPowerup() {
+    console.log("checking powerup");
+    if (powerup.active == false){
+        console.log("no powerup");
+        let random = Math.round(Math.random() * 2);
+        console.log("Random: " + random);
+        if (random == 1) {
+            powerup = new enlargePaddle();
+        } else{
+            powerup = new speedUpBall();
+        }
+        powerup.active = true;
+        console.log("drawin powerup");
+    }
+    if (powerup.active == true){
+        drawBall(powerup.x, powerup.y, powerup.radius, powerup.colour);}
+}
+
 function draw() {
     drawPaddle(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
     drawPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-    drawBall(ball.x, ball.y, ball.radius);
+    drawBall(ball.x, ball.y, ball.radius, colour);
+    drawPowerup();
     drawBackground(backgroundColour);
     drawScore();
 }
