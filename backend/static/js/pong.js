@@ -4,6 +4,7 @@ let mode = 'local';
 let socket;
 let colour = "white"
 let backgroundColour = "black"
+let enablePowerups = false;
 let gameShouldStart = false;
 let gameStarted = false;
 
@@ -28,7 +29,8 @@ const leftPaddle = {
     width: paddleWidth,
     height: paddleHeight,
     dy: 0,
-    score: 0
+    score: 0,
+    speed: 1
 };
 
 const rightPaddle = {
@@ -37,14 +39,49 @@ const rightPaddle = {
     width: paddleWidth,
     height: paddleHeight,
     dy: 0,
-    score: 0
+    score: 0,
+    speed: 1
+};
+
+class powerUp {
+    constructor(colour) {
+    this.colour = colour;
+    this.active = false;
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 2;
+    this.radius = ballRadius;
+    this.dx = 5 * (Math.random() < 0.5 ? -1 : 1);
+    this.dy = 5 * (Math.random() < 0.5 ? -1 : 1);
+    }
+};
+
+let powerup = new powerUp();
+
+class enlargePaddle extends powerUp {
+    constructor(){
+        super("yellow");
+    }
+    power(paddle){
+        paddle.height += 20;
+        this.active = false;
+    }
+};
+
+class speedUpBall extends powerUp {
+    constructor(){
+        super("red");
+    }
+    power(paddle){
+        paddle.speed *= 1.2;
+        this.active = false;
+    }
 };
 
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: ballRadius,
-    speed: 5,
+    speed: 1,
     dx: 5,
     dy: 5
 };
@@ -62,8 +99,8 @@ function drawPaddle(x, y, width, height) {
     ctx.fillRect(x, y, width, height);
 }
 
-function drawBall(x, y, radius) {
-    ctx.fillStyle = colour;
+function drawBall(x, y, radius, ballColour) {
+    ctx.fillStyle = ballColour;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.closePath();
@@ -79,19 +116,34 @@ function movePaddles() {
     if (downArrowPressed && (rightPaddle.y < canvas.height - rightPaddle.height)) rightPaddle.y += 10;
 }
 
+function movePowerup() {
+    if (powerup.active == true){
+        powerup.x += powerup.dx;
+        powerup.y += powerup.dy;
+
+        if (powerup.y - powerup.radius < 0 || powerup.y + powerup.radius > canvas.height) powerup.dy *= -1;
+        if (powerup.x < leftPaddle.x + leftPaddle.width && powerup.y > leftPaddle.y && powerup.y < leftPaddle.y + leftPaddle.height)
+            powerup.power(leftPaddle);
+        else if (powerup.x > rightPaddle.x - rightPaddle.width && powerup.y > rightPaddle.y && powerup.y < rightPaddle.y + rightPaddle.height) {
+            powerup.power(rightPaddle);
+        }
+        if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width)  
+            powerup.active = false;
+    }
+}
+
 function moveBall() {    
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    ball.x += ball.dx * ball.speed;
+    ball.y += ball.dy * ball.speed;
     
     // Wall collision (top/bottom)
     if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) ball.dy *= -1;
     
     // Paddle collision
-    if ((ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) ||
-    (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
-        ball.dx *= -1;
-        if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
-    }
+    if (ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height)
+        paddleCollision(leftPaddle);
+    else if (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)
+        paddleCollision(rightPaddle);
     
     // Reset ball if it goes out of bounds
     if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) {
@@ -100,6 +152,12 @@ function moveBall() {
         checkWinner();
         resetBall();
     }
+}
+
+function paddleCollision(paddle) {
+    ball.dx *= -1;
+    if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
+    ball.speed = paddle.speed;
 }
 
 function resetBall() {
@@ -216,16 +274,33 @@ function gameLoop() {
             movePaddles();
             if (mode === 'AI') moveAIPaddle();
             moveBall();
+            movePowerup();
             draw();
         }
     }
     requestAnimationFrame(gameLoop);
 }
 
+function drawPowerup() {
+    if (powerup.active == false && enablePowerups == true){
+        let random = Math.round(Math.random() * 500);
+        if (random == 1) {
+            powerup = new enlargePaddle();
+            powerup.active = true;
+        } else if (random == 2){
+            powerup = new speedUpBall();
+            powerup.active = true;
+        }
+    }
+    if (powerup.active == true){
+        drawBall(powerup.x, powerup.y, powerup.radius, powerup.colour);}
+}
+
 function draw() {
     drawPaddle(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
     drawPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-    drawBall(ball.x, ball.y, ball.radius);
+    drawBall(ball.x, ball.y, ball.radius, colour);
+    drawPowerup();
     drawBackground(backgroundColour);
     drawScore();
 }
@@ -282,6 +357,17 @@ document.addEventListener("keyup", function(event) {
     }
 });
 
+document.getElementById('enablePowerups').addEventListener('click', function() {
+    var button = document.getElementById('enablePowerups');
+    if (button.textContent.includes('OFF')) {
+        button.textContent = button.textContent.replace('OFF', 'ON');
+        enablePowerups = true;
+      } else {
+        button.textContent = button.textContent.replace('ON', 'OFF');
+        enablePowerups = false;
+      }
+});
+
 document.getElementById('changeBackgroundColour').addEventListener('click', function() {
     switch (backgroundColour) {
     case "black":
@@ -292,8 +378,6 @@ document.getElementById('changeBackgroundColour').addEventListener('click', func
         colour = "white"
         backgroundColour = "black"
         break;}
-    console.log("background colour = " + backgroundColour);
-    console.log("colour = " + colour);
 });
 
 document.getElementById('playPongButtonLocal').addEventListener('click', function() {
