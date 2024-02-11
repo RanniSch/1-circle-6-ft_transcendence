@@ -28,7 +28,8 @@ const leftPaddle = {
     width: paddleWidth,
     height: paddleHeight,
     dy: 0,
-    score: 0
+    score: 0,
+    speed: 1
 };
 
 const rightPaddle = {
@@ -37,7 +38,8 @@ const rightPaddle = {
     width: paddleWidth,
     height: paddleHeight,
     dy: 0,
-    score: 0
+    score: 0,
+    speed: 1
 };
 
 class powerUp {
@@ -47,7 +49,6 @@ class powerUp {
     this.x = canvas.width / 2;
     this.y = canvas.height / 2;
     this.radius = ballRadius;
-    this.speed = 5;
     this.dx = 5 * (Math.random() < 0.5 ? -1 : 1);
     this.dy = 5 * (Math.random() < 0.5 ? -1 : 1);
     }
@@ -69,8 +70,9 @@ class speedUpBall extends powerUp {
     constructor(){
         super("red");
     }
-    power(){
-        ball.speed += 5;
+    power(paddle){
+        paddle.speed *= 1.2;
+        console.log("pnew paddle speed: " + paddle.speed);
         this.active = false;
     }
 };
@@ -79,7 +81,7 @@ const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: ballRadius,
-    speed: 5,
+    speed: 1,
     dx: 5,
     dy: 5
 };
@@ -131,18 +133,17 @@ function movePowerup() {
 }
 
 function moveBall() {    
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    ball.x += ball.dx * ball.speed;
+    ball.y += ball.dy * ball.speed;
     
     // Wall collision (top/bottom)
     if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) ball.dy *= -1;
     
     // Paddle collision
-    if ((ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) ||
-    (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
-        ball.dx *= -1;
-        if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
-    }
+    if (ball.x < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height)
+        paddleCollision(leftPaddle);
+    else if (ball.x > rightPaddle.x - rightPaddle.width && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)
+        paddleCollision(rightPaddle);
     
     // Reset ball if it goes out of bounds
     if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) {
@@ -151,6 +152,13 @@ function moveBall() {
         checkWinner();
         resetBall();
     }
+}
+
+function paddleCollision(paddle) {
+    ball.dx *= -1;
+    if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
+    ball.speed = paddle.speed;
+    console.log("ball speed: " + ball.speed);
 }
 
 function resetBall() {
@@ -275,18 +283,14 @@ function gameLoop() {
 }
 
 function drawPowerup() {
-    console.log("checking powerup");
     if (powerup.active == false){
-        console.log("no powerup");
         let random = Math.round(Math.random() * 2);
-        console.log("Random: " + random);
         if (random == 1) {
             powerup = new enlargePaddle();
         } else{
             powerup = new speedUpBall();
         }
         powerup.active = true;
-        console.log("drawin powerup");
     }
     if (powerup.active == true){
         drawBall(powerup.x, powerup.y, powerup.radius, powerup.colour);}
