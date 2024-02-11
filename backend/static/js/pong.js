@@ -73,7 +73,6 @@ class speedUpBall extends powerUp {
     }
     power(paddle){
         paddle.speed *= 1.2;
-        console.log("pnew paddle speed: " + paddle.speed);
         this.active = false;
     }
 };
@@ -159,7 +158,6 @@ function paddleCollision(paddle) {
     ball.dx *= -1;
     if (Math.abs(ball.dx) < 20) ball.dx *= 1.05, ball.dy *= 1.05;
     ball.speed = paddle.speed;
-    console.log("ball speed: " + ball.speed);
 }
 
 function resetBall() {
@@ -286,7 +284,6 @@ function gameLoop() {
 function drawPowerup() {
     if (powerup.active == false && enablePowerups == true){
         let random = Math.round(Math.random() * 500);
-        console.log("random : " + random);
         if (random == 1) {
             powerup = new enlargePaddle();
             powerup.active = true;
@@ -381,8 +378,6 @@ document.getElementById('changeBackgroundColour').addEventListener('click', func
         colour = "white"
         backgroundColour = "black"
         break;}
-    console.log("background colour = " + backgroundColour);
-    console.log("colour = " + colour);
 });
 
 document.getElementById('playPongButtonLocal').addEventListener('click', function() {
