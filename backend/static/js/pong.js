@@ -4,6 +4,7 @@ let mode = 'local';
 let socket;
 let colour = "white"
 let backgroundColour = "black"
+let enablePowerups = false;
 let gameShouldStart = false;
 let gameStarted = false;
 
@@ -126,9 +127,9 @@ function movePowerup() {
             powerup.power(leftPaddle);
         else if (powerup.x > rightPaddle.x - rightPaddle.width && powerup.y > rightPaddle.y && powerup.y < rightPaddle.y + rightPaddle.height) {
             powerup.power(rightPaddle);
-    }
-    if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width)  
-        powerup.active = false;
+        }
+        if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width)  
+            powerup.active = false;
     }
 }
 
@@ -283,7 +284,7 @@ function gameLoop() {
 }
 
 function drawPowerup() {
-    if (powerup.active == false){
+    if (powerup.active == false && enablePowerups == true){
         let random = Math.round(Math.random() * 500);
         console.log("random : " + random);
         if (random == 1) {
@@ -357,6 +358,17 @@ document.addEventListener("keyup", function(event) {
         event.preventDefault();
         break;
     }
+});
+
+document.getElementById('enablePowerups').addEventListener('click', function() {
+    var button = document.getElementById('enablePowerups');
+    if (button.textContent.includes('OFF')) {
+        button.textContent = button.textContent.replace('OFF', 'ON');
+        enablePowerups = true;
+      } else {
+        button.textContent = button.textContent.replace('ON', 'OFF');
+        enablePowerups = false;
+      }
 });
 
 document.getElementById('changeBackgroundColour').addEventListener('click', function() {
