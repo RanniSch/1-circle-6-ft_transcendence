@@ -2,6 +2,8 @@ const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 let mode = 'local';
 let socket;
+let colour = "white"
+let backgroundColour = "black"
 let gameShouldStart = false;
 let gameStarted = false;
 
@@ -47,14 +49,21 @@ const ball = {
     dy: 5
 };
 
+function drawBackground(backgroundColour)
+{
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = backgroundColour;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
 // Draw functions
 function drawPaddle(x, y, width, height) {
-    ctx.fillStyle = "#FFF";
+    ctx.fillStyle = colour;
     ctx.fillRect(x, y, width, height);
 }
 
 function drawBall(x, y, radius) {
-    ctx.fillStyle = "#FFF";
+    ctx.fillStyle = colour;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2, true);
     ctx.closePath();
@@ -102,7 +111,7 @@ function resetBall() {
 
 function drawScore() {
     ctx.font = "20px 'Press Start 2P'";
-    ctx.fillStyle = "#FFF";
+    ctx.fillStyle = colour;
     
     const playerName = window.playerOne || 'Player1';
     ctx.fillText(playerName, canvas.width / 4, 30);
@@ -114,7 +123,7 @@ function drawScore() {
 
 function drawInstructions() {
     ctx.font = "20px 'Press Start 2P'";
-    ctx.fillStyle = "#FFF";
+    ctx.fillStyle = "white";
     ctx.fillText("Press ENTER to start", canvas.width / 2 - 120, canvas.height / 2);
 }
 
@@ -217,6 +226,7 @@ function draw() {
     drawPaddle(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
     drawPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
     drawBall(ball.x, ball.y, ball.radius);
+    drawBackground(backgroundColour);
     drawScore();
 }
 
@@ -270,6 +280,20 @@ document.addEventListener("keyup", function(event) {
         event.preventDefault();
         break;
     }
+});
+
+document.getElementById('changeBackgroundColour').addEventListener('click', function() {
+    switch (backgroundColour) {
+    case "black":
+        colour = "black"
+        backgroundColour = "white"
+        break;
+    case "white":
+        colour = "white"
+        backgroundColour = "black"
+        break;}
+    console.log("background colour = " + backgroundColour);
+    console.log("colour = " + colour);
 });
 
 document.getElementById('playPongButtonLocal').addEventListener('click', function() {
