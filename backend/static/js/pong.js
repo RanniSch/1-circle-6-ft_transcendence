@@ -586,6 +586,7 @@ function submitMatchHistory(winner, loser, score) {
         if (!response.ok) {
             throw new Error('Failed to submit match history!');
         }
+        console.log(data);
         return response.json();
     })
     .then(data => {

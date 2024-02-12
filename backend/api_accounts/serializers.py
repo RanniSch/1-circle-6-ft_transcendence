@@ -116,16 +116,22 @@ class MatchHistorySerializer(serializers.ModelSerializer):
         fields = ['id', 'player1', 'player2', 'winner', 'date_played', 'details']
     
     def validate_player1(self, value):
+        if value == self.initial_data['player1']:
+            return value
         if not ModelUser.objects.filter(username=value).exists():
-            raise serializers.ValidationError('Player 1 username does not exist!')
+            raise serializers.ValidationError('Player1 username does not exist!')
         return value
 
     def validate_player2(self, value):
+        if value == self.initial_data['player2']:
+            return value
         if not ModelUser.objects.filter(username=value).exists():
-            raise serializers.ValidationError('Player 2 username does not exist!')
+            raise serializers.ValidationError('Player2 username does not exist!')
         return value
     
     def validate_winner(self, value):
-        if value and not ModelUser.objects.filter(username=value).exists():
+        if value == self.initial_data['winner']:
+            return value
+        if not ModelUser.objects.filter(username=value).exists():
             raise serializers.ValidationError('Winner username does not exist!')
         return value

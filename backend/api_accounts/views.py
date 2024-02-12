@@ -11,7 +11,7 @@ from datetime import timedelta
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 
-from rest_framework import viewsets, status, permissions, generics
+from rest_framework import viewsets, status, permissions, generics, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -287,27 +287,38 @@ class VerifyTwoFactorAPIView(APIView):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def update_stats(request):
-    winner = request.data.get('winner')
-    loser = request.data.get('loser')
+    winner_username = request.data.get('winner')
+    loser_username = request.data.get('loser')
     game_completed = request.data.get('gameCompleted', False)
 
+    try:
+        winner = User.objects.get(username=winner_username)
+        winner_registered = True
+    except User.DoesNotExist:
+        winner_registered = False
+    try:
+        loser = User.objects.get(username=loser_username)
+        loser_registered = True
+    except User.DoesNotExist:
+        loser_registered = False
+
     if game_completed:
-        try:
-            winner = User.objects.get(username=winner)
-            loser = User.objects.get(username=loser)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
+        if winner_registered:
+            winner.games_played += 1
+            winner.games_won += 1
+            winner.save()
+        
+        if loser_registered:
+            loser.games_played += 1
+            loser.games_lost += 1
+            loser.save()
 
-        # Update stats logic
-        winner.games_played += 1
-        winner.games_won += 1
-        winner.save()
-
-        loser.games_played += 1
-        loser.games_lost += 1
-        loser.save()
-        return JsonResponse({'success': 'Stats updated successfully!'}, status=status.HTTP_200_OK)
-    return Response({'error': 'Game not completed!'}, status=status.HTTP_400_BAD_REQUEST)
+        if winner_registered or loser_registered:
+            return JsonResponse({'success': 'Stats updated successfully!'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No registered user found!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error': 'Game not completed!'}, status=status.HTTP_400_BAD_REQUEST)
 
 class GameSessionViewSet(viewsets.ModelViewSet):
     queryset = GameSession.objects.all()
@@ -372,7 +383,23 @@ class MatchHistoryListCreate(generics.ListCreateAPIView):
         return MatchHistory.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-date_played')
 
     def perform_create(self, serializer):
-        serializer.save(player1=self.request.user)
+        player1_username = self.request.user.username
+        player2_username = serializer.validated_data.get('player2')
+        winner_username = serializer.validated_data.get('winner')
+
+        if player2_username:
+            if not User.objects.filter(username=player2_username).exists():
+                player2_username = player2_username
+        else:
+            player2_username = player2_username
+
+        if winner_username:
+            if not User.objects.filter(username=winner_username).exists():
+                winner_username = winner_username
+        else:
+            winner_username = winner_username
+
+        serializer.save(player1=player1_username, player2=player2_username)
 
 @api_view(['POST'])
 def update_login_status(request):

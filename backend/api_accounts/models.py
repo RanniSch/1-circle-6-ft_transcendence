@@ -135,7 +135,7 @@ class PlayerQueue(models.Model):
     
 class MatchHistory(models.Model):
     player1 = models.CharField(max_length=100)
-    player2 = models.CharField(max_length=100)
+    player2 = models.CharField(max_length=100, null=True, blank=True)
     winner = models.CharField(max_length=100, null=True, blank=True)
     date_played = models.DateTimeField(auto_now_add=True)
     details = models.TextField(null=True, blank=True)
