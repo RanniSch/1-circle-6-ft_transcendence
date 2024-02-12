@@ -301,8 +301,8 @@ function draw() {
     drawPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
     drawBall(ball.x, ball.y, ball.radius, colour);
     drawPowerup();
-    drawBackground(backgroundColour);
     drawScore();
+    drawBackground(backgroundColour);
 }
 
 // Event listeners
