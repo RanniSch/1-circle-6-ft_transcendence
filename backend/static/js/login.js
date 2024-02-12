@@ -99,10 +99,27 @@ function completeLoginProcess(data) {
 
     appState.isLoggedIn = true;
 
-    // document.getElementById('loginForm').style.display = 'none';
-    // document.getElementById('registrationForm').style.display = 'none';
-    loadProfile();
-    window.location.reload();
+    fetch(`https://${host}/api/update-login-status/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + data.access,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ is_logged_in: true })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update login status');
+        }
+        return response.json();
+    })
+    .then(() => {
+        loadProfile();
+        window.location.reload();
+    })
+    .catch((error) => {
+        console.error('Error update login status:', error);
+    });
 }
 
 // checkbox show password

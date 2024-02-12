@@ -28,4 +28,5 @@ urlpatterns = [
     path('find-match/', views.find_match, name='find_match'),
     path('change-password/', views.change_password, name='change_password'),
     path('match-history/', views.MatchHistoryListCreate.as_view(), name='match_history'),
+    path('update-login-status/', views.update_login_status, name='update_login_status'),
 ]

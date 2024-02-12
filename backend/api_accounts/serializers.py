@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ModelUser
-        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled', 'game_sessions')
+        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled', 'game_sessions', 'is_logged_in')
 
     def get_isbuddy(self, obj):
         request = self.context.get('request')

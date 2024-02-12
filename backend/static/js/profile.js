@@ -244,7 +244,20 @@ function displayUsersList(users) {
 
     users.forEach(user => {
         const userItem = document.createElement('li');
-        userItem.textContent = `Username: ${user.username}`;
+
+        const usernameElement = document.createElement('span');
+        usernameElement.textContent = `Username: ${user.username}`;
+        userItem.appendChild(usernameElement);
+
+        const statusIndicator = document.createElement('span');
+        statusIndicator.style.width = '10px';
+        statusIndicator.style.height = '10px';
+        statusIndicator.style.borderRadius = '50%';
+        statusIndicator.style.display = 'inline-block';
+        statusIndicator.style.marginLeft = '15px';
+        statusIndicator.style.backgroundColor = user.isLoggedIn ? 'green' : 'red';
+
+        userItem.appendChild(statusIndicator);
 
         const buddyButton = document.createElement('button');
         if (user.isbuddy) {
@@ -261,6 +274,10 @@ function displayUsersList(users) {
 
         userItem.appendChild(buddyButton);
         usersListDiv.appendChild(userItem);
+
+        setInterval(() => {
+            statusIndicator.style.backgroundColor = user.is_logged_in ? 'green' : 'red';
+        }, 1000);
     });
     usersListDiv.style.display = 'block';
 }

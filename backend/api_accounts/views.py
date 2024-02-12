@@ -373,3 +373,16 @@ class MatchHistoryListCreate(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(player1=self.request.user)
+
+@api_view(['POST'])
+def update_login_status(request):
+    if request.method == 'POST':
+        try:
+            user = request.user
+            user.is_logged_in = request.data.get('is_logged_in', False)
+            user.save()
+            return Response({'success': 'Login status updated successfully!'}, status=status.HTTP_200_OK)
+        except Player.DoesNotExist:
+            return Response({'error': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error': 'Invalid request method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

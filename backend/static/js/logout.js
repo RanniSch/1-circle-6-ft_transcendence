@@ -1,9 +1,10 @@
-import appState, { notifyListeners } from "./appstate.js";
+import appState, { notifyListeners, updateLoginStatus } from "./appstate.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
         logoutButton.addEventListener('click', function() {
+            updateLoginStatus(appState.userProfile.id, false);
             logoutUser();
         });
     }

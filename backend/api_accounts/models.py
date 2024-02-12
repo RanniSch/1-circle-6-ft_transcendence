@@ -49,6 +49,7 @@ class Player(AbstractBaseUser, PermissionsMixin):
     custom_title = models.CharField(max_length=75, null=True, blank=True)
     totp_secret = models.CharField(max_length=100, default=pyotp.random_base32())
     is_two_factor_enabled = models.BooleanField(default=False)
+    is_logged_in = models.BooleanField(default=False)
 
     def verify_totp(self, token):
         totp = pyotp.TOTP(self.totp_secret)
