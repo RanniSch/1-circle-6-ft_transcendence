@@ -7,6 +7,8 @@ source ft_venv/bin/activate
 pip install -r requirements.txt
 echo 'source /workdir/backend/ft_venv/bin/activate' >> /root/.bashrc
 
+django-admin compilemessages
+
 migrate() {
     python manage.py makemigrations
     python manage.py migrate
