@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,10 +27,28 @@
     <div style="display:flex;">
         <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
     </div>
+
+    <div id="language_selector">
+        <form action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ redirect_to }}" />
+            <select name="language">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                    <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected {% endif %}>
+                        {{ lang.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Change Language">
+        </form>
+    </div>
+
     <div class="non-game-element" id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
 
         <form id="registrationForm" class="registration_style" method="post">
-            <label for="email">Email:</label>
+            <label for="email">{% trans "Email:" %}</label>
             <input
                 type="email"
                 id="email_reg"
@@ -38,7 +57,7 @@
                 pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
                 title=" Must be a valid email format."/><br><br>
 
-            <label for="username">Username:</label>
+            <label for="username">{% trans "Username:" %}</label>
             <input
                 type="text"
                 id="username_reg"
@@ -47,7 +66,7 @@
                 pattern="[a-zA-Z0-9]+"
                 title=" Can only contain [a-z], [A-Z], [0-9]."/><br><br>
 
-            <label for="password">Password:</label>
+            <label for="password">{% trans "Password:" %}</label>
             <input
                 type="password"
                 id="password_reg"
@@ -55,7 +74,7 @@
                 pattern="(?=.*[^\d]).{6,}"
                 title=" Must contain at least 6 characters, must not be the same as username, must not be all numeric, must not be common"><br><br>
 
-            <button type="submit">Register</button><br><br>
+            <button type="submit">{% trans "Register" %}</button><br><br>
         </form>
         {% block register %}
         <script type='module' src="{% static 'js/register.js' %}"></script>
@@ -63,35 +82,35 @@
 
         <form id="loginForm" method="post">
             {% csrf_token %}
-            <label for="email">Email:</label>
+            <label for="email">{% trans "Email:" %}</label>
             <input type="email" id="email_login"><br><br>
 
-            <label for="password">Password:</label>
+            <label for="password">{% trans "Password:" %}</label>
             <input type="password" id="password_login"><br><br>
             <input type="checkbox" id="togglePasswordLogin"> Show Password<br><br>
 
-            <button type="submit">Login</button>
+            <button type="submit">{% trans "Login:" %}</button>
         </form>
         <div id="twoFactorModal" style="display: none;">
             <div id="twoFactorModalContent">
                 <span class="close">&times;</span>
-                <p>Please enter the 6 digit code from your authenticator app:</p>
+                <p>{% trans "Please enter the 6 digit code from your authenticator app:" %}</p>
                 <input type="text" id="twoFactorCode" required><br>
                 <button id="submit2FACode">Submit</button>
             </div>
         </div>
     </div>
     <div class="non-game-element" style="display: flex;">
-        <button id="login42Button">Login with 42 credentials</button>
+        <button id="login42Button">{% trans "Login with 42 credentials" %}</button>
     </div>
 
     <div id="playPongDiv" style="display: none; text-align: center;">
         <input type="text" id="player2NameInput" placeholder="Enter Player 2's name"></input><br>
-        <button id="playPongButtonLocal">PLAY PONG LOCALLY</button>
-        <button id="playPongButtonAI">PLAY PONG AGAINST COMPUTER</button>
-        <button id="playPongButtonRemote">PLAY PONG REMOTELY</button>
-        <button id="changeBackgroundColour">CHANGE BACKGROUND</button>
-        <button id="enablePowerups">POWERUPS: OFF</button>
+        <button id="playPongButtonLocal">{% trans "PLAY PONG LOCALLY" %}</button>
+        <button id="playPongButtonAI">{% trans "PLAY PONG AGAINST COMPUTER" %}</button>
+        <button id="playPongButtonRemote">{% trans "PLAY PONG REMOTELY" %}</button>
+        <button id="changeBackgroundColour">{% trans "CHANGE BACKGROUND" %}</button>
+        <button id="enablePowerups">{% trans "POWERUPS: OFF" %}</button>
         <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
     </div>
     {% block login %}
@@ -163,7 +182,7 @@
     <script type='module' src="{% static 'js/pong.js' %}"></script>
     {% endblock %}
 
-    <button class="non-game-element" id="termsOfUseButton">Terms of Use</button>
+    <button class="non-game-element" id="termsOfUseButton">{% trans "Terms of Use" %}</button>
         <div class="non-gmae-element" id="termsOfUseContent" style="display: none;">
             <div data-custom-class="body">
                 <div align="center" style="text-align: left;"><div class="MsoNormal" data-custom-class="title" style="line-height: 1.5;"><bdt class="block-component"><span style="font-size: 19px;"></bdt><bdt class="question"><strong>TERMS OF USE</strong></bdt><bdt class="statement-end-if-in-editor"></bdt></span></div><div class="MsoNormal" style="line-height: 1.5;"><br></div><div class="MsoNormal" data-custom-class="subtitle" style="line-height: 1.5;"><strong>Last updated</strong> <bdt class="question"><strong>January 26, 2024</strong></bdt></div><div class="MsoNormal" style="line-height: 1.1;"><br></div><div class="MsoNormal" style="line-height: 115%;"><br></div><div class="MsoNormal" style="line-height: 115%;"><br></div><div style="line-height: 1.5;"><strong><span data-custom-class="heading_1">AGREEMENT TO OUR LEGAL TERMS</span></strong></div></div><div align="center" style="text-align: left;"><div class="MsoNormal" id="agreement" style="line-height: 1.5;"><a name="_6aa3gkhykvst"></a></div></div><div align="center" style="line-height: 1;"><br></div><div align="center" style="text-align: left;"><div class="MsoNormal" data-custom-class="body_text" style="line-height: 1.5;"><span style="font-size:11.0pt;line-height:115%;font-family:Arial;

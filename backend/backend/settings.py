@@ -66,7 +66,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware', # CORS - Cross-Origin Resource Sharing
+    'django.middleware.locale.LocaleMiddleware', # Support for multiple languages !!Must be before CommonMiddleware!!
     'django.middleware.common.CommonMiddleware',
+]
+
+USE_I18N = True
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('de', 'German'),
+    ('fr', 'French'),
+    ('es', 'Spanish'),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
 ]
 
 # channels layers as default backend for websockets
@@ -105,6 +119,8 @@ else:
          "https://localhost",
          "https://10.12.14.3",
      ]
+
+CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3']
 
 CORS_ALLOW_HEADERS = [
     'Authorization',
