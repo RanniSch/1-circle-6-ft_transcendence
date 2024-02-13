@@ -1,5 +1,10 @@
 import appState, { notifyListeners, updateLoginStatus } from "./appstate.js";
 
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
@@ -14,7 +19,7 @@ function logoutUser() {
     const accessToken = localStorage.getItem('access');
 
     if (!accessToken) {
-        console.log('No access token found');
+        console.log(translate('No access token found'));
         return;
     }
     fetch(`https://${host}/api/logout/`, {
@@ -26,13 +31,13 @@ function logoutUser() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Logout failed!');
+            throw new Error(translate('Logout failed!'));
         }
         return response.json();
     })
     .then(data => {
-        console.log('Logout successful!', data);
-        alert('Logout successful!');
+        console.log(translate('Logout successful!'), data);
+        alert(translate('Logout successful!'));
         localStorage.removeItem('access');
         appState.isLoggedIn = false;
         appState.userProfile = null;
@@ -40,6 +45,6 @@ function logoutUser() {
         window.location.reload();
     })
     .catch(error => {
-        console.log('Error during Logout:', error);
+        console.log(translate('Error during Logout:'), error);
     });
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-13 08:26+0000\n"
+"POT-Creation-Date: 2024-02-13 10:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,10 +20,12 @@ msgstr ""
 
 #: frontend/templates/frontend/index.html:51
 #: frontend/templates/frontend/index.html:85
+#: frontend/templates/frontend/index.html:134
 msgid "Email:"
 msgstr ""
 
 #: frontend/templates/frontend/index.html:60
+#: frontend/templates/frontend/index.html:135
 msgid "Username:"
 msgstr ""
 
@@ -36,8 +38,12 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: frontend/templates/frontend/index.html:90
+msgid "Show Password"
+msgstr ""
+
 #: frontend/templates/frontend/index.html:92
-msgid "Login:"
+msgid "Login"
 msgstr ""
 
 #: frontend/templates/frontend/index.html:97
@@ -66,6 +72,62 @@ msgstr ""
 
 #: frontend/templates/frontend/index.html:113
 msgid "POWERUPS: OFF"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:128
+msgid "Change Avatar:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:130
+msgid "Submit"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:136
+msgid "Games Played:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:137
+msgid "Games Won:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:138
+msgid "Games Lost:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:139
+msgid "Games Tied:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:144
+msgid "Change Password"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:150
+msgid "Old Password:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:153
+msgid "New Password:"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:158
+msgid "Confirm?"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:162
+msgid "View all Users"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:165
+msgid "Enable Two-Factor Authentication"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:168
+msgid "Delete your Account"
+msgstr ""
+
+#: frontend/templates/frontend/index.html:170
+msgid "Logout"
 msgstr ""
 
 #: frontend/templates/frontend/index.html:185

@@ -1,10 +1,15 @@
 import appState, { notifyListeners } from "./appstate.js";
 
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const accessToken = localStorage.getItem('access');
 
     if (!accessToken) {
-        console.log('No access token found. You are not logged in!');
+        console.log(translate('No access token found. You are not logged in!'));
         return;
     }
 
@@ -18,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     .then(response => {
         if (!response.ok) {
-            throw new Error('Profile could not be fetched!');
+            throw new Error(translate('Profile could not be fetched!'));
         }
         return response.json();
     })
@@ -39,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchMatchHistory() {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
-        console.log('No access token found. You are not logged in!');
+        console.log(translate('No access token found. You are not logged in!'));
         return;
     }
 
@@ -52,7 +57,7 @@ function fetchMatchHistory() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Match history could not be fetched!');
+            throw new Error(translate('Match history could not be fetched!'));
         }
         return response.json();
     })
@@ -72,7 +77,7 @@ function displayMatchHistory(matchHistory) {
 
     // create toggle button
     const toggleButton = document.createElement('button');
-    toggleButton.textContent = 'Show Match History';
+    toggleButton.textContent = translate('Show Match History');
     matchHistoryContainer.appendChild(toggleButton);
 
     // create container for match history content
@@ -82,7 +87,7 @@ function displayMatchHistory(matchHistory) {
 
     // fill container with content
     const contentHeader = document.createElement('h3');
-    contentHeader.textContent = 'Match History';
+    contentHeader.textContent = translate('Match History');
     matchHistoryContent.appendChild(contentHeader);
 
     matchHistory.forEach(match => {
@@ -105,10 +110,10 @@ function displayMatchHistory(matchHistory) {
     toggleButton.addEventListener('click', function() {
         if (matchHistoryContent.style.display === 'none') {
             matchHistoryContent.style.display = 'block';
-            toggleButton.textContent = 'Hide Match History';
+            toggleButton.textContent = translate('Hide Match History');
         } else {
             matchHistoryContent.style.display = 'none';
-            toggleButton.textContent = 'Show Match History';
+            toggleButton.textContent = translate('Show Match History');
         }
     });
 }
@@ -116,7 +121,7 @@ function displayMatchHistory(matchHistory) {
 function fetchNotifications() {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
-        console.log('No access token found. You are not logged in!');
+        console.log(translate('No access token found. You are not logged in!'));
         return;
     }
 
@@ -129,7 +134,7 @@ function fetchNotifications() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Notifications could not be fetched!');
+            throw new Error(translate('Notifications could not be fetched!'));
         }
         return response.json();
     })
@@ -152,7 +157,7 @@ function markNotificationsAsRead(notificationId) {
     const accessToken = localStorage.getItem('access');
     const url = `https://${host}/api/mark-notifications-read/${notificationId}/`;
     if (!accessToken) {
-        console.log('No access token found. You are not logged in!');
+        console.log(translate('No access token found. You are not logged in!'));
         return;
     }
 
@@ -165,12 +170,12 @@ function markNotificationsAsRead(notificationId) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Notifications could not be marked as read!');
+            throw new Error(translate('Notifications could not be marked as read!'));
         }
         return response.json();
     })
     .then(data => {
-        console.log('Notification marked as read!');
+        console.log(translate('Notification marked as read!'));
     })
     .catch(error => {
         console.error('Error MarkNotification:', error);
@@ -185,18 +190,18 @@ function displayUserProfile(data) {
         profileAvatar.style.display = 'block';
     }
     document.getElementById('playPongDiv').style.display = 'block';
-    document.getElementById('userEmail').textContent = data.email || 'No email found';
-    document.getElementById('userName').textContent = data.username || 'No Username found';
+    document.getElementById('userEmail').textContent = data.email || translate('No email found');
+    document.getElementById('userName').textContent = data.username || translate('No Username found');
     const gamesPlayed = data.games_played !== null && data.games_played !== undefined ? data.games_played : 'No games played';
     document.getElementById('gamesPlayed').textContent = gamesPlayed;
 
-    const gamesWon = data.games_won !== null && data.games_won !== undefined ? data.games_won : 'No games won';
+    const gamesWon = data.games_won !== null && data.games_won !== undefined ? data.games_won : translate('No games won');
     document.getElementById('gamesWon').textContent = gamesWon;
 
-    const gamesLost = data.games_lost !== null && data.games_lost !== undefined ? data.games_lost : 'No games lost';
+    const gamesLost = data.games_lost !== null && data.games_lost !== undefined ? data.games_lost : translate('No games lost');
     document.getElementById('gamesLost').textContent = gamesLost;
 
-    const gamesTied = data.games_tied !== null && data.games_tied !== undefined ? data.games_tied : 'No games tied';
+    const gamesTied = data.games_tied !== null && data.games_tied !== undefined ? data.games_tied : translate('No games tied');
     document.getElementById('gamesTied').textContent = gamesTied;
 
     document.getElementById('profileSection').style.display = 'block';
@@ -326,7 +331,7 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     const fileInput = document.getElementById('avatarInput');
 
     if (!fileInput.files[0]) {
-        console.log('No file input found!');
+        console.log(translate('No file input found!'));
         return;
     }
 
@@ -342,12 +347,12 @@ document.getElementById('avatarForm').addEventListener('submit', function(event)
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Avatar could not be uploaded!');
+            throw new Error(translate('Avatar could not be uploaded!'));
         }
         return response.json();
     })
     .then(data => {
-        console.log('Success: Avatar was updated!');
+        console.log(translate('Success: Avatar was updated!'));
         const profileAvatar = document.getElementById('profileAvatar');
         profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';
@@ -366,19 +371,19 @@ document.getElementById('deleteAccountButton').addEventListener('click', functio
 function deleteAccount() {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
-        console.log('No access token found. You are not logged in!');
+        console.log(translate('No access token found. You are not logged in!'));
         return;
     }
     
     //Confirm delete
-    if (!confirm('Are you sure you want to delete your account?\nThis cannot be reversed and all your data will be lost!')) {
+    if (!confirm(translate('Are you sure you want to delete your account?\nThis cannot be reversed and all your data will be lost!'))) {
         return;
     }
 
     //Prompt for confirmation
-    const confirmation = prompt('Please type DELETE to confirm account deletion:');
+    const confirmation = prompt(translate('Please type DELETE to confirm account deletion:'));
     if (confirmation != 'DELETE') {
-        alert('Account deletion cancelled!');
+        alert(translate('Account deletion cancelled!'));
         return;
     }
 
@@ -392,13 +397,13 @@ function deleteAccount() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Account could not be deleted!');
+            throw new Error(translate('Account could not be deleted!'));
         }
         return response.json();
     })
     .then(data => {
         localStorage.removeItem('access');
-        console.log('Account deleted!');
+        console.log(translate('Account deleted!'));
     })
     .catch(error => {
         console.error('Error DeleteAccount:', error);
@@ -420,7 +425,7 @@ function enableTwoFactorAuthentication() {
     })
     .then(response => {
         if(!response.ok) {
-            throw new Error('Error enabling 2FA');
+            throw new Error(translate('Error enabling 2FA'));
         }
         return response.json();
     })
@@ -442,25 +447,25 @@ function display2FASetup(otpUri) {
 
         QRCode.toCanvas(qrCodeImage, otpUri, function(error) {
             if (error) console.error(error);
-            console.log('QRCode generated!');
+            console.log(translate('QRCode generated!'));
         });
     } else {
         const secretKeyElement = document.createElement('p');
-        secretKeyElement.textContent = `Your 2FA secret key: ${otpUri}`;
+        secretKeyElement.textContent = `2FA secret key: ${otpUri}`;
         setupContainer.appendChild(secretKeyElement);
     }
 
     const instructions = document.createElement('p');
-    instructions.textContent = 'Scan the QR Code or enter the secret key in your 2FA app. Enter the generated code to verify setup.';
+    instructions.textContent = translate('Scan the QR Code and enter the secret key from your 2FA app. Enter the generated code to verify setup.');
     setupContainer.appendChild(instructions);
 
     const verificationCodeInput = document.createElement('input');
     verificationCodeInput.type = 'text';
-    verificationCodeInput.placeholder = 'Enter 2FA code';
+    verificationCodeInput.placeholder = translate('Enter 2FA code');
     setupContainer.appendChild(verificationCodeInput);
 
     const verifyButton = document.createElement('button');
-    verifyButton.textContent = 'Verify Code';
+    verifyButton.textContent = translate('Verify Code');
     verifyButton.addEventListener('click', () => verifyTwoFactorCode(verificationCodeInput.value));
     setupContainer.appendChild(verifyButton);
 }
@@ -476,9 +481,9 @@ function verifyTwoFactorCode(code) {
     })
     .then(response => {
         if(!response.ok) {
-            throw new Error('2FA verification failed');
+            throw new Error(translate('2FA verification failed'));
         }
-        alert('Two-Factor authentication setup complete!');
+        alert(translate('Two-Factor authentication setup complete!'));
     })
     .catch((error) => {
         console.log('Error Verify2FA:', error);
@@ -505,7 +510,7 @@ function changePassword() {
     const accessToken = localStorage.getItem('access');
 
     if (!newPassword.trim()) {
-        alert('New password cannot be empty!');
+        alert(translate('New password cannot be empty!'));
         return;
     }
 
@@ -523,18 +528,18 @@ function changePassword() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Password could not be changed!');
+            throw new Error(translate('Password could not be changed!'));
         }
         return response.json();
     })
     .then(data => {
-        console.log('Password changed!');
-        alert('Password changed successfully! Login again.');
+        console.log(translate('Password changed!'));
+        alert(translate('Password changed successfully! Login again.'));
         document.getElementById('changePasswordForm').reset();
     })
     .catch(error => {
         console.error('Error ChangePassword:', error);
-        alert('Password could not be changed!');
+        alert(translate('Password could not be changed!'));
     });
     toggleChangePasswordContainer();
 }

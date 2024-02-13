@@ -1,5 +1,10 @@
 import appState from "./appstate.js";
 
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 let currentEmail = '';
 let currentPassword = '';
 
@@ -23,8 +28,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     })
     .then(response => {
         if (!response.ok) {
-            alert('Invalid username or password');
-            throw new Error('Invalid username or password');
+            alert(translate('Invalid username or password'));
+            throw new Error(translate('Invalid username or password'));
         }
         return response.json();
     })
@@ -38,7 +43,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         }
     })
     .catch((error) => {
-        console.error('Error: Invalid Email and/or Password');
+        console.error('Error:', translate("Invalid Email and/or Password"));
     });
 });
 
@@ -82,7 +87,7 @@ function submitTwoFactorCode(twoFactorCode) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Invalid two-factor authentication code!');
+            throw new Error(translate('Invalid two-factor authentication code!'));
         }
         return response.json();
     })
@@ -109,7 +114,7 @@ function completeLoginProcess(data) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to update login status');
+            throw new Error(translate('Failed to update login status'));
         }
         return response.json();
     })
@@ -142,7 +147,7 @@ function loadProfile() {
     .then(response => {
         if (!response.ok) {
             document.getElementById('loginForm').reset();
-            throw new Error('Not authorized');
+            throw new Error(translate('Not authorized'));
         }
         return response.json();
     })

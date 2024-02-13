@@ -1,5 +1,10 @@
 import appState, { notifyListeners } from "./appstate.js";
 
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 document.getElementById('login42Button').addEventListener('click', function() {
     const oauthUrl = `https://${host}/api/oauth/authorize`;
     window.location.href = oauthUrl;
@@ -14,12 +19,11 @@ function loadProfile() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Not authorized');
+            throw new Error(translate('Not authorized'));
         }
         return response.json();
     })
     .then(profileData => {
-        // displayUserProfile(profileData);
         appState.userProfile = profileData;
         notifyListeners();
         const PlayerId = profileData.id;
@@ -64,7 +68,7 @@ function updateLoginStatus(playerId, isLoggedIn) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to update login status');
+            throw new Error(translate('Failed to update login status'));
         }
     })
     .catch(error => {
