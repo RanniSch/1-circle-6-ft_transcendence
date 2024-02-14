@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-13 10:16+0000\n"
+"POT-Creation-Date: 2024-02-14 07:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,120 +18,134 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: frontend/templates/frontend/index.html:51
-#: frontend/templates/frontend/index.html:85
-#: frontend/templates/frontend/index.html:134
+#: frontend/templates/frontend/index.html:52
+#: frontend/templates/frontend/index.html:86
+#: frontend/templates/frontend/index.html:135
 msgid "Email:"
 msgstr "E-Mail:"
 
-#: frontend/templates/frontend/index.html:60
-#: frontend/templates/frontend/index.html:135
+#: frontend/templates/frontend/index.html:59
+msgid "Must be a valid email format."
+msgstr "Muss ein gültiges E-Mail-Format sein."
+
+#: frontend/templates/frontend/index.html:61
+#: frontend/templates/frontend/index.html:136
 msgid "Username:"
 msgstr "Benutzername:"
 
-#: frontend/templates/frontend/index.html:69
-#: frontend/templates/frontend/index.html:88
+#: frontend/templates/frontend/index.html:68
+msgid "Can only contain [a-z], [A-Z], [0-9]."
+msgstr "Kann nur [a-z], [A-Z], [0-9] enthalten."
+
+#: frontend/templates/frontend/index.html:70
+#: frontend/templates/frontend/index.html:89
 msgid "Password:"
 msgstr "Passwort:"
 
-#: frontend/templates/frontend/index.html:77
+#: frontend/templates/frontend/index.html:76
+msgid ""
+"Must contain at least 6 characters, must not be the same as username, must "
+"not be all numeric, must not be common"
+msgstr "Muss mindestens 6 Zeichen enthalten, darf nicht mit dem Benutzernamen identisch sein, darf nicht ausschließlich aus Zahlen bestehen und darf nicht häufig vorkommen"
+
+#: frontend/templates/frontend/index.html:78
 msgid "Register"
 msgstr "Registrieren"
 
-#: frontend/templates/frontend/index.html:90
+#: frontend/templates/frontend/index.html:91
 msgid "Show Password"
 msgstr "Passwort anzeigen"
 
-#: frontend/templates/frontend/index.html:92
+#: frontend/templates/frontend/index.html:93
 msgid "Login"
 msgstr "Anmelden"
 
-#: frontend/templates/frontend/index.html:97
+#: frontend/templates/frontend/index.html:98
 msgid "Please enter the 6 digit code from your authenticator app:"
 msgstr ""
 "Bitte geben Sie den 6-stelligen Code aus Ihrer Authentifizierungs-App ein:"
 
-#: frontend/templates/frontend/index.html:104
+#: frontend/templates/frontend/index.html:105
 msgid "Login with 42 credentials"
 msgstr "Anmelden mit 42 Anmeldeinformationen"
 
-#: frontend/templates/frontend/index.html:109
+#: frontend/templates/frontend/index.html:110
 msgid "PLAY PONG LOCALLY"
 msgstr "LOKAL PONG SPIELEN"
 
-#: frontend/templates/frontend/index.html:110
+#: frontend/templates/frontend/index.html:111
 msgid "PLAY PONG AGAINST COMPUTER"
 msgstr "PONG GEGEN COMPUTER SPIELEN"
 
-#: frontend/templates/frontend/index.html:111
+#: frontend/templates/frontend/index.html:112
 msgid "PLAY PONG REMOTELY"
 msgstr "PONG AUS DER FERNE SPIELEN"
 
-#: frontend/templates/frontend/index.html:112
+#: frontend/templates/frontend/index.html:113
 msgid "CHANGE BACKGROUND"
 msgstr "HINTERGRUND ÄNDERN"
 
-#: frontend/templates/frontend/index.html:113
+#: frontend/templates/frontend/index.html:114
 msgid "POWERUPS: OFF"
 msgstr "POWERUPS: AUS"
 
-#: frontend/templates/frontend/index.html:128
+#: frontend/templates/frontend/index.html:129
 msgid "Change Avatar:"
 msgstr "Avatar ändern:"
 
-#: frontend/templates/frontend/index.html:130
+#: frontend/templates/frontend/index.html:131
 msgid "Submit"
 msgstr "Senden"
 
-#: frontend/templates/frontend/index.html:136
+#: frontend/templates/frontend/index.html:137
 msgid "Games Played:"
 msgstr "Gespielte Spiele:"
 
-#: frontend/templates/frontend/index.html:137
+#: frontend/templates/frontend/index.html:138
 msgid "Games Won:"
 msgstr "Gewonnene Spiele:"
 
-#: frontend/templates/frontend/index.html:138
+#: frontend/templates/frontend/index.html:139
 msgid "Games Lost:"
 msgstr "Verlorene Spiele:"
 
-#: frontend/templates/frontend/index.html:139
+#: frontend/templates/frontend/index.html:140
 msgid "Games Tied:"
 msgstr "Unentschiedene Spiele:"
 
-#: frontend/templates/frontend/index.html:144
+#: frontend/templates/frontend/index.html:145
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: frontend/templates/frontend/index.html:150
+#: frontend/templates/frontend/index.html:151
 msgid "Old Password:"
 msgstr "Altes Passwort:"
 
-#: frontend/templates/frontend/index.html:153
+#: frontend/templates/frontend/index.html:154
 msgid "New Password:"
 msgstr "Neues Passwort:"
 
-#: frontend/templates/frontend/index.html:158
+#: frontend/templates/frontend/index.html:159
 msgid "Confirm?"
 msgstr "Bestätigen?"
 
-#: frontend/templates/frontend/index.html:162
+#: frontend/templates/frontend/index.html:163
 msgid "View all Users"
 msgstr "Alle Benutzer anzeigen"
 
-#: frontend/templates/frontend/index.html:165
+#: frontend/templates/frontend/index.html:166
 msgid "Enable Two-Factor Authentication"
 msgstr "Zwei-Faktor-Authentifizierung aktivieren"
 
-#: frontend/templates/frontend/index.html:168
+#: frontend/templates/frontend/index.html:169
 msgid "Delete your Account"
 msgstr "Benutzerkonto löschen"
 
-#: frontend/templates/frontend/index.html:170
+#: frontend/templates/frontend/index.html:171
 msgid "Logout"
 msgstr "Abmelden"
 
-#: frontend/templates/frontend/index.html:185
+#: frontend/templates/frontend/index.html:186
 msgid "Terms of Use"
 msgstr "Nutzungsbedingungen"
 
