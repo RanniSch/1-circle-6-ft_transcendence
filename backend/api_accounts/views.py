@@ -131,8 +131,8 @@ class OAuthCallback(APIView):
             code = request.GET.get('code')
             data = {
                 "grant_type": "authorization_code",
-                "client_id": "u-s4t2ud-9c1eac966bdd22eda52986568012ba678675d5a54f0d8ec28dd59595dcf1afd1",
-                "client_secret": "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",
+                "client_id": os.getenv("CLIENT_ID"),
+                "client_secret": os.getenv("CLIENT_SECRET"),
                 "code": code,
                 "redirect_uri": settings.REDIRECT_URI + "/api/oauth/callback",
             }
@@ -209,7 +209,7 @@ class OAuthAuthorize(APIView):
     def get(self, request):
         auth_url = "https://api.intra.42.fr/oauth/authorize"
         parameters = {
-            "client_id": "u-s4t2ud-9c1eac966bdd22eda52986568012ba678675d5a54f0d8ec28dd59595dcf1afd1",
+            "client_id": os.getenv("CLIENT_ID"),
             "redirect_uri": settings.REDIRECT_URI + "/api/oauth/callback",
             "response_type": "code",
         }

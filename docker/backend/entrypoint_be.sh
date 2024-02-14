@@ -15,6 +15,8 @@ migrate() {
 }
 migrate
 
+python manage.py collectstatic --noinput
+
 if ! command -v uvicorn &> /dev/null
 then
     echo "uvicorn could not be found"
