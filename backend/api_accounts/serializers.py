@@ -3,7 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
 from django.db.models import Q
 
-from .models import Notification, Player, GameSession, PlayerQueue, MatchHistory
+from .models import Notification, Player, MatchHistory, Tournament, TournamentMatch
 from api_buddy.models import Buddy
 
 import pyotp
@@ -29,27 +29,14 @@ class LoginSerializer(serializers.Serializer):
         if not user:
             raise AuthenticationFailed('Invalid credentials - User not found!')
         return user
-
-class GameSessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GameSession
-        fields = ['id', 'player1', 'player2', 'game_data', 'start_time', 'end_time', 'status']
-
-    player1 = serializers.PrimaryKeyRelatedField(queryset=Player.objects.all())
-    player2 = serializers.PrimaryKeyRelatedField(queryset=Player.objects.all())
-    game_data = serializers.JSONField()
-    start_time = serializers.DateTimeField(read_only=True)
-    end_time = serializers.DateTimeField(read_only=True)
-    status = serializers.ChoiceField(choices=GameSession.STATUS_CHOICES, default='ongoing', read_only=True)
     
 class UserSerializer(serializers.ModelSerializer):
     isbuddy = serializers.SerializerMethodField()
     is_two_factor_enabled = serializers.BooleanField(read_only=True)
-    game_sessions = GameSessionSerializer(many=True, read_only=True, source='game_sessions_as_player1')
 
     class Meta:
         model = ModelUser
-        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled', 'game_sessions', 'is_logged_in')
+        fields = ('id', 'email', 'username', 'games_played', 'games_won', 'games_lost', 'games_tied', 'date_joined', 'custom_title', 'profile_avatar', 'isbuddy', 'is_two_factor_enabled', 'is_logged_in')
 
     def get_isbuddy(self, obj):
         request = self.context.get('request')
@@ -92,23 +79,6 @@ class TwoFactorSetupSerializer(serializers.Serializer):
             instance.totp_secret = pyotp.random_base32()
         instance.save()
         return instance
-
-class PlayerQueueSerializer(serializers.ModelSerializer):
-    player = serializers.SlugRelatedField(slug_field='username', queryset=Player.objects.all())
-
-    class Meta:
-        model = PlayerQueue
-        fields = ['id', 'player', 'timestamp']
-    
-    def create(self, validated_data):
-        # Custon logic if needed
-        return PlayerQueue.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        # Custom logic if needed
-        instance.player = validated_data.get('player', instance.player)
-        instance.save()
-        return instance
     
 class MatchHistorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -135,3 +105,43 @@ class MatchHistorySerializer(serializers.ModelSerializer):
         if not ModelUser.objects.filter(username=value).exists():
             raise serializers.ValidationError('Winner username does not exist!')
         return value
+    
+class TournamentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tournament
+        fields = '__all__'
+
+class TournamentMatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TournamentMatch
+        fields = '__all__'
+
+    def validate(self, data):
+        # check that both players are registered on the website
+        player1 = data.get('player1')
+        player2 = data.get('player2')
+
+        if not player1 or not Player.objects.filter(id=player1.id).exists():
+            raise serializers.ValidationError('Player1 is not registered on the website!')
+
+        if not player2 or not Player.objects.filter(id=player2.id).exists():
+            raise serializers.ValidationError('Player2 is not registered on the website!')
+        
+        # check if its different players
+        if player1 == player2:
+            raise serializers.ValidationError('Player1 and Player2 cannot be the same!')
+        
+        # check that there are 2 different usernames
+        if player1.username == player2.username:
+            raise serializers.ValidationError('Players must have different usernames!')
+
+        return data
+    
+    def create(self, validated_data):
+        match = TournamentMatch.objects.create(**validated_data)
+        return match
+    
+    def update(self, instance, validated_data):
+        instance.winner = validated_data.get('winner', instance.winner)
+        instance.save()
+        return instance

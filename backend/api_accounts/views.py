@@ -19,8 +19,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
-from .models import Player, ExpiredTokens, Notification, GameSession, PlayerQueue, MatchHistory
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, GameSessionSerializer, MatchHistorySerializer
+from .models import Player, ExpiredTokens, Notification, MatchHistory, Tournament, TournamentMatch
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, NotificationSerializer, DeleteAccountSerializer, TwoFactorSetupSerializer, MatchHistorySerializer, TournamentSerializer, TournamentMatchSerializer
 from .validations import custom_validation, email_validation, password_validation, username_validation
 from .authentication import ExpiredTokensJWTAuthentication
 
@@ -320,46 +320,6 @@ def update_stats(request):
     else:
         return Response({'error': 'Game not completed!'}, status=status.HTTP_400_BAD_REQUEST)
 
-class GameSessionViewSet(viewsets.ModelViewSet):
-    queryset = GameSession.objects.all()
-    serializer_class = GameSessionSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        # logic for creating game session
-        serializer.save(player1=self.request.user)
-
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def find_match(request):
-    current_user = request.user
-    with transaction.atomic():
-        player_in_queue = PlayerQueue.objects.select_for_update().order_by('timestamp')
-
-        if player_in_queue.filter(player=current_user).exists():
-            logger.info(f'Waiting in queue: {current_user.username}')
-            return Response({'status': 'waiting'})
-        # Check at least 2 players are in the queue
-        if player_in_queue.count() >= 2:
-            first_player = player_in_queue[0].player
-            second_player = player_in_queue[1].player
-
-            game_session = GameSession.objects.create(player1=first_player, player2=second_player)
-
-            PlayerQueue.objects.filter(player__in=[first_player, second_player]).delete()
-
-            logger.info(f'Match found: {first_player.username} vs {second_player.username}')
-            return Response({
-                'status': 'found',
-                'opponent': second_player.username if current_user == first_player else first_player.username,
-                'game_session_id': game_session.id
-            })
-        
-    # if not enough players in queue and current user is not in the first two
-    PlayerQueue.objects.create(player=current_user) # add current user to queue if not there
-    logger.info(f'Added to queue: {current_user.username}')
-    return Response({'status': 'waiting'})
-
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def change_password(request):
@@ -413,3 +373,60 @@ def update_login_status(request):
             return Response({'error': 'User not found!'}, status=status.HTTP_404_NOT_FOUND)
     else:
         return Response({'error': 'Invalid request method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+class TournamentCreateView(generics.CreateAPIView):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+class TournamentListView(generics.ListAPIView):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class TournamentDetailView(generics.RetrieveAPIView):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def register_to_tournament(request, tournament_id):
+    try:
+        tournament = Tournament.objects.get(id=tournament_id)
+        if tournament.participants.count() >= 4:
+            return Response({'error': 'Tournament is already full!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.user in tournament.participants.all():
+            return Response({'error': 'You are already registered to this tournament!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        tournament.participants.add(request.user)
+
+        # check if tournament is full
+        if tournament.participants.count() == 4:
+            tournament.status = 'Ongoing'
+            tournament.save()
+
+        return Response({'success': 'Registered to tournament successfully!'}, status=status.HTTP_200_OK)
+    
+    except Tournament.DoesNotExist:
+        return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
+    
+class TournamentMatchCreateView(generics.CreateAPIView):
+    queryset = TournamentMatch.objects.all()
+    serializer_class = TournamentMatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+class TournamentMatchUpdateView(generics.UpdateAPIView):
+    queryset = TournamentMatch.objects.all()
+    serializer_class = TournamentMatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        serializer.save()
