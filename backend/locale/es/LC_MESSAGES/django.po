@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 07:42+0000\n"
+"POT-Creation-Date: 2024-02-15 14:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,9 @@ msgstr "Contraseña:"
 msgid ""
 "Must contain at least 6 characters, must not be the same as username, must "
 "not be all numeric, must not be common"
-msgstr "Debe contener al menos 6 caracteres, no debe ser igual que el nombre de usuario, no debe ser todo numérico, no debe ser común"
+msgstr ""
+"Debe contener al menos 6 caracteres, no debe ser igual que el nombre de "
+"usuario, no debe ser todo numérico, no debe ser común"
 
 #: frontend/templates/frontend/index.html:78
 msgid "Register"
@@ -77,8 +79,8 @@ msgid "PLAY PONG AGAINST COMPUTER"
 msgstr "JUGAR PONG CONTRA LA COMPUTADORA"
 
 #: frontend/templates/frontend/index.html:112
-msgid "PLAY PONG REMOTELY"
-msgstr "JUGAR PONG DE FORMA REMOTA"
+msgid "PLAY PONG TOURNAMENT"
+msgstr "TORNEO DE JUGAR PONG"
 
 #: frontend/templates/frontend/index.html:113
 msgid "CHANGE BACKGROUND"

@@ -193,22 +193,6 @@ function moveAIPaddle() {
         let aiPredictBallY = aiPredictBallPosition();
         
         let aiPaddleCenter = leftPaddle.y + leftPaddle.height / 2;
-        // let distanceToTarget = Math.abs(aiPredictBallY - aiPaddleCenter);
-        // let moveStep = Math.min(distanceToTarget, 20);
-
-        // if (aiPredictBallY < aiPaddleCenter) {
-        //     leftPaddle.dy = -moveStep;
-        // } else if (aiPredictBallY > aiPaddleCenter) {
-        //     leftPaddle.dy = moveStep;
-        // } else {
-        //     leftPaddle.dy = 0;
-        // }
-
-        // if (leftPaddle.y > 0 && leftPaddle.dy < 0) {
-        //     leftPaddle.y += leftPaddle.dy;
-        // } else if (leftPaddle.y < canvas.height - leftPaddle.height && leftPaddle.dy > 0) {
-        //     leftPaddle.y += leftPaddle.dy;
-        // }
         let aiTargetY = aiPredictBallY + (Math.random() * 2 - 1) * aiMarginError;
         
         if (aiTargetY < aiPaddleCenter) {
@@ -326,13 +310,6 @@ document.addEventListener("keydown", function(event) {
             if (!gameStarted) {
                 gameStarted = true;
                 gameShouldStart = true;
-                if (mode === 'remote') {
-                    if (socket && socket.readyState === WebSocket.OPEN) {
-                        socket.send(JSON.stringify({ action: 'ready_for_matchmaking' }));
-                    } else {
-                        console.log('Waiting for WebSocket connection...');
-                    }
-                }
             }
             break;
     }
@@ -389,12 +366,6 @@ document.getElementById('playPongButtonLocal').addEventListener('click', functio
     document.getElementById('pongCanvas').style.display = 'block';
 });
 
-document.getElementById('playPongButtonRemote').addEventListener('click', function () {
-    mode = 'remote';
-    document.getElementById('pongCanvas').style.display = 'block';
-    startMatchmaking();
-});
-
 // AI mode button
 document.getElementById('playPongButtonAI').addEventListener('click', function() {
     mode = 'AI';
@@ -411,32 +382,6 @@ function resetGame() {
     gameStarted = false;
 }
 
-// setup WebSocket connection
-function setupWebSocket(game_session_id) {
-    const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const wsPath = `${wsScheme}://${window.location.host}/ws/pong/${game_session_id}/`;
-    socket = new WebSocket(wsPath);
-
-    socket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log('WebSocket message received:', data);
-        handleWebSocketMessage(data);
-    };
-
-    socket.onclose = function (e) {
-        console.error('WebSocket closed unexpectedly');
-    }
-}
-
-// handle WebSocket messages
-function handleWebSocketMessage(data) {
-    if (data.message.action === 'update_game_state') {
-        updateGameState(data.message.game_state);
-    } else if (data.message.action === 'move_paddle') {
-        updateOpponentPaddle(data.message.y);
-    }
-}
-
 function updateGameState(gameState) {
     // update game state (ball position, scores, etc.)
     ball.x = gameState.ballX;
@@ -447,50 +392,6 @@ function updateGameState(gameState) {
 
 function updateOpponentPaddle(y) {
     rightPaddle.y = y;
-}
-
-function startMatchmaking() {
-    const accessToken = localStorage.getItem('access');
-    if (!accessToken) {
-        console.log('No access token found');
-        return;
-    }
-    function pollMatchmaking() {
-        fetch(`https://${host}/api/find-match/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + accessToken,
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Matchmaking failed!');
-            }
-            return response.json();        
-        })
-        .then(data => {
-            if (data.status === 'waiting') {
-                console.log('Waiting for opponent...');
-                // Optional: show waiting screen
-                setTimeout(pollMatchmaking, 5000);
-            } else if (data.status === 'found') {
-                console.log('Opponent found:', data.opponent);
-                setupRemoteGame(data.game_session_id, true);
-            }
-        })
-        .catch(error => {
-            console.log('Error startMatchmaking:', error);
-        });
-    }
-    // Start initial polling
-    pollMatchmaking();
-}
-
-function setupRemoteGame(game_session_id, isPlayerOne) {
-    setupWebSocket(game_session_id);
-    window.playerOne = isPlayerOne ? 'You' : 'Opponent';
-    playerTwoName = isPlayerOne ? 'Opponent' : 'You';
-    resetGame();
 }
 
 // Start the game
