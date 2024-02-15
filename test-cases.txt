@@ -5,4 +5,5 @@ Collecting test cases:
 - checking docker logs from all containers + error notifications that maybe not appear in front end.
 - having developer console from browser open in front end (to check f.e. if back end does not reply, permission denied, ...) NO ERROR should pop up here
 - Testing chat functions (User invites other user, User changes user rights and change also from other users, block other users, combinations of everything, ...)
-- 
+
+
