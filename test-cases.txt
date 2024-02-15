@@ -2,10 +2,13 @@ Collecting test cases:
 - stuff evaluation was the easiest one - Guillaume did not wanna break the code. He only tests, what's on the eval sheet and the modules. We wants to check that we understand the project.
   -> Guillaume asks in the beginning who did which tasks of the code and asks everyone due to that questions!
 
-- frontend container for responsive design? (desktop + mobile)
+- frontend container for responsive design? (desktop + mobile) Frameworks are available (f.e. react, tailwind css)
 
 - checking docker logs from all containers + error notifications that maybe not appear in front end.
 - having developer console from browser open in front end (to check f.e. if back end does not reply, permission denied, ...) NO ERROR should pop up here
 - Testing chat functions (User invites other user, User changes user rights and change also from other users, block other users, combinations of everything, ...)
 
-
+- authorising with 42, and then click "no I don't want" --> what's the behavior?
+- registration credentials not saved proper, cannot be used for login (check docker logs)
+- login via 42 intra does not work
+- .env file needs to be created manually and not in repo!!! (for eval)
