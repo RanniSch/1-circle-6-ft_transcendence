@@ -396,29 +396,38 @@ class TournamentDetailView(generics.RetrieveAPIView):
 @permission_classes([permissions.IsAuthenticated])
 def register_to_tournament(request, tournament_id):
     try:
-        tournament = Tournament.objects.get(id=tournament_id)
+        with transaction.atomic():
+            tournament = Tournament.objects.select_for_update().get(id=tournament_id)
 
-        if tournament.status != 'Upcoming':
-            return Response({'error': 'Tournament registration is closed!'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if tournament.participants.count() >= 4:
-            return Response({'error': 'Tournament is already full!'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if request.user in tournament.participants.all():
-            return Response({'error': 'You are already registered to this tournament!'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        tournament.participants.add(request.user)
+            if tournament.status != 'Upcoming':
+                return Response({'error': 'Tournament registration is closed!'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if tournament.participants.count() >= 4:
+                return Response({'error': 'Tournament is already full!'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if request.user in tournament.participants.all():
+                return Response({'error': 'You are already registered to this tournament!'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            tournament.participants.add(request.user)
 
-        # check if tournament is full
-        if tournament.participants.count() == 4:
-            tournament.status = 'Ongoing'
-            tournament.save()
+            # check if tournament is full
+            if tournament.participants.count() == 4:
+                tournament.status = 'Ongoing'
+                tournament.save()
+                setup_tournament_matches(tournament)
+                notify_participants(tournament)
 
-        return Response({'success': 'Registered to tournament successfully!'}, status=status.HTTP_200_OK)
+            return Response({'success': 'Registered to tournament successfully!'}, status=status.HTTP_200_OK)
     
     except Tournament.DoesNotExist:
         return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
-    
+
+def setup_tournament_matches(tournament):
+    pass
+
+def notify_participants(tournament):
+    pass
+
 class TournamentMatchCreateView(generics.CreateAPIView):
     queryset = TournamentMatch.objects.all()
     serializer_class = TournamentMatchSerializer
