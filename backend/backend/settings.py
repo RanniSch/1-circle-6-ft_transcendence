@@ -124,7 +124,7 @@ else:
          "https://10.12.14.3",
      ]
 
-CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3']
+CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3', 'https://172.20.248.62']
 
 CORS_ALLOW_HEADERS = [
     'Authorization',

@@ -359,7 +359,8 @@ document.getElementById('changeBackgroundColour').addEventListener('click', func
     case "white":
         colour = "white"
         backgroundColour = "black"
-        break;}
+        break;
+    }
 });
 
 document.getElementById('playPongButtonLocal').addEventListener('click', function() {
@@ -430,7 +431,6 @@ function startTournament() {
         return response.json();
     })
     .then(data => {
-        console.log(translate('Tournament created!'));
         alert(translate('Tournament created!'));
     })
     .catch(error => console.error('Error startTournament:', error));

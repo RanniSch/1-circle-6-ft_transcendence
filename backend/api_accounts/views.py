@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.utils import timezone
 from datetime import timedelta
 
@@ -30,6 +30,7 @@ from urllib.parse import urlencode
 import requests
 import pyotp
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -423,10 +424,51 @@ def register_to_tournament(request, tournament_id):
         return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
 
 def setup_tournament_matches(tournament):
-    pass
+    participants = list(tournament.participants.all())
+    random.shuffle(participants) # randomize participant order
+
+    max_round_number = tournament.matches.aggregate(Max('match_round'))['match_round__max'] or 0
+    round_number = max_round_number + 1
+
+    while len(participants) >= 2:
+        player1 = participants.pop(0)
+        player2 = participants.pop(0)
+
+        # create a match for these 2 players
+        TournamentMatch.objects.create(
+            tournament=tournament,
+            player1=player1,
+            player2=player2,
+            scheduled_time=timezone.now(),
+            match_round=round_number
+        )
+
+    if participants:
+        lone_player = participants[0]
+        TournamentMatch.objects.create(
+            tournament=tournament,
+            player1=lone_player,
+            player2=None,
+            scheduled_time=None,
+            match_round=round_number
+        )
 
 def notify_participants(tournament):
-    pass
+    max_round_number = tournament.matches.aggregate(Max('match_round'))['match_round__max']
+    matches = TournamentMatch.objects.filter(tournament=tournament, match_round=max_round_number)
+
+    for match in matches:
+        if match.player2:
+            message_to_player1 = f"You have a match against {match.player2.username} in Tournament-ID: '{tournament.id}'."
+            message_to_player2 = f"You have a match against {match.player1.username} in Tournament-ID: '{tournament.id}'."
+
+            Notification.objects.create(receiver=match.player1, message=message_to_player1, is_read=False)
+            Notification.objects.create(receiver=match.player2, message=message_to_player2, is_read=False)
+        else:
+
+            message_to_player1 = f"You will advance to the next round in Tournament-ID: '{tournament.id}' due to a bye."
+            Notification.objects.create(receiver=match.player1, message=message_to_player1, is_read=False)
+
 
 class TournamentMatchCreateView(generics.CreateAPIView):
     queryset = TournamentMatch.objects.all()

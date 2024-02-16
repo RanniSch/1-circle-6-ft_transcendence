@@ -85,14 +85,19 @@ class ExpiredTokens(models.Model):
 User = get_user_model()
 
 class Notification(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications', null=True, blank=True)
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
     message = models.TextField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    is_system_generated = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Notification from {self.sender.username} to {self.receiver.username}"
+        if self.is_system_generated:
+            return f"System Notification to {self.receiver.username}"
+        else:
+            sender_username = self.sender.username if self.sender else 'System'
+            return f"Notification from {sender_username} to {self.receiver.username}"
     
 class MatchHistory(models.Model):
     player1 = models.CharField(max_length=100)
@@ -106,6 +111,7 @@ class MatchHistory(models.Model):
     
 class Tournament(models.Model):
     name = models.CharField(max_length=100)
+    creator = models.CharField(max_length=20, default='System')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length= 20, default='Upcoming') # Upcoming, Ongoing, Completed
@@ -129,6 +135,13 @@ class TournamentMatch(models.Model):
     winner = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_won')
     scheduled_time = models.DateTimeField()
     match_round = models.PositiveIntegerField() # Indicates the round of the tournament this match belongs to
+
+    MATCH_STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    )
+    status = models.CharField(max_length=12, choices=MATCH_STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f'{self.player1} vs {self.player2} in {self.tournament.name}'
