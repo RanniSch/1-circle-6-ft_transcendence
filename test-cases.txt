@@ -6,12 +6,12 @@ Collecting test cases:
 
 - checking docker logs from all containers + error notifications that maybe not appear in front end.
 - having developer console from browser open in front end (to check f.e. if back end does not reply, permission denied, ...) NO ERROR should pop up here
-- Testing chat functions (User invites other user, User changes user rights and change also from other users, block other users, combinations of everything, ...)
 
 - authorising with 42, and then click "no I don't want" --> what's the behavior?
 - registration credentials not saved proper, cannot be used for login (check docker logs)
 - login via 42 intra does not work
 - .env file needs to be created manually and not in repo!!! (for eval)
+
 
 From the old subject:
 General Instructions
@@ -43,6 +43,7 @@ Basic checks
 browser.
 - You can browse the website using the latest version of Chrome and one additionnal browser (we chose Firefox) without encountering any problems or errors.
 
+
 The website
 Security concerns
 - Ensure that the website is secured. 
@@ -63,4 +64,24 @@ Friend interface
 Friend interface
 - The user can enable/disable 2FA (two-factor authentication). If enabled, they must pass it in order to sign in.
 - For example, 2FA can use Google Authenticator, a text message, an email, and so forth.
+
+
+The game
+Matchmaking system
+- When logged in, the user has access to a matchmaking system so they can play Pong lvl games versus other players on the website.
+- When they get matched, a new game is loaded and the two users can start playing.
+
+Gameplay
+- The game itself must be playable and respect the original Pong game. 
+- The controls must be intuitive or correctly explained (with some rules or manual).
+- When a game is over, either a kind of end-game screen is displayed or the game page just exits.
+
+Lags & Disconnects
+- Unexpected disconnections and lags have to be handled.
+- The game and the website must not crash when a user is experiencing lags or is disconnected. 
+Handling such issues in an efficient way is appreciated but not mandatory:
+- Pause the game for a defined duration.
+- Disconnected users can reconnect.
+- Lagging users can catch up to the match.
+- And so forth. Any solution is acceptable. The only requirement is: the game should not crash.
 
