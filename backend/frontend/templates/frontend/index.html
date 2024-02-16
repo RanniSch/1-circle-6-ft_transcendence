@@ -109,7 +109,13 @@
         <input type="text" id="player2NameInput" placeholder="Enter Player 2's name"></input><br>
         <button id="playPongButtonLocal">{% trans "PLAY PONG LOCALLY" %}</button>
         <button id="playPongButtonAI">{% trans "PLAY PONG AGAINST COMPUTER" %}</button>
-        <button id="playPongButtonTournament">{% trans "PLAY PONG TOURNAMENT" %}</button>
+        <button id="playPongButtonTournament">{% trans "PLAY PONG TOURNAMENT" %}
+            <div id="tournamentControls" style="display: none;">
+                <button id="createTournamentButton">{% trans "Create a Tournament" %}</button><br>
+                <input type="text" id="tournamentIDInput" placeholder="Enter Tournament ID"></input><br>
+                <button id="joinTournamentButton">{% trans "Join Tournament" %}</button>
+            </div>
+        </button>
         <button id="changeBackgroundColour">{% trans "CHANGE BACKGROUND" %}</button>
         <button id="enablePowerups">{% trans "POWERUPS: OFF" %}</button>
         <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
@@ -566,7 +572,42 @@
                 'de': 'Passwort erfolgreich geändert! Melde dich erneut an.',
                 'fr': 'Mot de passe changé avec succès! Connectez-vous à nouveau.',
                 'es': '¡Contraseña cambiada con éxito! Inicie sesión de nuevo.',
-            }
+            },
+
+            'Please enter a valid tournament ID' : {
+                'en': 'Please enter a valid tournament ID',
+                'de': 'Bitte geben Sie eine gültige Turnier-ID ein',
+                'fr': 'Veuillez entrer un identifiant de tournoi valide',
+                'es': 'Por favor, introduzca un ID de torneo válido',
+            },
+
+            'Failed to create tournament!' : {
+                'en': 'Failed to create tournament!',
+                'de': 'Turnier konnte nicht erstellt werden!',
+                'fr': 'Échec de la création du tournoi!',
+                'es': '¡No se pudo crear el torneo!',
+            },
+
+            'Tournament created!' : {
+                'en': 'Tournament created!',
+                'de': 'Turnier erstellt!',
+                'fr': 'Tournoi créé!',
+                'es': '¡Torneo creado!',
+            },
+
+            'Failed to join tournament!' : {
+                'en': 'Failed to join tournament!',
+                'de': 'Teilnahme am Turnier fehlgeschlagen!',
+                'fr': 'Échec de la participation au tournoi!',
+                'es': '¡No se pudo unir al torneo!',
+            },
+
+            'Joined tournament!' : {
+                'en': 'Joined tournament!',
+                'de': 'Am Turnier teilgenommen!',
+                'fr': 'Tournoi rejoint!',
+                'es': '¡Torneo unido!',
+            },
         };
 
         function getCurrentLanguage() {
@@ -577,5 +618,7 @@
     <script src="{% static 'js/login42.js' %}"></script>
     <script src="{% static 'js/logout.js' %}"></script>
     <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/pong.js' %}"></script>
+
 </body>
 </html>

@@ -111,6 +111,14 @@ class Tournament(models.Model):
     status = models.CharField(max_length= 20, default='Upcoming') # Upcoming, Ongoing, Completed
     participants = models.ManyToManyField(Player, related_name='tournaments')
 
+    def start_tournament(self):
+        if self.participants.count() == 4:
+            self.status = 'Ongoing'
+            self.save()
+            # additional logic to start tournament
+        else:
+            raise ValueError('Tournament must have 4 participants to start!')
+
     def __str__(self):
         return self.name
 

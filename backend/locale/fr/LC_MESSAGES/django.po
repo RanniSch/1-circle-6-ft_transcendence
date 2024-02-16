@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 14:51+0000\n"
+"POT-Creation-Date: 2024-02-16 08:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: frontend/templates/frontend/index.html:52
 #: frontend/templates/frontend/index.html:86
-#: frontend/templates/frontend/index.html:135
+#: frontend/templates/frontend/index.html:141
 msgid "Email:"
 msgstr "E-mail:"
 
@@ -29,7 +29,7 @@ msgid "Must be a valid email format."
 msgstr "Doit être un format de courrier électronique valide."
 
 #: frontend/templates/frontend/index.html:61
-#: frontend/templates/frontend/index.html:136
+#: frontend/templates/frontend/index.html:142
 msgid "Username:"
 msgstr "Nom d'utilisateur:"
 
@@ -84,71 +84,79 @@ msgstr "JOUER AU PONG CONTRE L'ORDINATEUR"
 msgid "PLAY PONG TOURNAMENT"
 msgstr "TOURNOI DE JOUER AU PONG"
 
-#: frontend/templates/frontend/index.html:113
+#: frontend/templates/frontend/index.html:114
+msgid "Create a Tournament"
+msgstr "Créer un tournoi"
+
+#: frontend/templates/frontend/index.html:116
+msgid "Join Tournament"
+msgstr "Rejoindre le tournoi"
+
+#: frontend/templates/frontend/index.html:119
 msgid "CHANGE BACKGROUND"
 msgstr "CHANGER LE FOND"
 
-#: frontend/templates/frontend/index.html:114
+#: frontend/templates/frontend/index.html:120
 msgid "POWERUPS: OFF"
 msgstr "POWERUPS: OFF"
 
-#: frontend/templates/frontend/index.html:129
+#: frontend/templates/frontend/index.html:135
 msgid "Change Avatar:"
 msgstr "Changer d'avatar:"
 
-#: frontend/templates/frontend/index.html:131
+#: frontend/templates/frontend/index.html:137
 msgid "Submit"
 msgstr "Soumettre"
 
-#: frontend/templates/frontend/index.html:137
+#: frontend/templates/frontend/index.html:143
 msgid "Games Played:"
 msgstr "Jeux joués:"
 
-#: frontend/templates/frontend/index.html:138
+#: frontend/templates/frontend/index.html:144
 msgid "Games Won:"
 msgstr "Parties gagnées:"
 
-#: frontend/templates/frontend/index.html:139
+#: frontend/templates/frontend/index.html:145
 msgid "Games Lost:"
 msgstr "Parties perdues:"
 
-#: frontend/templates/frontend/index.html:140
+#: frontend/templates/frontend/index.html:146
 msgid "Games Tied:"
 msgstr "Parties à égalité:"
 
-#: frontend/templates/frontend/index.html:145
+#: frontend/templates/frontend/index.html:151
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
-#: frontend/templates/frontend/index.html:151
+#: frontend/templates/frontend/index.html:157
 msgid "Old Password:"
 msgstr "Ancien mot de passe:"
 
-#: frontend/templates/frontend/index.html:154
+#: frontend/templates/frontend/index.html:160
 msgid "New Password:"
 msgstr "Nouveau mot de passe:"
 
-#: frontend/templates/frontend/index.html:159
+#: frontend/templates/frontend/index.html:165
 msgid "Confirm?"
 msgstr "Confirmer?"
 
-#: frontend/templates/frontend/index.html:163
+#: frontend/templates/frontend/index.html:169
 msgid "View all Users"
 msgstr "Afficher tous les utilisateurs"
 
-#: frontend/templates/frontend/index.html:166
+#: frontend/templates/frontend/index.html:172
 msgid "Enable Two-Factor Authentication"
 msgstr "Activer l'authentification à deux facteurs"
 
-#: frontend/templates/frontend/index.html:169
+#: frontend/templates/frontend/index.html:175
 msgid "Delete your Account"
 msgstr "Supprimez votre compte"
 
-#: frontend/templates/frontend/index.html:171
+#: frontend/templates/frontend/index.html:177
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: frontend/templates/frontend/index.html:186
+#: frontend/templates/frontend/index.html:192
 msgid "Terms of Use"
 msgstr "Conditions d'utilisation"
 

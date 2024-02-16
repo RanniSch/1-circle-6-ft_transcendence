@@ -107,9 +107,25 @@ class MatchHistorySerializer(serializers.ModelSerializer):
         return value
     
 class TournamentSerializer(serializers.ModelSerializer):
+    participants = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Player.objects.all(),
+        required=False # Participants not required for creating a tournament
+    )
+
     class Meta:
         model = Tournament
         fields = '__all__'
+
+    def create(self, validated_data):
+        # when creating tournament, participants are not required
+        participants_data = validated_data.pop('participants', None)
+        tournament = Tournament.objects.create(**validated_data)
+
+        # if participants are provided, add them to the tournament
+        if participants_data:
+            tournament.participants.set(participants_data)
+        return tournament
 
 class TournamentMatchSerializer(serializers.ModelSerializer):
     class Meta:

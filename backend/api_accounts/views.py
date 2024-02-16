@@ -397,6 +397,10 @@ class TournamentDetailView(generics.RetrieveAPIView):
 def register_to_tournament(request, tournament_id):
     try:
         tournament = Tournament.objects.get(id=tournament_id)
+
+        if tournament.status != 'Upcoming':
+            return Response({'error': 'Tournament registration is closed!'}, status=status.HTTP_400_BAD_REQUEST)
+        
         if tournament.participants.count() >= 4:
             return Response({'error': 'Tournament is already full!'}, status=status.HTTP_400_BAD_REQUEST)
         

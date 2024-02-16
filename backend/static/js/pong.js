@@ -1,3 +1,8 @@
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 let mode = 'local';
@@ -373,6 +378,88 @@ document.getElementById('playPongButtonAI').addEventListener('click', function()
     resetGame();
     document.getElementById('pongCanvas').style.display = 'block';
 });
+
+document.getElementById('playPongButtonTournament').addEventListener('click', function() {
+    const tournamentControls = document.getElementById('tournamentControls');
+
+    // toggle the display of the tournament controls
+    if (tournamentControls.style.display === 'none') {
+        tournamentControls.style.display = 'block';
+    } else {
+        tournamentControls.style.display = 'none';
+    }
+});
+
+document.getElementById('createTournamentButton').addEventListener('click', function() {
+    startTournament();
+});
+
+document.getElementById('joinTournamentButton').addEventListener('click', function() {
+    const tournamentId = document.getElementById('tournamentIDInput').value.trim();
+    if (tournamentId) {
+        joinTournament(tournamentId);
+    } else {
+        alert(translate('Please enter a valid tournament ID'));
+    }
+});
+   
+function startTournament() {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log(translate('No access token found'));
+        return;
+    }
+
+    const data = {
+        name: 'Pong Tournament',
+        start_date: new Date().toISOString(),
+    };
+
+    fetch(`https://${host}/api/tournaments/create/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(translate('Failed to create tournament!'));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(translate('Tournament created!'));
+        alert(translate('Tournament created!'));
+    })
+    .catch(error => console.error('Error startTournament:', error));
+}
+
+function joinTournament(tournamentId) {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+        console.log(translate('No access token found'));
+        return;
+    }
+
+    fetch(`https://${host}/api/tournaments/${tournamentId}/join/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(translate('Failed to join tournament!'));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(translate('Joined tournament!'));
+        alert(translate('Joined tournament!'));
+    })
+}
 
 function resetGame() {
     leftPaddle.score = 0;
