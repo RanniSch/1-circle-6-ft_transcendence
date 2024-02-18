@@ -2,6 +2,7 @@ Collecting test cases:
 - stuff evaluation was the easiest one - Guillaume did not wanna break the code. He only tests, what's on the eval sheet and the modules. We wants to check that we understand the project.
   -> Guillaume asks in the beginning who did which tasks of the code and asks everyone due to that questions!
 
+- JSON Web Tokens (JWT) and 2FA: Is the storage of sensitive information in the payload avoided?
 - frontend container for responsive design? (desktop + mobile) Frameworks are available (f.e. react, tailwind css)
 
 - checking docker logs from all containers + error notifications that maybe not appear in front end.
