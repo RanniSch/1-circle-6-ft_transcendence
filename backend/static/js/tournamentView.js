@@ -56,5 +56,24 @@ function renderTournamentBracket(data) {
     dateParagraph.textContent = `Created on: ${formattedDate}`;
     tournamenViewDiv.appendChild(dateParagraph);
 
+    // participants list
+    if (data.participants && data.participants.length) {
+        const participantTitle = document.createElement('h3');
+        participantTitle.textContent = 'Participants:';
+        tournamenViewDiv.appendChild(participantTitle);
+        
+        const participantList = document.createElement('ul');
+        data.participants.forEach(participant => {
+            const participantItem = document.createElement('li');
+            participantItem.textContent = participant.username;
+            participantList.appendChild(participantItem);
+        });
+        tournamenViewDiv.appendChild(participantList);
+    } else {
+        const noParticipants = document.createElement('p');
+        noParticipants.textContent = 'No participants yet.';
+        tournamenViewDiv.appendChild(noParticipants);
+    }
+
     // Tournament matches
 }
