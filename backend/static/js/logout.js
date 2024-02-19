@@ -1,4 +1,4 @@
-import appState, { notifyListeners, updateLoginStatus } from "./appstate.js";
+import appState, { notifyListeners, updateLoginStatus, translations, getCurrentLanguage } from "./appstate.js";
 
 function translate(key) {
     var currentLanguage = getCurrentLanguage();

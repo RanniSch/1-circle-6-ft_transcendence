@@ -1,3 +1,5 @@
+import { getCurrentLanguage, translations } from "./appstate.js";
+
 function translate(key) {
     var currentLanguage = getCurrentLanguage();
     return translations[key][currentLanguage];
@@ -6,7 +8,6 @@ function translate(key) {
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 let mode = 'local';
-let socket;
 let colour = "white"
 let backgroundColour = "black"
 let enablePowerups = false;
@@ -392,7 +393,8 @@ document.getElementById('playPongButtonTournament').addEventListener('click', fu
 });
 
 document.getElementById('createTournamentButton').addEventListener('click', function() {
-    startTournament();
+    const tournamentName = document.getElementById('tournamentNameInput').value.trim();
+    startTournament(tournamentName);
 });
 
 document.getElementById('joinTournamentButton').addEventListener('click', function() {
@@ -400,11 +402,11 @@ document.getElementById('joinTournamentButton').addEventListener('click', functi
     if (tournamentId) {
         joinTournament(tournamentId);
     } else {
-        alert(translate('Please enter a valid tournament ID'));
+        alert('Please enter a valid tournament ID');
     }
 });
    
-function startTournament() {
+function startTournament(tournamentName) {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
         console.log(translate('No access token found'));
@@ -412,7 +414,7 @@ function startTournament() {
     }
 
     const data = {
-        name: 'Pong Tournament',
+        name: tournamentName,
         start_date: new Date().toISOString(),
     };
 
@@ -431,7 +433,8 @@ function startTournament() {
         return response.json();
     })
     .then(data => {
-        alert(translate('Tournament created!'));
+        const message = `${translate('Tournament created! Tournament ID: ')} ${data.id}`
+        alert(message);
     })
     .catch(error => console.error('Error startTournament:', error));
 }
