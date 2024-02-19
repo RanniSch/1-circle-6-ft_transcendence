@@ -428,6 +428,7 @@ function startTournament(tournamentName) {
     })
     .then(response => {
         if (!response.ok) {
+            alert(translate('Please enter a tournament name'));
             throw new Error(translate('Failed to create tournament!'));
         }
         return response.json();

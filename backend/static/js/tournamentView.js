@@ -6,13 +6,6 @@ function translate(key) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const accessToken = localStorage.getItem('access');
-
-    if (!accessToken) {
-        console.log(translate('No access token found. You are not logged in!'));
-        return;
-    }
-
     document.getElementById('viewTournamentButton').addEventListener('click', function() {
         const tournamentId = document.getElementById('tournamentViewInput').value.trim();
         if (tournamentId) {

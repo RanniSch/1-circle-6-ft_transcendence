@@ -367,14 +367,14 @@ export var translations = {
 
     'Please enter a tournament name' : {
         'en': 'Please enter a tournament name',
-        'de': 'Bitte geben Sie einen Turniernamen ein',
+        'de': 'Bitte gib einen Turniernamen ein',
         'fr': 'Veuillez entrer un nom de tournoi',
         'es': 'Por favor, introduzca un nombre de torneo',
     },
 
     'Please enter a valid tournament ID' : {
         'en': 'Please enter a valid tournament ID',
-        'de': 'Bitte geben Sie eine gültige Turnier-ID ein',
+        'de': 'Bitte gib eine gültige Turnier-ID ein',
         'fr': 'Veuillez entrer un identifiant de tournoi valide',
         'es': 'Por favor, introduzca un ID de torneo válido',
     },
