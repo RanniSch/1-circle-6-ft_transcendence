@@ -25,7 +25,7 @@
         var host = '{{ host }}';
     </script>
     <script src="{% static 'js/appstate.js' %}" type="module"></script>
-    <div style="display:flex;">
+<div style="display:flex;">
         <h1 id="title" style="position: absolute; font-size: 6rem; z-index: 900; top:4rem; opacity: 0.5;">PING PONG TRASCENDENCE</h1>
     </div>
     <div id="language_selector">
@@ -109,6 +109,8 @@
     <div id="playPongDiv" style="display: none; text-align: center;">
         <input type="text" id="player2NameInput" placeholder="Enter Player 2's name"></input><br>
         <button id="playPongButtonLocal">{% trans "PLAY PONG LOCALLY" %}</button>
+            <button id="changeBackgroundColour">{% trans "CHANGE BACKGROUND" %}</button>
+            <button id="enablePowerups">{% trans "POWERUPS: OFF" %}</button>
         <button id="playPongButtonAI">{% trans "PLAY PONG AGAINST COMPUTER" %}</button>
         <button id="playPongButtonTournament">{% trans "PLAY PONG TOURNAMENT" %}
             <div id="tournamentControls" style="display: none;">
@@ -120,9 +122,8 @@
             <button id="viewTournamentButton">{% trans "View Tournament" %}</button>
                 <div id="tournamentView"></div>
             </div>
+            <div id="tournamentMatchContainer"></div>
         </button>
-        <button id="changeBackgroundColour">{% trans "CHANGE BACKGROUND" %}</button>
-        <button id="enablePowerups">{% trans "POWERUPS: OFF" %}</button>
         <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
     </div>
     {% block login %}

@@ -106,28 +106,11 @@ class MatchHistorySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Winner username does not exist!')
         return value
     
-class TournamentSerializer(serializers.ModelSerializer):
-    participants = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Player.objects.all(),
-        required=False # Participants not required for creating a tournament
-    )
-
-    class Meta:
-        model = Tournament
-        fields = '__all__'
-
-    def create(self, validated_data):
-        # when creating tournament, participants are not required
-        participants_data = validated_data.pop('participants', None)
-        tournament = Tournament.objects.create(**validated_data)
-
-        # if participants are provided, add them to the tournament
-        if participants_data:
-            tournament.participants.set(participants_data)
-        return tournament
-
 class TournamentMatchSerializer(serializers.ModelSerializer):
+    player1_username = serializers.CharField(source='player1.username', read_only=True)
+    player2_username = serializers.CharField(source='player2.username', read_only=True)
+    winner_username = serializers.CharField(source='winner.username', read_only=True, allow_null=True)
+
     class Meta:
         model = TournamentMatch
         fields = '__all__'
@@ -161,3 +144,27 @@ class TournamentMatchSerializer(serializers.ModelSerializer):
         instance.winner = validated_data.get('winner', instance.winner)
         instance.save()
         return instance
+
+class TournamentSerializer(serializers.ModelSerializer):
+    participants = serializers.SlugRelatedField(
+        many=True,
+        queryset=Player.objects.all(),
+        slug_field='username',
+        required=False # Participants not required for creating a tournament
+    )
+
+    matches = TournamentMatchSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Tournament
+        fields = '__all__'
+
+    def create(self, validated_data):
+        # when creating tournament, participants are not required
+        participants_data = validated_data.pop('participants', None)
+        tournament = Tournament.objects.create(**validated_data)
+
+        # if participants are provided, add them to the tournament
+        if participants_data:
+            tournament.participants.set(participants_data)
+        return tournament

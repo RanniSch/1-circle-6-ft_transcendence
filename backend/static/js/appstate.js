@@ -378,6 +378,13 @@ export var translations = {
         'fr': 'Veuillez entrer un identifiant de tournoi valide',
         'es': 'Por favor, introduzca un ID de torneo válido',
     },
+
+    'Start Tournament' : {
+        'en': 'Start Tournament',
+        'de': 'Turnier starten',
+        'fr': 'Démarrer le tournoi',
+        'es': 'Iniciar torneo',
+    },
 };
 
 export default appState;

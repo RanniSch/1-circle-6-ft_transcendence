@@ -1,5 +1,16 @@
 import { getCurrentLanguage, translations } from "./appstate.js";
 
+document.addEventListener('DOMContentLoaded', function() {
+    const startTournamentMatchButton = document.createElement('button');
+    startTournamentMatchButton.textContent = translate('Start Tournament');
+    startTournamentMatchButton.id = 'startTournamentMatchButton';
+    document.getElementById('tournamentMatchContainer').appendChild(startTournamentMatchButton);
+
+    startTournamentMatchButton.addEventListener('click', function() {
+        startTournamentMatch();
+    });
+});
+
 function translate(key) {
     var currentLanguage = getCurrentLanguage();
     return translations[key][currentLanguage];
@@ -473,18 +484,6 @@ function resetGame() {
     gameStarted = false;
 }
 
-function updateGameState(gameState) {
-    // update game state (ball position, scores, etc.)
-    ball.x = gameState.ballX;
-    ball.y = gameState.ballY;
-    leftPaddle.score = gameState.leftScore;
-    rightPaddle.score = gameState.rightScore;
-}
-
-function updateOpponentPaddle(y) {
-    rightPaddle.y = y;
-}
-
 // Start the game
 gameLoop();
 
@@ -587,4 +586,12 @@ function submitMatchHistory(winner, loser, score) {
     .catch(error => {
         console.log('Error submitMatchHistory:', error);
     });
+}
+
+function startTournamentMatch() {
+    resetGame();
+    gameShouldStart = true;
+    gameStarted = false;
+    console.log('Tournament match started!');
+    document.getElementById('pongCanvas').style.display = 'block';
 }

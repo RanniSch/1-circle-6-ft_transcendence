@@ -63,9 +63,9 @@ function renderTournamentBracket(data) {
         tournamenViewDiv.appendChild(participantTitle);
         
         const participantList = document.createElement('ul');
-        data.participants.forEach(participant => {
+        data.participants.forEach(participantId => {
             const participantItem = document.createElement('li');
-            participantItem.textContent = participant.username;
+            participantItem.textContent = participantId;
             participantList.appendChild(participantItem);
         });
         tournamenViewDiv.appendChild(participantList);
@@ -76,4 +76,21 @@ function renderTournamentBracket(data) {
     }
 
     // Tournament matches
+    if (data.matches && data.matches.length) {
+        const matchesTitle = document.createElement('h3');
+        matchesTitle.textContent = 'Matches:';
+        tournamenViewDiv.appendChild(matchesTitle);
+
+        const matchesList = document.createElement('ul');
+        data.matches.forEach(match => {
+            const matchItem = document.createElement('li');
+            matchItem.textContent = `${match.player1_username} vs ${match.player2_username} - ${new Date(match.scheduled_time).toLocaleString('de-DE')}`;
+            matchesList.appendChild(matchItem);
+        });
+        tournamenViewDiv.appendChild(matchesList);
+    } else {
+        const noMatches = document.createElement('p');
+        noMatches.textContent = 'No matches scheduled yet.';
+        tournamenViewDiv.appendChild(noMatches);
+    }
 }

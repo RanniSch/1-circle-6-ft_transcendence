@@ -1,4 +1,5 @@
 import appState from "./appstate.js";
+import { notifyListeners } from "./appstate.js";
 
 document.getElementById('registrationForm').addEventListener('submit', function(event) {
     event.preventDefault();
