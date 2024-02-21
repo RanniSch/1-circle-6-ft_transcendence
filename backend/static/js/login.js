@@ -1,3 +1,4 @@
+import { getCurrentLanguage, translations, notifyListeners } from "./appstate.js";
 import appState from "./appstate.js";
 
 function translate(key) {

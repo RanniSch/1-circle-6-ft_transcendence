@@ -124,7 +124,7 @@ else:
          "https://10.12.14.3",
      ]
 
-CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3']
+CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3', 'https://172.20.248.62']
 
 CORS_ALLOW_HEADERS = [
     'Authorization',
@@ -232,7 +232,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 if DEBUG == True:
-    STATICFILES_DIRS = [BASE_DIR / 'static',]
+    STATIC_ROOT = [BASE_DIR / 'static',]
 else:
     STATIC_ROOT = BASE_DIR / 'static'
 

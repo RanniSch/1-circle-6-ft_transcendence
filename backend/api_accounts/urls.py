@@ -2,10 +2,6 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from . import views
-from .views import GameSessionViewSet
-
-game_session_list = GameSessionViewSet.as_view({'get': 'list', 'post': 'create'})
-game_session_detail = GameSessionViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})
 
 urlpatterns = [
     path('register/', views.UserRegistration.as_view(), name='register'),
@@ -23,10 +19,15 @@ urlpatterns = [
     path('enable-2fa/', views.EnableTwoFactorAPIView.as_view(), name='enable_2fa'),
     path('verify-2fa/', views.VerifyTwoFactorAPIView.as_view(), name='verify_2fa'),
     path('update-stats/', views.update_stats, name='update_stats'),
-    path('game-sessions/', game_session_list, name='game_session_list'),
-    path('game-sessions/<int:pk>/', game_session_detail, name='game_session_detail'),
-    path('find-match/', views.find_match, name='find_match'),
     path('change-password/', views.change_password, name='change_password'),
     path('match-history/', views.MatchHistoryListCreate.as_view(), name='match_history'),
     path('update-login-status/', views.update_login_status, name='update_login_status'),
+    path('tournaments/create/', views.TournamentCreateView.as_view(), name='create_tournament'),
+    path('tournaments/', views.TournamentListView.as_view(), name='list-tournaments'),
+    path('tournaments/<int:pk>/', views.TournamentDetailView.as_view(), name='tournament-detail'),
+    path('tournaments/<int:tournament_id>/join/', views.register_to_tournament, name='join-tournament'),
+    path('tournaments/<int:tournament_id>/setup-final/', views.setup_final_match, name='setup_final'),
+    path('matches/create/', views.TournamentMatchCreateView.as_view(), name='create_match'),
+    path('matches/<int:pk>/', views.TournamentMatchDetailView.as_view(), name='match-detail'),
+    path('matches/<int:pk>/update/', views.TournamentMatchUpdateView.as_view(), name='update_match'),
 ]
