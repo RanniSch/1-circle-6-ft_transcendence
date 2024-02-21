@@ -1,6 +1,12 @@
 import { getCurrentLanguage, translations } from "./appstate.js";
 
 document.addEventListener('DOMContentLoaded', function() {
+    const startTournamentMatchInput = document.createElement('input');
+    startTournamentMatchInput.type = 'text';
+    startTournamentMatchInput.placeholder = 'Enter Match ID';
+    startTournamentMatchInput.id = 'startTournamentMatchInput';
+    document.getElementById('tournamentMatchContainer').appendChild(startTournamentMatchInput);
+
     const startTournamentMatchButton = document.createElement('button');
     startTournamentMatchButton.textContent = translate('Start Tournament');
     startTournamentMatchButton.id = 'startTournamentMatchButton';
@@ -406,6 +412,7 @@ document.getElementById('playPongButtonTournament').addEventListener('click', fu
 document.getElementById('createTournamentButton').addEventListener('click', function() {
     const tournamentName = document.getElementById('tournamentNameInput').value.trim();
     startTournament(tournamentName);
+    document.getElementById('tournamentNameInput').value = '';
 });
 
 document.getElementById('joinTournamentButton').addEventListener('click', function() {
@@ -415,6 +422,7 @@ document.getElementById('joinTournamentButton').addEventListener('click', functi
     } else {
         alert('Please enter a valid tournament ID');
     }
+    document.getElementById('tournamentIDInput').value = '';
 });
    
 function startTournament(tournamentName) {
@@ -525,18 +533,48 @@ function updateStats(winner, loser) {
 }
 
 function checkWinner() {
-    let winnerName, loserName, score;
+    let winnerId, winnerName, loserName, score;
+    let matchId = document.getElementById('startTournamentMatchInput').value;
     if (leftPaddle.score == 5 || rightPaddle.score == 5) {
         if (leftPaddle.score == 5) {
+            winnerId = window.playerOneId;
             winnerName = window.playerOne || 'Player1';
             loserName = playerTwoName || 'Player2';
         } else {
+            winnerId = window.playerTwoId;
             winnerName = playerTwoName || 'Player2';
             loserName = window.playerOne || 'Player1';
         }
-        score = `${leftPaddle.score} - ${rightPaddle.score}`;
-        alert(`${winnerName} wins!`);
 
+        const accessToken = localStorage.getItem('access');
+        const data_winner = {
+            winner: winnerId,
+            winner_username: winnerName,
+        };
+
+        fetch(`https://${host}/api/matches/${matchId}/update/`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data_winner)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update match!');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Match updated!');
+            alert(`${winnerName} wins!`);
+        })
+        .catch(error => {
+            console.log('Error checkWinner:', error);
+        });
+
+        score = `${leftPaddle.score} - ${rightPaddle.score}`;
         updateStats(winnerName, loserName);
         submitMatchHistory(winnerName, loserName, score);
         resetGame();
@@ -589,9 +627,40 @@ function submitMatchHistory(winner, loser, score) {
 }
 
 function startTournamentMatch() {
-    resetGame();
-    gameShouldStart = true;
-    gameStarted = false;
-    console.log('Tournament match started!');
-    document.getElementById('pongCanvas').style.display = 'block';
+    const accessToken = localStorage.getItem('access');
+    const matchId = document.getElementById('startTournamentMatchInput').value;
+    if (!matchId) {
+        console.log('Please enter a valid match ID');
+        alert('Please enter a valid match ID');
+        return;
+    }
+
+    fetch(`https://${host}/api/matches/${matchId}/`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to join tournament!');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Tournament Details:', data);
+        window.playerOneId = data.player1;
+        window.playerOne = data.player1_username;
+        window.playerTwoId = data.player2;
+        playerTwoName = data.player2_username;
+        resetGame();
+        gameShouldStart = true;
+        gameStarted = false;
+        console.log('Tournament match started!');
+        document.getElementById('pongCanvas').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error startTournamentMatch:', error);
+    });
 }

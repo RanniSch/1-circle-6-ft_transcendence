@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             alert(translate('Please enter a valid tournament ID'));
         }
+        document.getElementById('tournamentViewInput').value = '';
     })
 });
 
@@ -34,9 +35,44 @@ function loadTournamentVisualization(tournamentId) {
     })
     .then(data => {
         renderTournamentBracket(data);
+
+        // check if tournament status = 'Finals'
+        if (data.status !== 'Finals' && shouldSetupFinalMatch(data)) {
+            setupFinalMatch(tournamentId);
+        }
     })
     .catch(error => {
         console.error('Error TournamentView:', error);
+    });
+}
+
+function shouldSetupFinalMatch(tournamentData) {
+    const firstRoundMatches = tournamentData.matches.filter(match => match.match_round === 1).every(match => match.status === 'Completed');
+    return firstRoundMatches;
+}
+
+function setupFinalMatch(tournamentId) {
+    const accessToken = localStorage.getItem('access');
+
+    fetch(`https://${host}/api/tournaments/${tournamentId}/setup-final/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to setup final match');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Final match setup successfully:', data);
+        loadTournamentVisualization(tournamentId);
+    })
+    .catch(error => {
+        console.error('Error setting up final match:', error);
     });
 }
 
@@ -77,20 +113,63 @@ function renderTournamentBracket(data) {
 
     // Tournament matches
     if (data.matches && data.matches.length) {
-        const matchesTitle = document.createElement('h3');
-        matchesTitle.textContent = 'Matches:';
-        tournamenViewDiv.appendChild(matchesTitle);
-
-        const matchesList = document.createElement('ul');
-        data.matches.forEach(match => {
-            const matchItem = document.createElement('li');
-            matchItem.textContent = `${match.player1_username} vs ${match.player2_username} - ${new Date(match.scheduled_time).toLocaleString('de-DE')}`;
-            matchesList.appendChild(matchItem);
-        });
-        tournamenViewDiv.appendChild(matchesList);
+        const firstRoundMatches = data.matches.filter(match => match.match_round === 1);
+        if (firstRoundMatches.length > 0) {
+            const matchesTitle = document.createElement('h3');
+            matchesTitle.textContent = 'First Round:';
+            tournamenViewDiv.appendChild(matchesTitle);
+    
+            const matchesList = document.createElement('ul');
+            firstRoundMatches.forEach(match => {
+                const matchItem = document.createElement('li');
+                matchItem.textContent = `${match.player1_username} vs ${match.player2_username} - ${new Date(match.scheduled_time).toLocaleString('de-DE')}`;
+                matchesList.appendChild(matchItem);
+            });
+            tournamenViewDiv.appendChild(matchesList);
+        } else {
+            const noMatches = document.createElement('p');
+            noMatches.textContent = 'No first Round matches scheduled yet.';
+            tournamenViewDiv.appendChild(noMatches);
+        }
+        const finalMatches = data.matches.filter(match => match.match_round === 2);
+        if (finalMatches.length > 0) {
+            const matchesTitleFinal = document.createElement('h3');
+            matchesTitleFinal.textContent = 'Final:';
+            tournamenViewDiv.appendChild(matchesTitleFinal);
+    
+            const matchesListFinal = document.createElement('ul');
+            finalMatches.forEach(match => {
+                const matchItem = document.createElement('li');
+                matchItem.textContent = `${match.player1_username} vs ${match.player2_username} - ${new Date(match.scheduled_time).toLocaleString('de-DE')}`;
+                matchesListFinal.appendChild(matchItem);
+            });
+            tournamenViewDiv.appendChild(matchesListFinal);
+        } else {
+            const noFinalMatches = document.createElement('p');
+            noFinalMatches.textContent = 'No final match scheduled yet.';
+            tournamenViewDiv.appendChild(noFinalMatches);
+        }
     } else {
         const noMatches = document.createElement('p');
         noMatches.textContent = 'No matches scheduled yet.';
         tournamenViewDiv.appendChild(noMatches);
+    }
+
+    // Tournament winner
+    if (data.status === 'Completed') {
+        const finale = data.matches.filter(match => match.match_round === 2 && match.status === 'Completed');
+        if (finale) {
+            const winnerTitle = document.createElement('h3');
+            winnerTitle.textContent = 'Tournament Winner:';
+            tournamenViewDiv.appendChild(winnerTitle);
+    
+            const winnerName = document.createElement('p');
+            winnerName.textContent = finale.winner_username ? `Congratulations ${finalMatch.winner_username}!` : 'No winner yet.';
+            tournamenViewDiv.appendChild(winnerName);
+        } else {
+            const noWinner = document.createElement('p');
+            noWinner.textContent = 'No winner yet.';
+            tournamenViewDiv.appendChild(noWinner);
+        }
     }
 }

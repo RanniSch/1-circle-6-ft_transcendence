@@ -140,6 +140,7 @@ class TournamentMatch(models.Model):
         ('pending', 'Pending'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
+        ('finals', 'Finals'),
     )
     status = models.CharField(max_length=12, choices=MATCH_STATUS_CHOICES, default='pending')
 

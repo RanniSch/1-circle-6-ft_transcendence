@@ -114,25 +114,28 @@ class TournamentMatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = TournamentMatch
         fields = '__all__'
+        read_only_fields = ['scheduled_time', 'match_round', 'tournament', 'player1', 'player2', 'status']
 
     def validate(self, data):
+        # skip player registration if PUT request
+        if not self.instance:
         # check that both players are registered on the website
-        player1 = data.get('player1')
-        player2 = data.get('player2')
+            player1 = data.get('player1')
+            player2 = data.get('player2')
 
-        if not player1 or not Player.objects.filter(id=player1.id).exists():
-            raise serializers.ValidationError('Player1 is not registered on the website!')
+            if not player1 or not Player.objects.filter(id=player1.id).exists():
+                raise serializers.ValidationError('Player1 is not registered on the website!')
 
-        if not player2 or not Player.objects.filter(id=player2.id).exists():
-            raise serializers.ValidationError('Player2 is not registered on the website!')
-        
-        # check if its different players
-        if player1 == player2:
-            raise serializers.ValidationError('Player1 and Player2 cannot be the same!')
-        
-        # check that there are 2 different usernames
-        if player1.username == player2.username:
-            raise serializers.ValidationError('Players must have different usernames!')
+            if not player2 or not Player.objects.filter(id=player2.id).exists():
+                raise serializers.ValidationError('Player2 is not registered on the website!')
+            
+            # check if its different players
+            if player1 == player2:
+                raise serializers.ValidationError('Player1 and Player2 cannot be the same!')
+            
+            # check that there are 2 different usernames
+            if player1.username == player2.username:
+                raise serializers.ValidationError('Players must have different usernames!')
 
         return data
     
@@ -141,9 +144,19 @@ class TournamentMatchSerializer(serializers.ModelSerializer):
         return match
     
     def update(self, instance, validated_data):
-        instance.winner = validated_data.get('winner', instance.winner)
-        instance.save()
-        return instance
+        winner_username = validated_data.get('winner', None)
+        #winner_id = validated_data.get('winner', None)
+        if winner_username:
+            try:
+                winner = Player.objects.get(username=winner_username)
+                instance.winner = winner
+                instance.status = 'Completed'
+                instance.save()
+                return instance
+            except Player.DoesNotExist:
+                raise serializers.ValidationError({'winner_username': 'Winner username does not exist!'})
+        else:
+            raise serializers.ValidationError({'winner': 'Winner id is required to update the match!'})
 
 class TournamentSerializer(serializers.ModelSerializer):
     participants = serializers.SlugRelatedField(
@@ -168,3 +181,20 @@ class TournamentSerializer(serializers.ModelSerializer):
         if participants_data:
             tournament.participants.set(participants_data)
         return tournament
+    
+    def update(self, instance, validated_data):
+        # perform standard update
+        instance = super().update(instance, validated_data)
+
+        # check if first round matches are completed
+        first_round_matches = instance.matches.filter(match_round=1)
+        if first_round_matches.count() == 2 and all(match.status == 'Completed' for match in first_round_matches):
+            instance.status = 'Finals'
+            instance.save()
+
+        # check if final match is completed
+        final_matches = instance.matches.filter(match_round=2)
+        if final_matches.count() == 1 and all(match.status == 'Completed' for match in final_matches):
+            instance.status = 'Completed'
+            instance.save()
+        return instance

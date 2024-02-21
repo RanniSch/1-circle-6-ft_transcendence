@@ -459,8 +459,8 @@ def notify_participants(tournament):
 
     for match in matches:
         if match.player2:
-            message_to_player1 = f"You have a match against {match.player2.username} in Tournament-ID: '{tournament.id}'."
-            message_to_player2 = f"You have a match against {match.player1.username} in Tournament-ID: '{tournament.id}'."
+            message_to_player1 = f"You have a match against {match.player2.username} in Tournament-ID: '{tournament.id}'. Your Match-ID is '{match.id}'."
+            message_to_player2 = f"You have a match against {match.player1.username} in Tournament-ID: '{tournament.id}'. Your Match-ID is '{match.id}'."
 
             Notification.objects.create(receiver=match.player1, message=message_to_player1, is_read=False)
             Notification.objects.create(receiver=match.player2, message=message_to_player2, is_read=False)
@@ -478,10 +478,53 @@ class TournamentMatchCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
+class TournamentMatchDetailView(generics.RetrieveAPIView):
+    queryset = TournamentMatch.objects.all()
+    serializer_class = TournamentMatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 class TournamentMatchUpdateView(generics.UpdateAPIView):
     queryset = TournamentMatch.objects.all()
     serializer_class = TournamentMatchSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_update(self, serializer):
-        serializer.save()
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def setup_final_match(request, tournament_id):
+    try:
+        # fetch tournament
+        tournament = Tournament.objects.get(id=tournament_id)
+
+        # check if first round matches are completed
+        first_round_matches = tournament.matches.filter(match_round=1)
+        if first_round_matches.count() != 2 or not all([match.winner for match in first_round_matches]):
+            # first round matches are not completed
+            return Response({'error': 'First round matches are not completed!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # extract winners of first round matches
+        winners = [match.winner for match in first_round_matches]
+
+        # create a final match
+        final_match = TournamentMatch.objects.create(
+            tournament=tournament,
+            player1=winners[0],
+            player2=winners[1],
+            scheduled_time=timezone.now(),
+            match_round=2
+        )
+
+        # update tournament status
+        tournament.status = 'Finals'
+        tournament.save()
+
+        final_match_data = TournamentMatchSerializer(final_match).data
+
+        return Response({
+            'success': 'Final match setup successfully!',
+            'final_match': final_match_data
+        }, status=status.HTTP_200_OK)
+    
+    except Tournament.DoesNotExist:
+        return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
