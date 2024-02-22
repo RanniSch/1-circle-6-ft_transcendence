@@ -577,6 +577,7 @@ function checkWinner() {
         score = `${leftPaddle.score} - ${rightPaddle.score}`;
         updateStats(winnerName, loserName);
         submitMatchHistory(winnerName, loserName, score);
+        alert(`${winnerName} wins!`);
         resetGame();
         resetGameFlags();
     }

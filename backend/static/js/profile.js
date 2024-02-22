@@ -186,6 +186,7 @@ function markNotificationsAsRead(notificationId) {
 
 function displayUserProfile(data) {
     if (data.profile_avatar) {
+        console.log('Profile avatar:', data.profile_avatar);
         const profileAvatar = document.getElementById('profileAvatar');
         profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';

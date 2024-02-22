@@ -37,7 +37,7 @@ function loadTournamentVisualization(tournamentId) {
         renderTournamentBracket(data);
 
         // verify if final match should be set up
-        if (data.status === 'Finals') {
+        if (data.status === 'Finals' || data.status === 'Ongoing') {
             const finalMatch = data.matches.find(match => match.match_round === 2);
             if (!finalMatch) {
                 setupFinalMatch(tournamentId);

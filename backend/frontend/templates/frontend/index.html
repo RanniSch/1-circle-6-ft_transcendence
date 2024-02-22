@@ -50,6 +50,7 @@
     <div class="non-game-element" id="reg" style="background-color:grey; padding:2rem; border-radius: 15px; z-index: 1000;">
 
         <form id="registrationForm" class="registration_style" method="post">
+            {% csrf_token %}
             <label for="email">{% trans "Email:" %}</label>
             <input
                 type="email"
@@ -125,7 +126,7 @@
             <div id="tournamentMatchContainer"></div>
         </button>
         <canvas id="pongCanvas" width="800" height="600" style="display: none;"></canvas>
-    </div>
+    </div> -->
     {% block login %}
     <script type='module' src="{% static 'js/login.js' %}"></script>
     {% endblock %}
@@ -136,6 +137,7 @@
     
     <div class="non-game-element" id="profileSection" style="display: none; padding: 1rem;">
         <form id = "avatarForm" enctype="multipart/form-data">
+            {% csrf_token %}
             <h1 style="padding: 1rem;">User Profile</h1>
             <img id="profileAvatar" src="" alt="Profile Avatar" style="background-color: rebeccapurple; width:150px; height:150px; border-radius: 15px; padding: 1rem;"/>    
             <label for="avatar">{% trans "Change Avatar:" %}</label>

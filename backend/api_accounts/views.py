@@ -6,7 +6,6 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Q, Max
 from django.utils import timezone
-from datetime import timedelta
 
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
@@ -15,7 +14,6 @@ from rest_framework import viewsets, status, permissions, generics, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
@@ -130,6 +128,9 @@ class OAuthCallback(APIView):
     def get(self, request):
         if request.method == 'GET':
             code = request.GET.get('code')
+            error = request.GET.get('error')
+            if error or not code:
+                return HttpResponseRedirect('/')
             data = {
                 "grant_type": "authorization_code",
                 "client_id": os.getenv("CLIENT_ID"),
@@ -468,7 +469,17 @@ def notify_participants(tournament):
 
             message_to_player1 = f"You will advance to the next round in Tournament-ID: '{tournament.id}' due to a bye."
             Notification.objects.create(receiver=match.player1, message=message_to_player1, is_read=False)
+    
+    if tournament.status == 'Finals' or tournament.status == 'Finished':
+        final_match = matches.first()
+        if final_match and final_match.winner:
+            message = f"Congratulations! You have won the tournament '{tournament.name}'!"
+            Notification.objects.create(receiver=final_match.winner, message=message, is_read=False)
 
+            if final_match.player2:
+                loser = final_match.player1 if final_match.winner == final_match.player2 else final_match.player2
+                message = f"You finished as runner-up in the tournament '{tournament.name}'."
+                Notification.objects.create(receiver=loser, message=message, is_read=False)
 
 class TournamentMatchCreateView(generics.CreateAPIView):
     queryset = TournamentMatch.objects.all()

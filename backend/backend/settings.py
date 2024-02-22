@@ -67,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware', # CORS - Cross-Origin Resource Sharing
     'django.middleware.locale.LocaleMiddleware', # Support for multiple languages !!Must be before CommonMiddleware!!
+    'api_accounts.csp_middleware.CustomCSPMiddleware', # custom - Content Security Policy
     'django.middleware.common.CommonMiddleware',
 ]
 
@@ -237,7 +238,7 @@ else:
     STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/avatars/'
-MEDIA_ROOT = BASE_DIR / ''
+MEDIA_ROOT = os.path.join(BASE_DIR, 'avatars')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
