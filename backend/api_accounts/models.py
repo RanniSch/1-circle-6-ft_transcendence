@@ -37,7 +37,7 @@ class PlayerManager(BaseUserManager):
 class Player(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=True)
 
-    profile_avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default_avatar.jpg')
+    profile_avatar = models.ImageField(upload_to='./', null=True, blank=True, default='./default_avatar.jpg')
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=75, unique=True)
     username = models.CharField(max_length=25, unique=True, null=True, blank=True)
