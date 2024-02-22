@@ -528,3 +528,23 @@ def setup_final_match(request, tournament_id):
         return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['PUT'])
+@permission_classes([permissions.IsAuthenticated])
+def update_tournament_finished(request, tournament_id):
+    try:
+        tournament = Tournament.objects.get(id=tournament_id)
+        
+        # check if final match is completed
+        final_match = tournament.matches.filter(match_round=2, status='Completed')
+
+        if final_match.count() == 1:
+            tournament.status = 'Finished'
+            tournament.save()
+
+            serializer = TournamentSerializer(tournament)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Final match is not completed!'}, status=status.HTTP_400_BAD_REQUEST)
+    except Tournament.DoesNotExist:
+        return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
