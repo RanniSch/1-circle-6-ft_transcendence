@@ -51,6 +51,11 @@ function loadTournamentVisualization(tournamentId) {
     });
 }
 
+function shouldSetupFinalMatch(tournamentData) {
+    const firstRoundMatches = tournamentData.matches.filter(match => match.match_round === 1).every(match => match.status === 'Completed');
+    return firstRoundMatches;
+}
+
 function setupFinalMatch(tournamentId) {
     const accessToken = localStorage.getItem('access');
 
@@ -73,32 +78,6 @@ function setupFinalMatch(tournamentId) {
     })
     .catch(error => {
         console.error('Error setting up final match:', error);
-    });
-}
-
-function updateTournamentFinished(tournamentId) {
-    const accessToken = localStorage.getItem('access');
-
-    fetch(`https://${host}/api/tournaments/${tournamentId}/update-finished/`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: 'Finished' })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update tournament status');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Tournament status updated successfully:', data);
-        loadTournamentVisualization(tournamentId);
-    })
-    .catch(error => {
-        console.error('Error updating tournament status:', error);
     });
 }
 
@@ -182,15 +161,15 @@ function renderTournamentBracket(data) {
     }
 
     // Tournament winner
-    if (data.status === 'Finished') {
+    if (data.status === 'Completed') {
         const finale = data.matches.filter(match => match.match_round === 2 && match.status === 'Completed');
-        if (finale.length > 0) {
+        if (finale) {
             const winnerTitle = document.createElement('h3');
             winnerTitle.textContent = 'Tournament Winner:';
             tournamenViewDiv.appendChild(winnerTitle);
     
             const winnerName = document.createElement('p');
-            winnerName.textContent = `Congratulations ${finale[0].winner_username}!`;
+            winnerName.textContent = finale.winner_username ? `Congratulations ${finalMatch.winner_username}!` : 'No winner yet.';
             tournamenViewDiv.appendChild(winnerName);
         } else {
             const noWinner = document.createElement('p');
