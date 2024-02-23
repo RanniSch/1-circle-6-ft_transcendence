@@ -385,6 +385,62 @@ export var translations = {
         'fr': 'Démarrer le tournoi',
         'es': 'Iniciar torneo',
     },
+    
+    'By clicking OK you agree to the Terms of Use.' : {
+        'en': 'By clicking OK you agree to the Terms of Use.',
+        'de': 'Durch Klicken auf OK stimmst du den Nutzungsbedingungen zu.',
+        'fr': 'En cliquant sur OK, vous acceptez les conditions d\'utilisation.',
+        'es': 'Al hacer clic en Aceptar, aceptas los Términos de uso.',
+    },
+
+    'Regsitration canceled!' : {
+        'en': 'Regsitration canceled!',
+        'de': 'Registrierung abgebrochen!',
+        'fr': 'Inscription annulée!',
+        'es': '¡Registro cancelado!',
+    },
+
+    'Email already exists!' : {
+        'en': 'Email already exists!',
+        'de': 'E-Mail existiert bereits!',
+        'fr': 'L\'e-mail existe déjà!',
+        'es': '¡El correo electrónico ya existe!',
+    },
+
+    'Username already exists!' : {
+        'en': 'Username already exists!',
+        'de': 'Benutzername existiert bereits!',
+        'fr': 'Le nom d\'utilisateur existe déjà!',
+        'es': '¡El nombre de usuario ya existe!',
+    },
+
+    'Registration successful!' : {
+        'en': 'Registration successful!',
+        'de': 'Registrierung erfolgreich!',
+        'fr': 'Inscription réussie!',
+        'es': '¡Registro exitoso!',
+    },
+
+    'This password is too common!' : {
+        'en': 'This password is too common!',
+        'de': 'Dieses Passwort ist zu unsicher!',
+        'fr': 'Ce mot de passe est trop courant!',
+        'es': '¡Esta contraseña es demasiado común!',
+    },
+
+    'This password is entirely numeric!' : {
+        'en': 'This password is entirely numeric!',
+        'de': 'Dieses Passwort ist vollständig numerisch!',
+        'fr': 'Ce mot de passe est entièrement numérique!',
+        'es': '¡Esta contraseña es completamente numérica!',
+    },
+
+    'This password is too short. It must contain at least 8 characters!' : {
+        'en': 'This password is too short. It must contain at least 8 characters!',
+        'de': 'Dieses Passwort ist zu kurz. Es muss mindestens 8 Zeichen enthalten!',
+        'fr': 'Ce mot de passe est trop court. Il doit contenir au moins 8 caractères!',
+        'es': '¡Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres!',
+    },
 };
 
 export default appState;

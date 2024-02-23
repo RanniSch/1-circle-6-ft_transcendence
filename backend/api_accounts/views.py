@@ -1,11 +1,12 @@
 from django.shortcuts import redirect, HttpResponse
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q, Max
-from django.utils import timezone
+from django.utils import timezone, translation
 
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
@@ -38,15 +39,18 @@ class UserRegistration(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        try:
-            clean_data = custom_validation(request.data)
-            serializer = RegisterSerializer(data=clean_data)
-            if serializer.is_valid(raise_exception=True):
-                user = serializer.create(clean_data)
-                if user:
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValidationError as err:
-            return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+        with translation.override('en'):
+            try:
+                password = request.data.get('password')
+                clean_data = custom_validation(request.data)
+                validate_password(password)
+                serializer = RegisterSerializer(data=clean_data)
+                if serializer.is_valid(raise_exception=True):
+                    user = serializer.create(clean_data)
+                    if user:
+                        return Response(status=status.HTTP_201_CREATED)
+            except ValidationError as err:
+                return Response({'error': err.messages}, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class UserLogin(APIView):

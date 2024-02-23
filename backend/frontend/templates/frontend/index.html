@@ -73,10 +73,7 @@
             <input
                 type="password"
                 id="password_reg"
-                required
-                pattern="(?=.*[^\d]).{6,}"
-                title="{% trans 'Must contain at least 6 characters, must not be the same as username, must not be all numeric, must not be common' %}"><br><br>
-
+                required><br><br>
             <button type="submit">{% trans "Register" %}</button><br><br>
         </form>
         {% block register %}
