@@ -311,6 +311,10 @@ select:focus {
 	justify-content: start;
 }
 
+#profileSection {
+    display:none;
+}
+
 
 #avatarForm {
 	display: flex;
@@ -475,7 +479,7 @@ input[type="file"] {
 
 
 #pongBtnNav, #hangmanBtnNav, #settingsBtnNav, #tournamentBtnNav{
-	display: inline-block;
+	display: none;
 }
 
 /*end of profile styles*/

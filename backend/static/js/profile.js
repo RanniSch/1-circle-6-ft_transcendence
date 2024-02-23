@@ -206,7 +206,7 @@ function displayUserProfile(data) {
     const gamesTied = data.games_tied !== null && data.games_tied !== undefined ? data.games_tied : translate('No games tied');
     document.getElementById('gamesTied').textContent = gamesTied;
 
-    document.getElementById('profileSection').style.display = 'block';
+    document.getElementById('profileSection').style.display = 'flex';
     // profile nav bar
     document.getElementById('pongBtnNav').style.display = 'inline-block';
     document.getElementById('hangmanBtnNav').style.display = 'inline-block';
