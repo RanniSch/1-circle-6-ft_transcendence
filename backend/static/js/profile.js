@@ -217,11 +217,12 @@ function displayUserProfile(data) {
     document.getElementById('registrationForm').style.display = 'none';
     document.getElementById('reg').style.opacity = 0;
     document.getElementById('login42Button').style.display = 'none';
+    document.getElementById('42_login_li').style.display = 'none';
 
     if (data.logged_in_with_42api) {
         document.getElementById('enable2faButton').style.display = 'none';
     } else {
-        document.getElementById('enable2faButton').style.display = 'block';
+        document.getElementById('enable2faButton').style.display = 'inline';
     }
 
     // Global variables
