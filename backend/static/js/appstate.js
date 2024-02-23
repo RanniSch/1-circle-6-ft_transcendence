@@ -441,6 +441,20 @@ export var translations = {
         'fr': 'Ce mot de passe est trop court. Il doit contenir au moins 8 caractères!',
         'es': '¡Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres!',
     },
+
+    'Username could not be changed!' : {
+        'en': 'Username could not be changed!',
+        'de': 'Benutzername konnte nicht geändert werden!',
+        'fr': 'Le nom d\'utilisateur n\'a pas pu être changé!',
+        'es': '¡No se pudo cambiar el nombre de usuario!',
+    },
+
+    'Username changed successfully!' : {
+        'en': 'Username changed successfully!',
+        'de': 'Benuztername erfolgreich geändert!',
+        'fr': 'Nom d\'utilisateur changé avec succès!',
+        'es': '¡Nombre de usuario cambiado con éxito!',
+    },
 };
 
 export default appState;

@@ -492,6 +492,54 @@ function verifyTwoFactorCode(code) {
     });
 }
 
+function toggleChangeUsernameContainer() {
+    const container = document.getElementById('changeUsernameContainer');
+    container.style.display = (container.style.display === 'block') ? 'none' : 'block';
+}
+
+document.getElementById('changeUsernameButton').addEventListener('click', function() {
+    toggleChangeUsernameContainer();
+});
+
+document.getElementById('changeUsernameForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    changeUsername();
+});
+
+function changeUsername() {
+    const accessToken = localStorage.getItem('access');
+    const newUsername = document.getElementById('newUsername').value;
+
+    if (!newUsername.trim()) {
+        alert(translate('New username cannot be empty!'));
+        return;
+    }
+
+    fetch(`https://${host}/api/change-username/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ new_username: newUsername })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(translate('Username could not be changed!'));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(translate('Username changed successfully!'));
+        alert(translate('Username changed successfully!'));
+        document.getElementById('changeUsernameForm').reset();
+    })
+    .catch(error => {
+        console.error('Error ChangeUsername:', error);
+    });
+    toggleChangeUsernameContainer();
+}
+
 function toggleChangePasswordContainer() {
     const container = document.getElementById('changePasswordContainer');
     container.style.display = (container.style.display === 'block') ? 'none' : 'block';

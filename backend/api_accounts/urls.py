@@ -19,6 +19,7 @@ urlpatterns = [
     path('enable-2fa/', views.EnableTwoFactorAPIView.as_view(), name='enable_2fa'),
     path('verify-2fa/', views.VerifyTwoFactorAPIView.as_view(), name='verify_2fa'),
     path('update-stats/', views.update_stats, name='update_stats'),
+    path('change-username/', views.change_username, name='change_username'),
     path('change-password/', views.change_password, name='change_password'),
     path('match-history/', views.MatchHistoryListCreate.as_view(), name='match_history'),
     path('update-login-status/', views.update_login_status, name='update_login_status'),

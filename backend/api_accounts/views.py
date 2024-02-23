@@ -48,7 +48,7 @@ class UserRegistration(APIView):
                 if serializer.is_valid(raise_exception=True):
                     user = serializer.create(clean_data)
                     if user:
-                        return Response(status=status.HTTP_201_CREATED)
+                        return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
             except ValidationError as err:
                 return Response({'error': err.messages}, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -325,6 +325,23 @@ def update_stats(request):
             return Response({'error': 'No registered user found!'}, status=status.HTTP_404_NOT_FOUND)
     else:
         return Response({'error': 'Game not completed!'}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def change_username(request):
+    user = request.user
+    new_username = request.data.get('new_username')
+
+    if not new_username:
+        return Response({'error': 'No new username provided!'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if get_user_model().objects.filter(username=new_username).exclude(pk=user.pk).exists():
+        return Response({'error': 'Username already taken!'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    user.username = new_username
+    user.save()
+
+    return Response({'success': 'Username changed successfully!'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
