@@ -521,6 +521,72 @@ input[type="file"] {
 
 /*end of list of users*/
 
+/*start of h_img*/
+.hangman-style_mode {
+	display: none;
+	width: 30%;
+	height: auto;
+	background-color: rgba(72, 61, 139, 0.5);
+	padding: 20px;
+	margin: 10px auto;
+	font-size: 20px; /* Adjust the font size to make the arrow thicker */
+	font-weight: bold; /* Optionally, make the arrow bold for more emphasis */
+	color: white;
+	border: rgba(0, 0, 0, 0.7) 7px solid;
+	text-align: center;
+	z-index: 115;
+
+	position: absolute;
+	top: 10%;
+	left: 30%;
+}
+
+.hangman-style_mode button {
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 10px;
+	text-align: center;
+	border-radius: 10%;
+	margin-top: 5px;
+}
+
+.hangman-style_mode button:hover {
+	background-color: darkslateblue;
+}
+
+.hangman-style {
+	display: none;
+	width: 50%;
+	height: auto;
+	background-color: darkslateblue;
+	padding: 20px;
+	margin: 10px auto;
+	font-size: 20px; /* Adjust the font size to make the arrow thicker */
+	font-weight: bold; /* Optionally, make the arrow bold for more emphasis */
+	color: white;
+	border: rgba(0, 0, 0, 0.7) 7px solid;
+	text-align: center;
+	z-index: 115;
+
+	position: absolute;
+	top: 10%;
+	left: 30%;
+}
+
+.hangman-style button {
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 10px;
+	text-align: center;
+	border-radius: 10%;
+	margin-top: 5px;
+}
+
+.hangman-style button:hover {
+	background-color: darkslateblue;
+}
+/*end of h_img*/
+
 /*tournament*/
 .tournamentContainer {
 	display: none;

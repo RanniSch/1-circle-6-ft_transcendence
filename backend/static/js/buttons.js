@@ -68,3 +68,10 @@ document.getElementById("menuBtn").addEventListener("click", function() {
     content.style.display = content.style.display === "none" ? "block" : "none";
 });
 //end of small menu
+
+//start of h_img
+document.getElementById("hangmanBtn").addEventListener("click", function() {
+    let content = document.getElementById("hangman_game_mode");
+    content.style.display = content.style.display === "none" ? "block" : "none";
+});
+//end of h_img

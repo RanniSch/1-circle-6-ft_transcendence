@@ -8,10 +8,13 @@
     <title>TRANSCENDENCE PONG GAME</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../../static/css/pong.css">
+    <link rel="stylesheet" href="../../../static/css/hangman.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"rel="stylesheet">
+    <script src="../../../static/js/word-list.js" defer></script>
+    <script src="../../../static/js/hangman.js" defer></script>
 </head>
 <body>
 <script type="text/javascript">
@@ -286,6 +289,42 @@
     <div id="tournamentMatchContainer"></div>
 </div>
 <!--    end of tournament-->
+
+{#start of hangman#}
+<div class="non-game-element hangman-style_mode" id="hangman_game_mode">
+    <div class="game-mode-selection" style="text-align: center; margin-top: 20px;">
+        <button id="solo-game-button">Solo Game</button>
+        <button id="multiplayer-game-button">Multiplayer Game</button>
+    </div>
+</div>
+    <div class="game-modal">
+        <div class="content">
+            <img src="#" alt="gif">
+            <h4>Game Over!</h4>
+            <p>The correct word was: <b>rainbow</b></p>
+            <button class="play-again">Play Again</button>
+        </div>
+    </div>
+    <div id="game" class="container">
+        <div id="player-name"></div>
+        <div class="hangman-box">
+            <img src="#" draggable="false" alt="hangman-img">
+            <h1>Hangman Game</h1>
+        </div>
+        <div class="game-box">
+            <ul class="word-display"></ul>
+            <h4 class="hint-text">Hint: <b></b></h4>
+            <h4 class="guesses-text">Incorrect guesses: <b></b></h4>
+            <div class="keyboard"></div>
+        </div>
+    </div>
+ {% block hangman %}
+    <script type='module' src="{% static 'js/hangman.js' %}"></script>
+ {% endblock %}
+{% block word-list %}
+    <script type='module' src="{% static 'js/word-list.js' %}"></script>
+ {% endblock %}
+{#end of hangman#}
 
 <!--button for scrolling to top-->
 <div class="non-game-element terms_style" id="termsOfUseContent">
@@ -1275,8 +1314,9 @@
 <script src="{% static 'js/logout.js' %}"></script>
 <script src="{% static 'js/profile.js' %}"></script>
 <script src="{% static 'js/buttons.js' %}"></script>
-<!--    comment it later -->
-<!--<script src="buttons.js"></script>-->
+<script src="{% static 'js/hangman.js' %}"></script>
+<script src="{% static 'js/word-list.js' %}"></script>
+
 </body>
 
 
