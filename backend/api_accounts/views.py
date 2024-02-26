@@ -560,3 +560,17 @@ def setup_final_match(request, tournament_id):
         return Response({'error': 'Tournament not found!'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def match_making(request):
+    current_user = request.user
+
+    potential_opponents = Player.objects.exclude(id=current_user.id)
+
+    if not potential_opponents.exists():
+        return Response({'error': 'No potential opponents found!'}, status=status.HTTP_404_NOT_FOUND)
+
+    opponent = random.choice(potential_opponents)
+
+    return Response({'message': f'You have been matched with {opponent.username}!'}, status=status.HTTP_200_OK)

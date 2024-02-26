@@ -23,6 +23,7 @@ urlpatterns = [
     path('change-password/', views.change_password, name='change_password'),
     path('match-history/', views.MatchHistoryListCreate.as_view(), name='match_history'),
     path('update-login-status/', views.update_login_status, name='update_login_status'),
+    path('match-making/', views.match_making, name='match_making'),
     path('tournaments/create/', views.TournamentCreateView.as_view(), name='create_tournament'),
     path('tournaments/', views.TournamentListView.as_view(), name='list-tournaments'),
     path('tournaments/<int:pk>/', views.TournamentDetailView.as_view(), name='tournament-detail'),
