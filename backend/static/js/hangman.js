@@ -1,3 +1,11 @@
+import { getCurrentLanguage, translations, notifyListeners } from "./appstate.js";
+import appState from "./appstate.js";
+
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 const wordDisplay = document.querySelector(".word-display");
 const guessesText = document.querySelector(".guesses-text b");
 const keyboardDiv = document.querySelector(".keyboard");
@@ -33,11 +41,10 @@ multiplayerGameButton.addEventListener('click', () => {
         initGame();
 });
 
-
 const resetGame = () => {
     correctLetters = [];
     wrongGuessCount = 0;
-    hangmanImage.src = "../backend/static/css/h_img/hangman-0.svg";
+    hangmanImage.src = "../static/css/h_img/hangman-0.svg";
     guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
     wordDisplay.innerHTML = currentWord.split("").map(() => `<li class="letter"></li>`).join("");
     keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);

@@ -1,3 +1,11 @@
+import { getCurrentLanguage, translations, notifyListeners } from "./appstate.js";
+import appState from "./appstate.js";
+
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
+
 // terms of use
 document.getElementById("termsOfUseButton").addEventListener("click", function() {
     let content = document.getElementById("termsOfUseContent");
