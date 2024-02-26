@@ -87,6 +87,7 @@ function renderTournamentBracket(data) {
 
     const title = document.createElement('h2');
     title.textContent = `Tournament Bracket for ${data.name}`;
+    tournamenViewDiv.classList.add('tournamentInfo');
     tournamenViewDiv.appendChild(title);
 
     const creationDate = new Date(data.start_date);
@@ -102,7 +103,7 @@ function renderTournamentBracket(data) {
         const participantTitle = document.createElement('h3');
         participantTitle.textContent = 'Participants:';
         tournamenViewDiv.appendChild(participantTitle);
-        
+      
         const participantList = document.createElement('ul');
         data.participants.forEach(participantId => {
             const participantItem = document.createElement('li');
@@ -123,7 +124,7 @@ function renderTournamentBracket(data) {
             const matchesTitle = document.createElement('h3');
             matchesTitle.textContent = 'First Round:';
             tournamenViewDiv.appendChild(matchesTitle);
-    
+
             const matchesList = document.createElement('ul');
             firstRoundMatches.forEach(match => {
                 const matchItem = document.createElement('li');
@@ -141,7 +142,7 @@ function renderTournamentBracket(data) {
             const matchesTitleFinal = document.createElement('h3');
             matchesTitleFinal.textContent = 'Final:';
             tournamenViewDiv.appendChild(matchesTitleFinal);
-    
+
             const matchesListFinal = document.createElement('ul');
             finalMatches.forEach(match => {
                 const matchItem = document.createElement('li');
@@ -167,7 +168,7 @@ function renderTournamentBracket(data) {
             const winnerTitle = document.createElement('h3');
             winnerTitle.textContent = 'Tournament Winner:';
             tournamenViewDiv.appendChild(winnerTitle);
-    
+
             const winnerName = document.createElement('p');
             winnerName.textContent = finale.winner_username ? `Congratulations ${finalMatch.winner_username}!` : 'No winner yet.';
             tournamenViewDiv.appendChild(winnerName);

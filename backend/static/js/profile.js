@@ -79,10 +79,12 @@ function displayMatchHistory(matchHistory) {
     // create toggle button
     const toggleButton = document.createElement('button');
     toggleButton.textContent = translate('Show Match History');
+    toggleButton.classList.add('matchHistoryBtn');
     matchHistoryContainer.appendChild(toggleButton);
 
     // create container for match history content
     const matchHistoryContent = document.createElement('div');
+    matchHistoryContent.classList.add('matchHistoryContentDiv');
     matchHistoryContent.style.display = 'none'; // initially hidden
     matchHistoryContainer.appendChild(matchHistoryContent);
 
@@ -206,16 +208,23 @@ function displayUserProfile(data) {
     const gamesTied = data.games_tied !== null && data.games_tied !== undefined ? data.games_tied : translate('No games tied');
     document.getElementById('gamesTied').textContent = gamesTied;
 
-    document.getElementById('profileSection').style.display = 'block';
+    document.getElementById('profileSection').style.display = 'flex';
+    // profile nav bar
+    document.getElementById('pongBtnNav').style.display = 'inline-block';
+    document.getElementById('hangmanBtnNav').style.display = 'inline-block';
+    document.getElementById('settingsBtnNav').style.display = 'inline-block';
+    document.getElementById('tournamentBtnNav').style.display = 'inline-block';
+    // end of profile nav bar
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('registrationForm').style.display = 'none';
     document.getElementById('reg').style.opacity = 0;
     document.getElementById('login42Button').style.display = 'none';
+    document.getElementById('42_login_li').style.display = 'none';
 
     if (data.logged_in_with_42api) {
         document.getElementById('enable2faButton').style.display = 'none';
     } else {
-        document.getElementById('enable2faButton').style.display = 'block';
+        document.getElementById('enable2faButton').style.display = 'inline';
     }
 
     // Global variables
