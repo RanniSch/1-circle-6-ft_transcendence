@@ -1,4 +1,5 @@
-import appState, { notifyListeners } from "./appstate.js";
+import appState from "./appstate.js";
+import { notifyListeners, getCurrentLanguage, translations } from "./appstate.js";
 
 function translate(key) {
     var currentLanguage = getCurrentLanguage();
@@ -9,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = localStorage.getItem('access');
 
     if (!accessToken) {
-        console.log(translate('No access token found. You are not logged in!'));
+        console.log('No access token found. You are not logged in!');
         return;
     }
 
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchMatchHistory() {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
-        console.log(translate('No access token found. You are not logged in!'));
+        console.log('No access token found. You are not logged in!');
         return;
     }
 
@@ -187,6 +188,7 @@ function markNotificationsAsRead(notificationId) {
 
 function displayUserProfile(data) {
     if (data.profile_avatar) {
+        console.log('Profile avatar:', data.profile_avatar);
         const profileAvatar = document.getElementById('profileAvatar');
         profileAvatar.src = data.profile_avatar;
         profileAvatar.style.display = 'block';
@@ -497,6 +499,54 @@ function verifyTwoFactorCode(code) {
     .catch((error) => {
         console.log('Error Verify2FA:', error);
     });
+}
+
+function toggleChangeUsernameContainer() {
+    const container = document.getElementById('changeUsernameContainer');
+    container.style.display = (container.style.display === 'block') ? 'none' : 'block';
+}
+
+document.getElementById('changeUsernameButton').addEventListener('click', function() {
+    toggleChangeUsernameContainer();
+});
+
+document.getElementById('changeUsernameForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    changeUsername();
+});
+
+function changeUsername() {
+    const accessToken = localStorage.getItem('access');
+    const newUsername = document.getElementById('newUsername').value;
+
+    if (!newUsername.trim()) {
+        alert(translate('New username cannot be empty!'));
+        return;
+    }
+
+    fetch(`https://${host}/api/change-username/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ new_username: newUsername })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(translate('Username could not be changed!'));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(translate('Username changed successfully!'));
+        alert(translate('Username changed successfully!'));
+        document.getElementById('changeUsernameForm').reset();
+    })
+    .catch(error => {
+        console.error('Error ChangeUsername:', error);
+    });
+    toggleChangeUsernameContainer();
 }
 
 function toggleChangePasswordContainer() {

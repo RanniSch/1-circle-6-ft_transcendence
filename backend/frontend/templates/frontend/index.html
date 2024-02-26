@@ -82,7 +82,6 @@
         </ul>
     </div>
 </header>
-
 <div id="language_selector">
     <form action="/i18n/setlang/" method="post">
         {% csrf_token %}
@@ -101,8 +100,8 @@
 </div>
 <!--    start of registration form-->
     <div class="non-game-element registration_form" id="reg">
-
         <form id="registrationForm" class="registration_style" method="post">
+            {% csrf_token %}
             <label for="email">{% trans "Email:" %}</label>
             <input
                 type="email"
@@ -125,10 +124,7 @@
             <input
                 type="password"
                 id="password_reg"
-                required
-                pattern="(?=.*[^\d]).{6,}"
-                title="{% trans 'Must contain at least 6 characters, must not be the same as username, must not be all numeric, must not be common' %}"><br><br>
-
+                required><br><br>
             <button type="submit">{% trans "Register" %}</button><br><br>
         </form>
         {% block register %}
@@ -208,6 +204,7 @@
 
             <label for="oldPassword">{% trans "Old Password:" %}</label>
             <input type="password" id="oldPassword" required><br><br>
+
 
             <label for="newPassword">{% trans "New Password:" %}</label>
             <input type="password" id="newPassword" required
@@ -348,6 +345,7 @@
                 <div>
                     We operate the website<span>https://10.12.14.3</span> (the "<strong>Site</strong>"), as well as any other related products and services that refer
                     or link to these legal terms (the "<strong>Legal Terms</strong>") (collectively, the "<strong>Services</strong>").
+
                 </div>
                 <div>This website is to play pong! The final boss of 42!</div>
                 <div>You can contact us by email at __________ or by mail to , __________, __________.</div>
@@ -1316,8 +1314,5 @@
 <script src="{% static 'js/buttons.js' %}"></script>
 <script src="{% static 'js/hangman.js' %}"></script>
 <script src="{% static 'js/word-list.js' %}"></script>
-
 </body>
-
-
 </html>

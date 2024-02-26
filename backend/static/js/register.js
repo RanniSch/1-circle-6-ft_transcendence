@@ -1,4 +1,10 @@
 import appState from "./appstate.js";
+import { notifyListeners, getCurrentLanguage, translations } from "./appstate.js";
+
+function translate(key) {
+    var currentLanguage = getCurrentLanguage();
+    return translations[key][currentLanguage];
+}
 
 document.getElementById('registrationForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -19,9 +25,9 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         password: password
     };
 
-    const agreement = confirm('By clicking OK you agree to the Terms of Use.');
+    const agreement = confirm(translate('By clicking OK you agree to the Terms of Use.'));
     if (!agreement) {
-        alert('Regsitration canceled!')
+        alert(translate('Regsitration canceled!'))
         return;
     }
 
@@ -35,12 +41,29 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success!');
-        alert('Registration successful!');
-        document.getElementById('registrationForm').reset();
-        appState.isLoggedIn = true;
-        appState.userProfile = data;
-        notifyListeners();
+        if (data.error && data.error.includes('Email already exists!')) {
+            alert(translate('Email already exists!'));
+            document.getElementById('password_reg').value = '';
+        } else if (data.error && data.error.includes('Username already exists!')) {
+            alert(translate('Username already exists!'));
+            document.getElementById('password_reg').value = '';
+        } else if (data.error && data.error.includes('This password is too common.')) {
+            alert(translate('This password is too common!'));
+            document.getElementById('password_reg').value = '';
+        } else if (data.error && data.error.includes('This password is entirely numeric.')) {
+            alert(translate('This password is entirely numeric!'));
+            document.getElementById('password_reg').value = '';
+        } else if (data.error && data.error.includes('This password is too short. It must contain at least 8 characters.')) {
+            alert(translate('This password is too short. It must contain at least 8 characters!'));
+            document.getElementById('password_reg').value = '';
+        } else {
+            console.log('Success!');
+            alert(translate('Registration successful!'));
+            document.getElementById('registrationForm').reset();
+            appState.isLoggedIn = true;
+            appState.userProfile = data;
+            notifyListeners();
+        }
     })
     .catch((error) => {
         console.error('Error:', error);

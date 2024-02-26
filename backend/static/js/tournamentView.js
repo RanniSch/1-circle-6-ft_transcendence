@@ -87,7 +87,7 @@ function renderTournamentBracket(data) {
 
     const title = document.createElement('h2');
     title.textContent = `Tournament Bracket for ${data.name}`;
-     tournamenViewDiv.classList.add('tournamentInfo');
+    tournamenViewDiv.classList.add('tournamentInfo');
     tournamenViewDiv.appendChild(title);
 
     const creationDate = new Date(data.start_date);
@@ -103,7 +103,7 @@ function renderTournamentBracket(data) {
         const participantTitle = document.createElement('h3');
         participantTitle.textContent = 'Participants:';
         tournamenViewDiv.appendChild(participantTitle);
-
+      
         const participantList = document.createElement('ul');
         data.participants.forEach(participantId => {
             const participantItem = document.createElement('li');

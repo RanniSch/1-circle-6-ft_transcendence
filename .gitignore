@@ -11,7 +11,7 @@ __pycache__/
 *_profile_*.png
 
 # unwanted migrations
-*_alter_player_totp_secret.py
+#*_alter_player_totp_secret.py
 
 # MACOSX
 .DS_Store

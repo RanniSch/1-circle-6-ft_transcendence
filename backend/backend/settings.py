@@ -124,7 +124,7 @@ else:
          "https://10.12.14.3",
      ]
 
-CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3']
+CSRF_TRUSTED_ORIGINS = ['https://10.12.14.3', 'https://172.20.248.62']
 
 CORS_ALLOW_HEADERS = [
     'Authorization',
@@ -232,12 +232,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 if DEBUG == True:
-    STATICFILES_DIRS = [BASE_DIR / 'static',]
+    STATIC_ROOT = [BASE_DIR / 'static',]
 else:
     STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/avatars/'
-MEDIA_ROOT = BASE_DIR / ''
+MEDIA_ROOT = BASE_DIR / 'avatars'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -247,3 +247,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'OPTIONS': {
+            'user_attributes': ('email', 'username'),
+            'max_similarity': 0.5,
+        }
+    },
+
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+
+    # checks against a list of 20,000 common password created by Royce Williams
+    # https://gist.github.com/roycewilliams/226886fd01572964e1431ac8afc999ce
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]

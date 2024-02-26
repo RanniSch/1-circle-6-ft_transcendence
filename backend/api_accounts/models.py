@@ -37,7 +37,7 @@ class PlayerManager(BaseUserManager):
 class Player(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=True)
 
-    profile_avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/default_avatar.jpg')
+    profile_avatar = models.ImageField(upload_to='./', null=True, blank=True, default='./default_avatar.jpg')
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=75, unique=True)
     username = models.CharField(max_length=25, unique=True, null=True, blank=True)
@@ -85,53 +85,19 @@ class ExpiredTokens(models.Model):
 User = get_user_model()
 
 class Notification(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications', null=True, blank=True)
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
     message = models.TextField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    is_system_generated = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Notification from {self.sender.username} to {self.receiver.username}"
-
-class GameSession(models.Model):
-    # 2-Player Game
-    player1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='game_sessions_as_player1')
-    player2 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='game_sessions_as_player2')
-
-    # game details
-    game_data = models.JSONField(default=dict)
-
-    # timestamps
-    start_time = models.DateTimeField(default=timezone.now)
-    end_time = models.DateTimeField(null=True, blank=True)
-
-    # game status
-    STATUS_CHOICES = [
-        ('ongoing', 'Ongoing'),
-        ('finished', 'Finished'),
-        ('aborted', 'Aborted'),
-    ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ongoing')
-
-    def end_game(self, final_game_data):
-        """
-        Call this method to mark the game as finished and record the final state.
-        """
-        self.status = 'finished'
-        self.end_time = timezone.now()
-        self.game_data.update(final_game_data)
-        self.save()
-
-    def __str__(self):
-        return f"GameSession: {self.player1.username} vs {self.player2.username} - Status: {self.status}"
-    
-class PlayerQueue(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_queue')
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.player.username} queued at {self.timestamp}'
+        if self.is_system_generated:
+            return f"System Notification to {self.receiver.username}"
+        else:
+            sender_username = self.sender.username if self.sender else 'System'
+            return f"Notification from {sender_username} to {self.receiver.username}"
     
 class MatchHistory(models.Model):
     player1 = models.CharField(max_length=100)
@@ -142,3 +108,41 @@ class MatchHistory(models.Model):
 
     def __str__(self):
         return f'{self.player1} vs {self.player2} on {self.date_played.strftime("%Y-%m-%d %H:%M")}'
+    
+class Tournament(models.Model):
+    name = models.CharField(max_length=100)
+    creator = models.CharField(max_length=20, default='System')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length= 20, default='Upcoming') # Upcoming, Ongoing, Completed
+    participants = models.ManyToManyField(Player, related_name='tournaments')
+
+    def start_tournament(self):
+        if self.participants.count() == 4:
+            self.status = 'Ongoing'
+            self.save()
+            # additional logic to start tournament
+        else:
+            raise ValueError('Tournament must have 4 participants to start!')
+
+    def __str__(self):
+        return self.name
+
+class TournamentMatch(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
+    player1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+    player2 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    winner = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_won')
+    scheduled_time = models.DateTimeField()
+    match_round = models.PositiveIntegerField() # Indicates the round of the tournament this match belongs to
+
+    MATCH_STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('finals', 'Finals'),
+    )
+    status = models.CharField(max_length=12, choices=MATCH_STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return f'{self.player1} vs {self.player2} in {self.tournament.name}'
