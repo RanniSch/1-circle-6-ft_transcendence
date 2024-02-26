@@ -194,6 +194,7 @@ function drawScore() {
     ctx.font = "20px 'Press Start 2P'";
     ctx.fillStyle = colour;
     
+    // playerName global variable is "window.playerOne"
     const playerName = window.playerOne || 'Player1';
     ctx.fillText(playerName, canvas.width / 4, 30);
     ctx.fillText(leftPaddle.score, canvas.width / 4, 70);

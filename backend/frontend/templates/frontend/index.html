@@ -300,6 +300,9 @@
     <div id="tournamentMatchContainer"></div>
 </div>
 <!--    end of tournament-->
+{% block tournamentView %}
+    <script type='module' src="{% static 'js/tournamentView.js' %}"></script>
+{% endblock %}
 
 {#start of hangman#}
 <div class="non-game-element hangman-style_mode" id="hangman_game_mode">

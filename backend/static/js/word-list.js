@@ -1,6 +1,4 @@
-
-
-const wordList = [
+export const wordList = [
     {
         word: "guitar",
         hint: "A musical instrument with strings."

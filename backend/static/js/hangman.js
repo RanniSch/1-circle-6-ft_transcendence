@@ -1,5 +1,6 @@
 import { getCurrentLanguage, translations, notifyListeners } from "./appstate.js";
 import appState from "./appstate.js";
+import { wordList } from "./word-list.js";
 
 function translate(key) {
     var currentLanguage = getCurrentLanguage();
@@ -62,7 +63,7 @@ const getRandomWord = () => {
 const gameOver = (isVictory) => {
     // After game complete.. showing modal with relevant details
     const modalText = isVictory ? `You found the word:` : 'The correct word was:';
-    gameModal.querySelector("img").src = `../backend/static/css/h_img/${isVictory ? 'victory' : 'lost'}.gif`;
+    gameModal.querySelector("img").src = `../static/css/h_img/${isVictory ? 'victory' : 'lost'}.gif`;
     gameModal.querySelector("h4").innerText = isVictory ? 'Congrats!' : 'Game Over!';
     gameModal.querySelector("p").innerHTML = `${modalText} <b>${currentWord}</b>`;
     gameModal.classList.add("show");
@@ -86,7 +87,7 @@ const initGame = (button, clickedLetter) => {
         // If clicked letter doesn't exist then update the wrongGuessCount and hangman image
         wrongGuessCount++;
         //backend/static/css/h_img/victory.gif
-        hangmanImage.src = `../backend/static/css/h_img/hangman-${wrongGuessCount}.svg`;
+        hangmanImage.src = `../static/css/h_img/hangman-${wrongGuessCount}.svg`;
     }
     button.disabled = true; // Disabling the clicked button so user can't click again
     guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
