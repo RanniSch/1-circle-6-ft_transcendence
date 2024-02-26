@@ -34,7 +34,7 @@
             <li class="list_anime">
                 <div id="termsOfUseButton">
                     <img alt="terms" class="logo_icon nav_icon" src="../../../static/css/images/terms.png">
-                    <a href="#">Terms of Use</a>
+                    <a href="#">{% trans "Terms of Use" %}</a>
                 </div>
             </li>
             <li class="list_anime" id="42_login_li">
@@ -46,7 +46,7 @@
             <li class="list_anime">
                 <div id="languageBtn">
                     <img alt="language" class="logo_icon nav_icon" src="../../../static/css/images/language_icon.png">
-                    <a href="#">Languages</a>
+                    <a href="#">{% trans "Languages" %}</a>
                 </div>
             </li>
             <!--profile menu-->
@@ -65,13 +65,13 @@
             <li class="list_anime" id="tournamentBtnNav">
                 <div id="playPongButtonTournament">
                     <img alt="tournament" class="logo_icon nav_icon profile_icon" src="../../../static/css/images/tournament.png">
-                    <a href="#">Tournament</a>
+                    <a href="#">{% trans "Tournament" %}</a>
                 </div>
             </li>
             <li class="list_anime" id="settingsBtnNav">
                 <div id="profileSettingsBtn">
                     <img alt="User settings" class="logo_icon nav_icon" src="../../../static/css/images/settings.png">
-                    <a href="#">User settings</a>
+                    <a href="#">{% trans "User settings" %}</a>
                 </div>
             </li>
         </ul>
@@ -155,7 +155,7 @@
     <form id="avatarForm" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="avatar-section">
-            <h1>User Profile</h1>
+            <h1>{% trans "User Profile" %}</h1>
             <div class="avatar-container">
                 <div class="photo_container">
                     <img id="profileAvatar" src="../../../static/css/images/default.jpg" alt="Profile Avatar"/>

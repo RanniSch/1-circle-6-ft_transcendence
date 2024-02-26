@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-26 13:56+0000\n"
+"POT-Creation-Date: 2024-02-26 14:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,170 +20,164 @@ msgstr ""
 
 #: frontend/templates/frontend/index.html:37
 msgid "Terms of Use"
-msgstr "Nutzungsbedingungen"
+msgstr "Condizioni d'uso"
 
 #: frontend/templates/frontend/index.html:43
 msgid "Sign in via 42 Intra"
-msgstr "Melde dich über 42 Intra an"
+msgstr "Accedi tramite 42 Intra"
 
 #: frontend/templates/frontend/index.html:49
 msgid "Languages"
-msgstr "Sprachen"
+msgstr "Lingue"
 
 #: frontend/templates/frontend/index.html:68
 msgid "Tournament"
-msgstr "Turnier"
+msgstr "Torneo"
 
 #: frontend/templates/frontend/index.html:74
 msgid "User settings"
-msgstr "Benutzereinstellungen"
+msgstr "Impostazioni utente"
 
 #: frontend/templates/frontend/index.html:101
 #: frontend/templates/frontend/index.html:133
 #: frontend/templates/frontend/index.html:174
 msgid "Email:"
-msgstr "E-Mail:"
+msgstr "E-mail:"
 
 #: frontend/templates/frontend/index.html:108
 msgid "Must be a valid email format."
-msgstr "Muss ein gültiges E-Mail-Format sein."
+msgstr "Deve essere un formato email valido."
 
 #: frontend/templates/frontend/index.html:110
 #: frontend/templates/frontend/index.html:175
 msgid "Username:"
-msgstr "Benutzername:"
+msgstr "Nome utente:"
 
 #: frontend/templates/frontend/index.html:117
 msgid "Can only contain [a-z], [A-Z], [0-9]."
-msgstr "Kann nur [a-z], [A-Z], [0-9] enthalten."
+msgstr "Può contenere solo [a-z], [A-Z], [0-9]."
 
 #: frontend/templates/frontend/index.html:119
 #: frontend/templates/frontend/index.html:136
 msgid "Password:"
-msgstr "Passwort:"
+msgstr ""
 
 #: frontend/templates/frontend/index.html:124
 msgid "Register"
-msgstr "Registrieren"
+msgstr "Registra"
 
 #: frontend/templates/frontend/index.html:138
 msgid "Show Password"
-msgstr "Passwort anzeigen"
+msgstr "Mostra password"
 
 #: frontend/templates/frontend/index.html:140
 msgid "Login"
-msgstr "Anmelden"
+msgstr "Accedi"
 
 #: frontend/templates/frontend/index.html:145
 msgid "Please enter the 6 digit code from your authenticator app:"
-msgstr ""
-"Bitte geben Sie den 6-stelligen Code aus Ihrer Authentifizierungs-App ein:"
-"Bitte geben Sie den 6-stelligen Code aus Ihrer Authentifizierungs-App ein:"
+msgstr "Inserisci il codice a 6 cifre dalla tua app di autenticazione:"
 
 #: frontend/templates/frontend/index.html:158
 msgid "User Profile"
-msgstr "Benutzerprofil"
+msgstr "Profilo utente"
 
 #: frontend/templates/frontend/index.html:164
 msgid "Choose New Avatar"
-msgstr "Neuen Avatar auswählen"
+msgstr "Scegli Nuovo Avatar"
 
 #: frontend/templates/frontend/index.html:166
 msgid "Submit"
-msgstr "Senden"
+msgstr "Invia"
 
 #: frontend/templates/frontend/index.html:177
 msgid "Games Played:"
-msgstr "Gespielte Spiele:"
+msgstr "Partite giocate:"
 
 #: frontend/templates/frontend/index.html:178
 msgid "Games Won:"
-msgstr "Gewonnene Spiele:"
+msgstr "Partite vinte:"
 
 #: frontend/templates/frontend/index.html:179
 msgid "Games Lost:"
-msgstr "Verlorene Spiele:"
+msgstr "Partite perse:"
 
 #: frontend/templates/frontend/index.html:180
 msgid "Games Tied:"
-msgstr "Unentschiedene Spiele:"
+msgstr "Partite in parità:"
 
 #: frontend/templates/frontend/index.html:188
 msgid "View all Users"
-msgstr "Alle Benutzer anzeigen"
+msgstr "Visualizza tutti gli utenti"
 
 #: frontend/templates/frontend/index.html:195
-#, fuzzy
-#| msgid "Username:"
 msgid "Change Username"
-msgstr "Benutzername:"
+msgstr "Cambia nome utente"
 
 #: frontend/templates/frontend/index.html:200
-#, fuzzy
-#| msgid "Username:"
 msgid "New Username"
-msgstr "Benutzername:"
+msgstr "Nuovo nome utente"
 
 #: frontend/templates/frontend/index.html:203
 #: frontend/templates/frontend/index.html:221
 msgid "Confirm?"
-msgstr "Bestätigen?"
+msgstr "Confermi?"
 
 #: frontend/templates/frontend/index.html:206
 msgid "Change Password"
-msgstr "Passwort ändern"
+msgstr "Cambia password"
 
 #: frontend/templates/frontend/index.html:212
 msgid "Old Password:"
-msgstr "Altes Passwort:"
+msgstr "Vecchia password:"
 
 #: frontend/templates/frontend/index.html:216
 msgid "New Password:"
-msgstr "Neues Passwort:"
+msgstr "Nuova password:"
 
 #: frontend/templates/frontend/index.html:224
 msgid "Enable Two-Factor Authentication"
-msgstr "Zwei-Faktor-Authentifizierung aktivieren"
+msgstr "Abilita autenticazione a due fattori"
 
 #: frontend/templates/frontend/index.html:227
 msgid "Delete your Account"
-msgstr "Benutzerkonto löschen"
+msgstr "Elimina il tuo account"
 
 #: frontend/templates/frontend/index.html:229
 msgid "Logout"
-msgstr "Abmelden"
+msgstr "Esci"
 
 #: frontend/templates/frontend/index.html:250
 msgid "PLAY PONG LOCALLY"
-msgstr "LOKAL PONG SPIELEN"
+msgstr "GIOCA A PONG LOCALE"
 
 #: frontend/templates/frontend/index.html:253
 msgid "PLAY PONG AGAINST COMPUTER"
-msgstr "PONG GEGEN COMPUTER SPIELEN"
+msgstr "GIOCA A PONG CONTRO IL COMPUTER"
 
 #: frontend/templates/frontend/index.html:256
 msgid "PLAY PONG REMOTELY"
-msgstr "PONG AUS DER FERNE SPIELEN"
+msgstr "GIOCA A PONG DA REMOTO"
 
 #: frontend/templates/frontend/index.html:261
 msgid "CHANGE BACKGROUND"
-msgstr "HINTERGRUND ÄNDERN"
+msgstr "CAMBIA SFONDO"
 
 #: frontend/templates/frontend/index.html:262
 msgid "POWERUPS: OFF"
-msgstr "POWERUPS: AUS"
+msgstr "ACCENSIONI: SPENTO"
 
 #: frontend/templates/frontend/index.html:286
 msgid "Create a Tournament"
-msgstr "Turnier Erstellen"
+msgstr "Crea un torneo"
 
 #: frontend/templates/frontend/index.html:288
 msgid "Join Tournament"
-msgstr "Turnier beitreten"
+msgstr "Partecipa al torneo"
 
 #: frontend/templates/frontend/index.html:290
 msgid "View Tournament"
-msgstr "Turnierdetails ansehen"
+msgstr "Visualizza torneo"
 
 #: ft_venv/lib/python3.11/site-packages/click/_termui_impl.py:518
 #, python-brace-format
@@ -1678,17 +1672,3 @@ msgstr ""
 #: ft_venv/lib/python3.11/site-packages/django/views/templates/default_urlconf.html:248
 msgid "Connect, get help, or contribute"
 msgstr ""
-
-#~ msgid ""
-#~ "Must contain at least 6 characters, must not be the same as username, "
-#~ "must not be all numeric, must not be common"
-#~ msgstr ""
-#~ "Muss mindestens 6 Zeichen enthalten, darf nicht mit dem Benutzernamen "
-#~ "identisch sein, darf nicht ausschließlich aus Zahlen bestehen und darf "
-#~ "nicht häufig vorkommen"
-
-#~ msgid "Login with 42 credentials"
-#~ msgstr "Anmelden mit 42 Anmeldeinformationen"
-
-#~ msgid "PLAY PONG TOURNAMENT"
-#~ msgstr "PONG TURNIER"
