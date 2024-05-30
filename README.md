@@ -14,11 +14,9 @@
 
 # About the project
 The final project "ft_transcendence" of the 42 Core Curriculum is about creating a website for the mighty Pong competition. You can play Pong against another player, against the computer with an AI opponent or you can set up a tournament with several players.
-
+Django" was chosen as the **backend framework**, "Bootstrap Toolkit" as the **frontend framework** and "PostfreSQL" as the **database** for the backend and more.
 
 https://github.com/RanniSch/ft_transcendence/assets/104382315/1cb84fb0-6910-435e-83ca-73bd37bdb4b2
-
-Django" was chosen as the **backend framework**, "Bootstrap Toolkit" as the **frontend framework** and "PostfreSQL" as the **database** for the backend and more.
 
 ### Other functions: 
 On the website a **user management system** is implemented with standard user management, authentication, users across tournaments and remote authentication.
@@ -31,13 +29,14 @@ With the implementation of the **remote authentication system**: "OAuth 2.0 Auth
 
 
 ![github-6](https://github.com/RanniSch/ft_transcendence/assets/104382315/9bc6fb2f-4017-450f-90cb-2f2ebc1f016d)
-
+ <br>
 A **gameplay and user experience** is provided as it is possible to play a second game of Hangman against another player or alone. For both games there is a user history to record and display the gameplay of individual users. A statistics and matchmaking system is provided to allow users to find opponents and participate in fair and balanced matches. The user's game history and matchmaking data is securely stored and kept up to date.
 
 There are **game customisation** options for all games available on the platform, such as power-ups, changing the colour of the game background and a default version of the game. The customisations can be accessed via a user-friendly settings menu to adjust game parameters.
 User and game statistics dashboards are also provided, showing statistics for individual users and game sessions.
 
 Playing Pong against the computer is not just a normal algorithm, but an **AI opponent** that provides a challenging and engaging gaming experience for users. It mimics human behaviour, which means that the AI implementation simulates keyboard input. The constraint is that the AI can only refresh its view of the game once per second, so it has to anticipate bounces and other actions. In addition, the AI's logic and decision-making processes allow the AI player to make intelligent and strategic moves.
+ <br>
 ![github-3](https://github.com/RanniSch/ft_transcendence/assets/104382315/fb950a9a-18a8-4bff-a26e-01fcb554c08f)
 
 ![github-5](https://github.com/RanniSch/ft_transcendence/assets/104382315/7c6c1160-4d70-4433-8401-ab09d758667c)
@@ -49,5 +48,6 @@ For **cybersecurity**, GDPR compliance options are implemented with user anonymi
 GDPR compliance options enable users to exercise their privacy rights. GDPR-compliant features allow users to request anonymisation of their personal data, ensuring their identity and sensitive information is protected. Tools are provided for users to manage their local data, including the ability to view, edit or delete their personal information stored in the system. There is also a streamlined process for users to request the permanent deletion of their accounts, including all associated data, ensuring compliance with data protection regulations. **Two-factor authentication** (2FA) and the use of JSON Web Tokens (JWT) for security and user authentication are enhanced. An easy-to-use setup process is provided to enable 2FA with the option for authenticator applications. JWT tokens are securely issued and validated to prevent unauthorised access to user accounts and sensitive data.
 
 For **accessibility**, the site is supported on all devices, browser compatibility is extended and multiple languages are supported. The site works seamlessly on all types of devices as it is responsive and adapts to different screen sizes.
+ <br>
 ![github-7](https://github.com/RanniSch/ft_transcendence/assets/104382315/e61b56c4-4037-4346-8aa1-cdc6a8ecc929)
 
