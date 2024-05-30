@@ -1,4 +1,4 @@
-# Transcendence
+# ft_transcendence
 
 ## How to run
 
