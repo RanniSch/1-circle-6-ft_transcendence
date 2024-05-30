@@ -11,14 +11,16 @@
 * type ```make help```
 * this will display all available commands of the Makefile
 
-
+<br>
 
 # About the project
 The final project "ft_transcendence" of the 42 Core Curriculum is about creating a website for the mighty Pong competition. You can play Pong against another player, against the computer with an AI opponent or you can set up a tournament with several players.
 Django" was chosen as the **backend framework**, "Bootstrap Toolkit" as the **frontend framework** and "PostfreSQL" as the **database** for the backend and more.
 
 
-https://github.com/RanniSch/ft_transcendence/assets/104382315/ca626a42-680a-4a15-b952-dac56b65bfd3
+
+https://github.com/RanniSch/ft_transcendence/assets/104382315/c6733f06-ba41-41a4-a987-ec854501bd2c
+
 
 
 ### Other functions: 
