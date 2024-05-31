@@ -8,6 +8,7 @@
 
 * In your terminal run: ```make```
 * Open the browser and type in **localhost**
+* In your terminal run: ```make down``` to turn off the containers after playing Pong
 
 ## Not sure what commands are available?
 
