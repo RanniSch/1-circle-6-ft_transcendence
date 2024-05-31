@@ -7,6 +7,7 @@
 ![github-8](https://github.com/RanniSch/ft_transcendence/assets/104382315/687d004c-b7c4-40a8-903e-7b4d320e4dfc)
 
 * In your terminal run: ```make```
+* Open the browser and type in **localhost**
 
 ## Not sure what commands are available?
 
